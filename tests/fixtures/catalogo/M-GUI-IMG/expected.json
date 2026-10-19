@@ -1,0 +1,56 @@
+{
+  "fixture_id": "M-GUI-IMG",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "M-GUI-IMG/M-GUI-IMG.txt",
+    "pdf": "M-GUI-IMG/M-GUI-IMG.pdf",
+    "jpg": "M-GUI-IMG/M-GUI-IMG.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "GUIA_PROCEDIMENTO",
+    "especialidade": [
+      "Gastroenterologia"
+    ],
+    "nivel_prioridade": "URGENTE",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Márcia Helena dos Santos",
+      "idade": 49
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Hemorragia digestiva alta",
+    "cid": "K92.2",
+    "medicamentos": [],
+    "exames": [
+      "Endoscopia digestiva alta"
+    ],
+    "urgencia": "SIM"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_URGENCIA_MEDICA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": true
+  },
+  "assercoes": [
+    "Foto de guia com pedido de urgência",
+    "Sinal crítico detectado no texto",
+    "Destino FILA_URGENCIA_MEDICA com alerta"
+  ],
+  "observacoes": ""
+}

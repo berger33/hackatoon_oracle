@@ -34,6 +34,18 @@ ROWS = list(csv.DictReader(open(os.path.join(ROOT, "tests/fixtures/manifest.csv"
 DEMO_IDS = ["M-REC-TXT", "M-REC-PDF", "M-REC-IMG", "M-IMG-PDF", "M-LAB-PDF", "M-GUI-PDF",
             "M-ALT-PDF", "M-ATE-TXT", "M-NID-IMG", "M-OUT-TXT", "A-PAC-NOME", "B-084"]
 
+
+def _produced():
+    import glob
+    out = set()
+    for pat in ("tests/fixtures/demo/*/expected.json", "tests/fixtures/catalogo/*/expected.json"):
+        for p in glob.glob(os.path.join(ROOT, pat)):
+            out.add(os.path.basename(os.path.dirname(p)))
+    return out
+
+
+PRODUCED = _produced()
+
 TITLES = {
     "M-REC-TXT": "Receituário — rotina (texto)",
     "M-REC-PDF": "Receituário — rotina, 2 medicamentos (PDF)",
@@ -251,8 +263,13 @@ def main():
 
     # números
     y -= 22
-    cards = [("67", "fixtures no catálogo"), ("12", "já produzidos"), ("48", "arquivos gerados"),
-             ("8", "simulações sem arquivo")]
+    n_produced = len(PRODUCED)
+    n_files = 0
+    import glob as _glob
+    for _pat in ("tests/fixtures/demo/*/*", "tests/fixtures/catalogo/*/*"):
+        n_files += len([f for f in _glob.glob(os.path.join(ROOT, _pat)) if os.path.isfile(f)])
+    cards = [("67", "fixtures no catálogo"), (str(n_produced), "já produzidos"),
+             (str(n_files), "arquivos no repositório"), ("8", "simulações sem arquivo")]
     cw = (CW - 3 * 10) / 4
     for i, (num, label) in enumerate(cards):
         x = M + i * (cw + 10)
@@ -274,9 +291,9 @@ def main():
     y = bullets(c, M, y, [
         "Seção 1 — cobertura: os 8 tipos controlados contra os 4 formatos de entrada.",
         "Seção 2 — fluxo de decisão que cada fixture exercita (rotina, urgência, ambiguidade, erro).",
-        "Seção 3 — kit de demonstração: os 12 casos prontos, com TXT, PDF, JPG e expected.json.",
+        "Seção 3 — kit de demonstração: os 12 casos de pitch, com TXT, PDF, JPG e expected.json.",
         "Seção 4 — catálogo completo dos 67 fixtures, bloco por bloco, com destino e status esperados.",
-        "Seção 5 — pendências da especificação que ainda travam parte dos testes.",
+        "Seção 5 — pendências da especificação e como regenerar o catálogo.",
     ], size=8.6, lead=13)
 
     c.setFillColor(TINT)
@@ -508,7 +525,7 @@ def main():
         return RH * n
 
     new_page(c, "4. Catálogo completo — 67 fixtures",
-             "Rev = requer auditoria humana · OK = fixture já produzido no kit de demonstração")
+             "Rev = requer auditoria humana · OK = fixture produzido e versionado")
     y = H - 104
     for key, title in blocks:
         rows = [r for r in ROWS if r["bloco"] == key]
@@ -517,12 +534,12 @@ def main():
             data.append([r["id"], r["tipo_documento"], r["formato"].replace("_", " ").title(),
                          r["cenario"].title(), r["destinos_esperados"], r["status_esperado"],
                          "S" if r["revisao_humana"] == "SIM" else "—",
-                         "✓" if r["id"] in DEMO_IDS else ""])
-            fills.append(colors.HexColor("#F0FDF4") if r["id"] in DEMO_IDS else None)
+                         "✓" if r["id"] in PRODUCED else ""])
+            fills.append(colors.HexColor("#F0FDF4") if r["id"] in PRODUCED else None)
 
         if y - 40 < 90:
             new_page(c, "4. Catálogo completo (continuação)",
-                     "Rev = requer auditoria humana · OK = fixture já produzido no kit de demonstração")
+                     "Rev = requer auditoria humana · OK = fixture produzido e versionado")
             y = H - 104
 
         c.setFillColor(INK)
@@ -540,7 +557,7 @@ def main():
                 i += 1
             if not chunk:
                 new_page(c, "4. Catálogo completo (continuação)",
-                         "Rev = requer auditoria humana · OK = fixture já produzido no kit de demonstração")
+                         "Rev = requer auditoria humana · OK = fixture produzido e versionado")
                 y = H - 104
                 continue
             y = table(c, M, y, colspec, [c0 for c0, _ in chunk], font_size=FS,
@@ -548,7 +565,7 @@ def main():
             y -= 8
             if i < len(data):
                 new_page(c, "4. Catálogo completo (continuação)",
-                         "Rev = requer auditoria humana · OK = fixture já produzido no kit de demonstração")
+                         "Rev = requer auditoria humana · OK = fixture produzido e versionado")
                 y = H - 104
         y -= 16
 
@@ -557,7 +574,7 @@ def main():
     c.drawString(M, max(y, 62), "Cada linha corresponde a um arquivo de entrada. Os blocos V e F usam envelope de erro, não JSON de triagem.")
 
     # ---------------------------------------------------------------- 5. pendências
-    new_page(c, "5. Pendências que travam parte dos testes",
+    new_page(c, "5. Pendências e regeneração",
              "Pontos abertos na especificação v1.0 (§15) que ainda impedem resposta inequívoca em parte dos fixtures.")
 
     pend = [
@@ -575,13 +592,13 @@ def main():
     y = H - 118 - 11.4 * (len(pend) + 4) - 34
     c.setFillColor(INK)
     c.setFont("DJB", 9.6)
-    c.drawString(M, y, "Como produzir os 55 fixtures restantes")
+    c.drawString(M, y, "Como regenerar o catálogo")
     y -= 15
     steps = [
-        "Escrever o conteúdo em source/{ID}.md com dados fictícios e marca d'água.",
-        "Gerar as três rendições: TXT, PDF digital e JPG; para o bloco Q, gerar PDF sem camada de texto.",
-        "Criar as bordas alterando UM único atributo em relação ao documento base.",
-        "Preencher expected.json com tipo, prioridade, destinos, revisão, ausências e status.",
+        "Instalar as dependências: python3 -m pip install reportlab pymupdf pillow.",
+        "python3 tools/gerar_fixtures_demo.py — recria os 12 casos do kit de demonstração.",
+        "python3 tools/gerar_fixtures_catalogo.py — recria os 55 restantes, incluindo PDFs escaneados, senha e corrompido.",
+        "python3 tools/gerar_mapa_documentos.py — recria este PDF.",
         "Rodar o pipeline e comparar por asserção, nunca por score exato do LLM.",
     ]
     for i, st in enumerate(steps, 1):
@@ -616,12 +633,14 @@ def main():
           [["docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md", "Catálogo analítico completo, regras e rastreabilidade"],
            ["docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf", "Este documento"],
            ["tests/fixtures/manifest.csv", "Os 67 fixtures em formato de máquina"],
-           ["tests/fixtures/demo/", "12 casos × (TXT + PDF + JPG + expected.json)"],
+           ["tests/fixtures/demo/", "12 casos de pitch × (TXT + PDF + JPG + expected.json)"],
+           ["tests/fixtures/catalogo/", "55 casos restantes, incluindo os 8 negativos técnicos"],
+           ["tools/gerar_fixtures_*.py", "Geradores reprodutíveis de todo o catálogo"],
            ["tests/fixtures/README.md", "Convenção de nomes e regras de produção"],
            ["README.md", "Visão do produto, arquitetura e critérios de aceite"]],
           font_size=6.8, row_h=16)
 
-    y = y - 16 * 7 - 30
+    y = y - 16 * 9 - 30
     c.setFillColor(INK)
     c.setFont("DJB", 9.6)
     c.drawString(M, y, "Base documental (Google Drive)")

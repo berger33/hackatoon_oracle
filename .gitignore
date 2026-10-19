@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Ambiente e segredos (nunca comitar credenciais da OCI)
+.env
+.env.*
+!.env.example
+keys/
+*.pem
+
+# Fixtures pesadas: regeradas por tools/gerar_fixtures_catalogo.py
+# (25 MB; acima do limite de arquivo do GitHub, que é 100 MB, mas evita engordar o repo)
+tests/fixtures/catalogo/V-GRANDE/V-GRANDE.pdf
+
+# Sistema
+.DS_Store
+Thumbs.db

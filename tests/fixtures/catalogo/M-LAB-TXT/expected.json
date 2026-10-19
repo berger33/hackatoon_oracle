@@ -1,0 +1,57 @@
+{
+  "fixture_id": "M-LAB-TXT",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "M-LAB-TXT/M-LAB-TXT.txt",
+    "pdf": "M-LAB-TXT/M-LAB-TXT.pdf",
+    "jpg": "M-LAB-TXT/M-LAB-TXT.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_LABORATORIAL",
+    "especialidade": [
+      "Endocrinologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Elias Moreira Pires",
+      "idade": 62
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": null,
+    "cid": null,
+    "medicamentos": [],
+    "exames": [
+      "Glicemia de jejum",
+      "Hemoglobina glicada"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Texto de laudo laboratorial aceito",
+    "CID ausente permanece null",
+    "Ausência de CID isolada NÃO exige revisão (RF-21)"
+  ],
+  "observacoes": ""
+}

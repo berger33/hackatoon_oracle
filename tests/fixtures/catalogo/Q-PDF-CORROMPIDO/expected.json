@@ -1,0 +1,49 @@
+{
+  "fixture_id": "Q-PDF-CORROMPIDO",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "Q-PDF-CORROMPIDO/Q-PDF-CORROMPIDO.txt",
+    "pdf": "Q-PDF-CORROMPIDO/Q-PDF-CORROMPIDO.pdf",
+    "jpg": "Q-PDF-CORROMPIDO/Q-PDF-CORROMPIDO.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "N/A",
+    "especialidade": [],
+    "nivel_prioridade": "NAO_IDENTIFICADA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": null,
+      "idade": null
+    },
+    "medico": {
+      "nome": null,
+      "crm": null
+    },
+    "diagnostico": null,
+    "cid": null,
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "INDETERMINADO"
+  },
+  "decisao_esperada": {
+    "status": "ERRO_PROCESSAMENTO",
+    "destinos": [
+      "N/A"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Arquivo corrompido gera ERRO_PROCESSAMENTO",
+    "Mensagem segura, sem stack trace",
+    "Permitir reenvio"
+  ],
+  "observacoes": "Arquivo truncado em 40% do tamanho original."
+}

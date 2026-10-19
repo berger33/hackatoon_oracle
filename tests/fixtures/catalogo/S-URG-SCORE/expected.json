@@ -1,0 +1,64 @@
+{
+  "fixture_id": "S-URG-SCORE",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "S-URG-SCORE/S-URG-SCORE.txt",
+    "pdf": "S-URG-SCORE/S-URG-SCORE.pdf",
+    "jpg": "S-URG-SCORE/S-URG-SCORE.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_IMAGEM",
+    "especialidade": [
+      "Radiologia",
+      "Neurocirurgia"
+    ],
+    "nivel_prioridade": "URGENTE",
+    "score_classificacao": 0.88
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Wilson Aparecido Rangel",
+      "idade": 64
+    },
+    "medico": {
+      "nome": "Dra. Renata Silveira",
+      "crm": {
+        "numero": "145892",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Hematoma subdural agudo",
+    "cid": null,
+    "medicamentos": [],
+    "exames": [
+      "Tomografia de crânio"
+    ],
+    "urgencia": "SIM"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_URGENCIA_MEDICA",
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": true
+  },
+  "assercoes": [
+    "Urgência + score 0,70: dois destinos e alerta",
+    "Score baixo não rebaixa a urgência",
+    "Exige FIXTURE_MODE para forçar os scores"
+  ],
+  "observacoes": "",
+  "score_forcado": {
+    "score_classificacao": 0.88,
+    "score_extracao": 0.7,
+    "score_combinado": 0.7,
+    "limiar": 0.85
+  }
+}

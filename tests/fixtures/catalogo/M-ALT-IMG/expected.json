@@ -1,0 +1,57 @@
+{
+  "fixture_id": "M-ALT-IMG",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "M-ALT-IMG/M-ALT-IMG.txt",
+    "pdf": "M-ALT-IMG/M-ALT-IMG.pdf",
+    "jpg": "M-ALT-IMG/M-ALT-IMG.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RELATORIO_ALTA_INTERNACAO",
+    "especialidade": [
+      "Cardiologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "José Ricardo Almeida",
+      "idade": 68
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Insuficiência cardíaca congestiva descompensada",
+    "cid": "I50.0",
+    "medicamentos": [
+      "Furosemida 40 mg",
+      "Carvedilol 6,25 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Foto de relatório de alta",
+    "Dois medicamentos extraídos com dose e frequência",
+    "Destino PRONTUARIO_ELETRONICO"
+  ],
+  "observacoes": ""
+}

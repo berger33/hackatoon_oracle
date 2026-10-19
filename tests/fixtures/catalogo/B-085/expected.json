@@ -1,0 +1,63 @@
+{
+  "fixture_id": "B-085",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "B-085/B-085.txt",
+    "pdf": "B-085/B-085.pdf",
+    "jpg": "B-085/B-085.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RECEITUARIO_MEDICO",
+    "especialidade": [
+      "Clínica Médica",
+      "Alergologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": 0.94
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Ricardo Almeida Prado",
+      "idade": 45
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Rinite alérgica persistente",
+    "cid": "J30.4",
+    "medicamentos": [
+      "Loratadina 10 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "FARMACIA_HOSPITALAR"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Score exatamente 0,85 NÃO revisa por esse critério isolado",
+    "Comparação usa < 0,85, não <= 0,85 (RF-18)",
+    "Exige FIXTURE_MODE para forçar os scores"
+  ],
+  "observacoes": "Documento de rotina legível. O score forçado em 0,85 é a única borda testada.",
+  "score_forcado": {
+    "score_classificacao": 0.94,
+    "score_extracao": 0.85,
+    "score_combinado": 0.85,
+    "limiar": 0.85
+  }
+}

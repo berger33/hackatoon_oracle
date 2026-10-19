@@ -1,0 +1,56 @@
+{
+  "fixture_id": "M-NID-PDF",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "M-NID-PDF/M-NID-PDF.txt",
+    "pdf": "M-NID-PDF/M-NID-PDF.pdf",
+    "jpg": "M-NID-PDF/M-NID-PDF.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "NAO_IDENTIFICADO",
+    "especialidade": [],
+    "nivel_prioridade": "NAO_IDENTIFICADA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": null,
+      "idade": null
+    },
+    "medico": {
+      "nome": null,
+      "crm": null
+    },
+    "diagnostico": null,
+    "cid": null,
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "INDETERMINADO",
+    "campos_ausentes": [
+      "paciente.nome",
+      "paciente.idade",
+      "medico.nome",
+      "medico.crm",
+      "diagnostico_principal"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "PDF escaneado ilegível não é classificado",
+    "Classificação NAO_IDENTIFICADO",
+    "Nenhum dado inventado e revisão obrigatória"
+  ],
+  "observacoes": "PDF somente imagem, com desfoque e ruído. Sem camada de texto."
+}

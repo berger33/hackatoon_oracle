@@ -1,0 +1,56 @@
+{
+  "fixture_id": "C-ALTO-RISCO",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "C-ALTO-RISCO/C-ALTO-RISCO.txt",
+    "pdf": "C-ALTO-RISCO/C-ALTO-RISCO.pdf",
+    "jpg": "C-ALTO-RISCO/C-ALTO-RISCO.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RECEITUARIO_MEDICO",
+    "especialidade": [
+      "Cardiologia"
+    ],
+    "nivel_prioridade": "URGENTE",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Alzira Mendes Coelho",
+      "idade": 70
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Fibrilação atrial crônica",
+    "cid": "I48.9",
+    "medicamentos": [
+      "Varfarina sódica 10 mg"
+    ],
+    "exames": [],
+    "urgencia": "SIM"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_URGENCIA_MEDICA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": true
+  },
+  "assercoes": [
+    "Medicamento de alto risco aciona a fila urgente (RN-03)",
+    "Sem texto de urgência: a regra vem do dicionário de alto risco",
+    "Alerta simulado registrado"
+  ],
+  "observacoes": "Depende da lista de medicamentos de alto risco aprovada pela equipe."
+}

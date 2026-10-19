@@ -13,16 +13,16 @@ Você não precisa de um documento por especialidade médica. Precisa de **um do
 
 | Nível | Quantidade | Para que serve |
 | --- | ---: | --- |
-| **Kit de demonstração** | **12 arquivos** | Cobre os 3 cenários obrigatórios, os 5 destinos, os 3 formatos e as 8 classes de tipo. É o mínimo defensável para o pitch. |
-| **Kit recomendado** | **57 arquivos** | Cobre tipos × formatos, ausência de campos, limiar, conflitos, urgência simultânea, qualidade de imagem e negativos técnicos. É o conjunto que eu levaria para a banca. |
-| **Kit completo** | **67 arquivos** | Acrescenta PDF digitalizado para todos os tipos e os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS). |
+| **Kit de demonstração** | **12 arquivos** ✅ | Cobre os 3 cenários obrigatórios, os 5 destinos, os 3 formatos e as 8 classes de tipo. É o mínimo defensável para o pitch. |
+| **Kit recomendado** | **57 arquivos** ✅ | Cobre tipos × formatos, ausência de campos, limiar, conflitos, urgência simultânea, qualidade de imagem e negativos técnicos. É o conjunto que eu levaria para a banca. |
+| **Kit completo** | **67 arquivos** ✅ | Acrescenta PDF digitalizado para todos os tipos e os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS). |
 | **Simulações operacionais** | **8 cenários, 0 documentos novos** | Falhas de Gemini e de OCI, testadas por stub/flag reutilizando os documentos acima. |
 
 > **Mínimo literal dos critérios de aceite (seção 16 da especificação): 8 arquivos.** Três rendições do mesmo conteúdo (texto, PDF e imagem) + cinco variações de campo ausente. Esse número passa na leitura literal, mas não prova os 5 destinos nem os 8 tipos — por isso não recomendo usá-lo como meta.
 
 **Distribuição do kit completo (67):** 19 PDFs digitais, 7 PDFs digitalizados, 16 imagens, 17 textos e 8 arquivos inválidos. Por desfecho: 29 de rotina, 7 de urgência, 21 de ambiguidade e 10 de erro.
 
-> **Status:** o kit de demonstração já está produzido em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O mapa visual de todos os 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+> **Status: 67 de 67 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 47 casos funcionais × 4 arquivos + 8 negativos técnicos = 196 arquivos. O mapa visual dos 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
 
 ---
 
@@ -290,17 +290,19 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 ```text
 tests/fixtures/
 ├── manifest.csv                  # este catálogo em formato de máquina
-├── README.md                     # regras e convenção de nomes
-└── demo/                         # ✅ kit de demonstração já produzido
-    ├── M-REC-TXT/
-    │   ├── M-REC-TXT.txt
-    │   ├── M-REC-TXT.pdf
-    │   ├── M-REC-TXT.jpg
-    │   └── expected.json
-    └── ... (12 pastas)
+├── README.md                     # regras, convenção de nomes e casos especiais
+├── demo/                         # ✅ 12 casos de pitch
+│   ├── M-REC-TXT/
+│   │   ├── M-REC-TXT.txt
+│   │   ├── M-REC-TXT.pdf
+│   │   ├── M-REC-TXT.jpg
+│   │   └── expected.json
+│   └── ... (12 pastas)
+└── catalogo/                     # ✅ 55 casos restantes
+    ├── README.md
+    ├── A-PAC-IDADE/ ...          # 47 casos funcionais com 4 arquivos cada
+    └── V-GRANDE/                 # 8 negativos técnicos com 1 arquivo inválido cada
 ```
-
-Quando os 55 fixtures restantes forem produzidos, a convenção é `{ID}/{ID}.txt`, `{ID}/{ID}.pdf`, `{ID}/{ID}.jpg` e `expected.json`, sempre dentro de `tests/fixtures/<bloco>/`.
 
 **Nome do arquivo:** use o ID como prefixo e o formato como sufixo: `M-REC-PDF.pdf`, `M-REC-IMG.jpg`, `M-REC-TXT.txt`. O ID já é único e casa com o `manifest.csv` e o `expected/`.
 
@@ -308,7 +310,7 @@ Quando os 55 fixtures restantes forem produzidos, a convenção é `{ID}/{ID}.tx
 
 ## 12. Como produzir (fluxo de 6 passos)
 
-> Já existe gerador no repositório: `python3 tools/gerar_fixtures_demo.py` recria os 12 casos do kit e `python3 tools/gerar_mapa_documentos.py` recria o PDF do mapa.
+> **Os 67 fixtures já estão produzidos.** Para recriar: `python3 tools/gerar_fixtures_demo.py` (12 casos), `python3 tools/gerar_fixtures_catalogo.py` (55 casos) e `python3 tools/gerar_mapa_documentos.py` (este catálogo em PDF).
 
 1. **Escolha a fonte**: escreva o conteúdo clínico em `source/{ID}.md`, com dados fictícios e marca d'água.
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.

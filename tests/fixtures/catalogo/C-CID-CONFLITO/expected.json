@@ -1,0 +1,68 @@
+{
+  "fixture_id": "C-CID-CONFLITO",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "C-CID-CONFLITO/C-CID-CONFLITO.txt",
+    "pdf": "C-CID-CONFLITO/C-CID-CONFLITO.pdf",
+    "jpg": "C-CID-CONFLITO/C-CID-CONFLITO.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_IMAGEM",
+    "especialidade": [
+      "Ortopedia",
+      "Radiologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Marcelo Tavares Lins",
+      "idade": 59
+    },
+    "medico": {
+      "nome": "Dr. André Luiz Barbosa",
+      "crm": {
+        "numero": "165432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Lombalgia mecânica crônica",
+    "cid": "I21.9",
+    "medicamentos": [],
+    "exames": [
+      "Radiografia de tórax"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Conflito explícito entre CID e diagnóstico",
+    "Valores originais preservados (RF-16)",
+    "Revisão humana obrigatória por conflito impeditivo"
+  ],
+  "observacoes": "Exige o dicionário de CID-10 aprovado pela equipe para a regra de compatibilidade.",
+  "conflitos_esperados": [
+    {
+      "tipo": "CID_DIAGNOSTICO",
+      "campos": [
+        "cid_extraido",
+        "diagnostico_principal"
+      ],
+      "gravidade": "ALTA",
+      "descricao": "CID de infarto agudo incompatível com lombalgia"
+    }
+  ]
+}

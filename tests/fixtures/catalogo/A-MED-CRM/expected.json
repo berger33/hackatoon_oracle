@@ -1,0 +1,58 @@
+{
+  "fixture_id": "A-MED-CRM",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "A-MED-CRM/A-MED-CRM.txt",
+    "pdf": "A-MED-CRM/A-MED-CRM.pdf",
+    "jpg": "A-MED-CRM/A-MED-CRM.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_LABORATORIAL",
+    "especialidade": [
+      "Endocrinologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Gustavo Henrique Barros",
+      "idade": 52
+    },
+    "medico": {
+      "nome": "Dr. Marcos Vinícius Tavares",
+      "crm": null
+    },
+    "diagnostico": "Diabetes mellitus tipo 2",
+    "cid": "E11.9",
+    "medicamentos": [],
+    "exames": [
+      "Glicemia de jejum",
+      "Hemoglobina glicada",
+      "Creatinina"
+    ],
+    "urgencia": "NAO",
+    "campos_ausentes": [
+      "medico.crm"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "CRM ausente força revisão",
+    "Nome do médico preservado",
+    "CRM não é inventado"
+  ],
+  "observacoes": ""
+}

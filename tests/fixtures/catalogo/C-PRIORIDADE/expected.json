@@ -1,0 +1,68 @@
+{
+  "fixture_id": "C-PRIORIDADE",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "C-PRIORIDADE/C-PRIORIDADE.txt",
+    "pdf": "C-PRIORIDADE/C-PRIORIDADE.pdf",
+    "jpg": "C-PRIORIDADE/C-PRIORIDADE.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "GUIA_PROCEDIMENTO",
+    "especialidade": [
+      "Cirurgia Vascular"
+    ],
+    "nivel_prioridade": "URGENTE",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Rogério Pinto Machado",
+      "idade": 61
+    },
+    "medico": {
+      "nome": "Dra. Camila Ferreira Lopes",
+      "crm": {
+        "numero": "198765",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Trombose venosa profunda de membro inferior",
+    "cid": "I80.2",
+    "medicamentos": [],
+    "exames": [
+      "Ultrassonografia Doppler venoso"
+    ],
+    "urgencia": "SIM"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_URGENCIA_MEDICA",
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": true
+  },
+  "assercoes": [
+    "Discrepância entre prioridade declarada e sinais textuais",
+    "Sinal crítico prevalece sobre o cabeçalho (RN-03)",
+    "Dois destinos: urgência e revisão"
+  ],
+  "observacoes": "",
+  "conflitos_esperados": [
+    {
+      "tipo": "PRIORIDADE_TEXTO",
+      "campos": [
+        "nivel_prioridade",
+        "texto"
+      ],
+      "gravidade": "ALTA",
+      "descricao": "Cabeçalho ROTINA conflita com texto de urgência"
+    }
+  ]
+}

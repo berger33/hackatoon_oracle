@@ -1,0 +1,18 @@
+{
+  "fixture_id": "V-GRANDE",
+  "documento_ficticio": true,
+  "tipo_de_teste": "negativo_tecnico",
+  "arquivo": "V-GRANDE.pdf",
+  "requisicao": "POST /api/v1/triagens",
+  "erro_esperado": {
+    "http": 413,
+    "codigo_funcional": "ARQUIVO_MAIOR_QUE_LIMITE",
+    "mensagem": "Arquivo de 25 MB: acima do limite configurado (limite ainda pendente na spec)."
+  },
+  "assercoes": [
+    "Rejeitar pelo tamanho antes de qualquer inferência.",
+    "Nenhuma inferência é executada para entrada inválida",
+    "Mensagem de erro é segura, sem stack trace ou segredo"
+  ],
+  "observacoes": "O expected deste fixture é um envelope de erro, não um JSON de triagem."
+}

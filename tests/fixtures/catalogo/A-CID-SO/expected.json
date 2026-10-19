@@ -1,0 +1,60 @@
+{
+  "fixture_id": "A-CID-SO",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "A-CID-SO/A-CID-SO.txt",
+    "pdf": "A-CID-SO/A-CID-SO.pdf",
+    "jpg": "A-CID-SO/A-CID-SO.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_IMAGEM",
+    "especialidade": [
+      "Ortopedia",
+      "Radiologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Celso Ribeiro Nunes",
+      "idade": 57
+    },
+    "medico": {
+      "nome": "Dr. André Luiz Barbosa",
+      "crm": {
+        "numero": "165432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Gonartrose à direita",
+    "cid": null,
+    "medicamentos": [],
+    "exames": [
+      "Radiografia de joelho direito"
+    ],
+    "urgencia": "NAO",
+    "campos_ausentes": [
+      "cid_extraido"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Diagnóstico presente mantém o fluxo automático",
+    "CID ausente fica null e NÃO força revisão (RF-21)",
+    "Status PROCESSADO"
+  ],
+  "observacoes": ""
+}

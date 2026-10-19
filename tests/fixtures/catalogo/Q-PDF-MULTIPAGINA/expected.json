@@ -1,0 +1,57 @@
+{
+  "fixture_id": "Q-PDF-MULTIPAGINA",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "Q-PDF-MULTIPAGINA/Q-PDF-MULTIPAGINA.txt",
+    "pdf": "Q-PDF-MULTIPAGINA/Q-PDF-MULTIPAGINA.pdf",
+    "jpg": "Q-PDF-MULTIPAGINA/Q-PDF-MULTIPAGINA.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RELATORIO_ALTA_INTERNACAO",
+    "especialidade": [
+      "Infectologia",
+      "Pneumologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Iracema Barbosa Teixeira",
+      "idade": 74
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Sepse de foco pulmonar",
+    "cid": "A41.9",
+    "medicamentos": [
+      "Amoxicilina + clavulanato 875/125 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "PDF com 6+ páginas é aceito",
+    "Conteúdo completo é considerado na extração",
+    "Limite de páginas ainda pendente na spec (§15)"
+  ],
+  "observacoes": ""
+}

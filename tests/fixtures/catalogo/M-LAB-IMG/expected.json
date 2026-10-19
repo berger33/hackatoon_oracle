@@ -1,0 +1,58 @@
+{
+  "fixture_id": "M-LAB-IMG",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "M-LAB-IMG/M-LAB-IMG.txt",
+    "pdf": "M-LAB-IMG/M-LAB-IMG.pdf",
+    "jpg": "M-LAB-IMG/M-LAB-IMG.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_LABORATORIAL",
+    "especialidade": [
+      "Hematologia",
+      "Clínica Médica"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Sônia Regina Duarte",
+      "idade": 55
+    },
+    "medico": {
+      "nome": "Dr. Marcos Vinícius Tavares",
+      "crm": {
+        "numero": "176543",
+        "uf": "MG"
+      }
+    },
+    "diagnostico": "Dislipidemia mista",
+    "cid": "E78.2",
+    "medicamentos": [],
+    "exames": [
+      "Perfil lipídico",
+      "Glicemia de jejum"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Foto de laudo laboratorial aceita",
+    "Cinco analitos extraídos com unidade e referência",
+    "Destino PRONTUARIO_ELETRONICO sem revisão"
+  ],
+  "observacoes": ""
+}

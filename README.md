@@ -88,7 +88,12 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 │   └── fixtures/
 │       ├── README.md
 │       ├── manifest.csv                         # 67 fixtures com resultado esperado
-│       └── demo/                                # 12 casos prontos (TXT + PDF + JPG + expected.json)
+│       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
+│       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
+├── tools/
+│   ├── gerar_fixtures_demo.py
+│   ├── gerar_fixtures_catalogo.py
+│   └── gerar_mapa_documentos.py
 ├── README.md
 └── .env.example
 ```
@@ -99,7 +104,8 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 
 - [Mapa de documentos de teste (PDF)](docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) — visão visual de cobertura, fluxo e catálogo completo.
 - [Catálogo de documentos de teste](docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) — 12 para demonstrar, 57 para testar de verdade, 67 para cobertura completa.
-- [Kit de demonstração](tests/fixtures/demo/README.md) — os 12 casos já produzidos em TXT, PDF e JPG.
+- [Kit de demonstração](tests/fixtures/demo/README.md) — os 12 casos de pitch em TXT, PDF e JPG.
+- [Catálogo completo de fixtures](tests/fixtures/catalogo/README.md) — os 55 casos restantes, incluindo negativos técnicos.
 - [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.
 - [Índice de documentos](docs/README.md)
 - [Modelo de documento](docs/modelo-documento.md)
