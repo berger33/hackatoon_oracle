@@ -1,0 +1,48 @@
+MEDIFLOW — PACOTE COMPLETO DE DOCUMENTOS E FIXTURES
+Hackathon ONE G10 · Oracle Next Education & Alura
+Gerado em 19/10/2026
+
+O QUE TEM NESTE ZIP
+-------------------
+README.md                     Visão do produto, arquitetura, regras e critérios de aceite
+docs/
+  README.md                   Índice da documentação
+  modelo-documento.md         Modelo base para novos documentos
+  testes/
+    CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
+    Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
+tests/fixtures/
+  manifest.csv                67 fixtures em formato de máquina
+  README.md                   Regras, convenções e casos especiais
+  demo/                       12 casos de pitch (TXT + PDF + JPG + expected.json)
+  catalogo/                   55 casos restantes (inclui os 8 negativos técnicos)
+tools/
+  gerar_fixtures_demo.py      Recria os 12 casos de demonstração
+  gerar_fixtures_catalogo.py  Recria os 55 casos restantes
+  gerar_mapa_documentos.py    Recria o PDF do mapa
+
+PDFs de origem (base documental do hackathon)
+  Projeto_oracle.pdf
+  MediFlow_-_Análise_de_Requisitos_v1.1.pdf
+  MediFlow_Especificacao_Funcional_v1.0.pdf
+
+COMO USAR
+---------
+1. Envie {ID}.txt, {ID}.pdf e {ID}.jpg como três triagens independentes.
+2. Compare a resposta com expected/{ID}.json (no mesmo diretório do fixture).
+3. Compare por asserção, nunca por score exato do modelo.
+4. Nos casos B-084, B-085 e S-URG-SCORE, ative o modo de fixture para forçar os scores.
+
+IMPORTANTE
+----------
+Todos os documentos são FICTÍCIOS. Nomes, CRMs, CID e resultados não correspondem
+a pessoa real. Nenhum dado de paciente real é usado. Nenhuma credencial está no pacote.
+
+CASOS ESPECIAIS
+---------------
+V-GRANDE.pdf         25 MB, testa limite de tamanho
+Q-PDF-SENHA.pdf      protegido por AES-256; senha de teste: mediflow123
+Q-PDF-CORROMPIDO.pdf truncado em 40% do tamanho original
+Q-PDF-MULTIPAGINA    7 páginas
+Q-FOTO-ROTACAO       imagem e PDF girados 90 graus
+M-NID-* e Q-FOTO-DESFOCO  documentos ilegíveis de propósito
