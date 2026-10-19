@@ -1,0 +1,59 @@
+{
+  "fixture_id": "A-PAC-NOME",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "A-PAC-NOME/A-PAC-NOME.txt",
+    "pdf": "A-PAC-NOME/A-PAC-NOME.pdf",
+    "jpg": "A-PAC-NOME/A-PAC-NOME.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RECEITUARIO_MEDICO",
+    "especialidade": [
+      "Clínica Médica"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": null,
+      "idade": 44
+    },
+    "medico": {
+      "nome": "Dra. Camila Ferreira Lopes",
+      "crm": {
+        "numero": "198765",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Faringoamigdalite bacteriana",
+    "cid": "J03.9",
+    "medicamentos": [
+      "Amoxicilina 500 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO",
+    "campos_ausentes": [
+      "paciente.nome"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Ausência de nome do paciente força revisão",
+    "Demais campos permanecem preenchidos e não são inventados",
+    "Status EM_REVISAO e destino FILA_REVISAO_HUMANA"
+  ],
+  "observacoes": ""
+}

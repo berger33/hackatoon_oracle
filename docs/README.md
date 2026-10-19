@@ -6,6 +6,7 @@ Esta pasta é o espaço de trabalho para os documentos gerados durante o hackath
 
 | Documento | Conteúdo |
 | --- | --- |
+| [Mapa de documentos de teste (PDF)](testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) | Mapa visual: cobertura, fluxo de decisão, kit pronto e catálogo dos 67 fixtures |
 | [Catálogo de documentos de teste](testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) | Quantos e quais fixtures o MediFlow precisa para testar tipos, formatos, regras e bordas |
 | [Modelo de documento](modelo-documento.md) | Estrutura base para novos documentos |
 

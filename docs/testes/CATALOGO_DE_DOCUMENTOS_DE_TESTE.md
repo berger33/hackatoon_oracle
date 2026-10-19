@@ -22,6 +22,8 @@ Você não precisa de um documento por especialidade médica. Precisa de **um do
 
 **Distribuição do kit completo (67):** 19 PDFs digitais, 7 PDFs digitalizados, 16 imagens, 17 textos e 8 arquivos inválidos. Por desfecho: 29 de rotina, 7 de urgência, 21 de ambiguidade e 10 de erro.
 
+> **Status:** o kit de demonstração já está produzido em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O mapa visual de todos os 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+
 ---
 
 ## 2. O que o sistema precisa avaliar
@@ -288,23 +290,25 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 ```text
 tests/fixtures/
 ├── manifest.csv                  # este catálogo em formato de máquina
-├── expected/                     # 1 JSON de saída esperada por fixture
-│   ├── M-REC-PDF.json
-│   └── ...
-├── source/                       # fonte editável (md/docx) que gera PDF e imagem
-│   ├── M-REC-PDF.md
-│   └── ...
-├── pdf/                          # PDFs digitais e digitalizados
-├── img/                          # JPG/PNG
-├── txt/                          # documentos de texto
-└── invalid/                      # DOCX, ZIP, 0 KB, MIME falso, 25 MB
+├── README.md                     # regras e convenção de nomes
+└── demo/                         # ✅ kit de demonstração já produzido
+    ├── M-REC-TXT/
+    │   ├── M-REC-TXT.txt
+    │   ├── M-REC-TXT.pdf
+    │   ├── M-REC-TXT.jpg
+    │   └── expected.json
+    └── ... (12 pastas)
 ```
+
+Quando os 55 fixtures restantes forem produzidos, a convenção é `{ID}/{ID}.txt`, `{ID}/{ID}.pdf`, `{ID}/{ID}.jpg` e `expected.json`, sempre dentro de `tests/fixtures/<bloco>/`.
 
 **Nome do arquivo:** use o ID como prefixo e o formato como sufixo: `M-REC-PDF.pdf`, `M-REC-IMG.jpg`, `M-REC-TXT.txt`. O ID já é único e casa com o `manifest.csv` e o `expected/`.
 
 ---
 
 ## 12. Como produzir (fluxo de 6 passos)
+
+> Já existe gerador no repositório: `python3 tools/gerar_fixtures_demo.py` recria os 12 casos do kit e `python3 tools/gerar_mapa_documentos.py` recria o PDF do mapa.
 
 1. **Escolha a fonte**: escreva o conteúdo clínico em `source/{ID}.md`, com dados fictícios e marca d'água.
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.
