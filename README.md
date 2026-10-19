@@ -1,144 +1,136 @@
-# hackatoon_oracle
+# MediFlow
 
-> Projeto de hackathon construído sobre **Oracle Cloud Infrastructure (OCI)**.
+> Agente autônomo para triagem, extração e roteamento de documentos clínicos.
+> **Hackathon ONE G10 — Oracle Next Education & Alura**
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Status](https://img.shields.io/badge/status-especifica%C3%A7%C3%A3o-definida-yellow)
 ![Cloud](https://img.shields.io/badge/cloud-Oracle%20Cloud-red)
-![Docs](https://img.shields.io/badge/docs-dispon%C3%ADveis-blue)
+![Stack](https://img.shields.io/badge/stack-Gemini%20%C2%B7%20LangGraph%20%C2%B7%20FastAPI%20%C2%B7%20React-blue)
 
 ## Sobre o projeto
 
-O **hackatoon_oracle** é uma solução desenvolvida para hackathon com foco em Oracle Cloud Infrastructure. O projeto busca resolver o seguinte problema:
+Hospitais, laboratórios e operadoras perdem milhares de horas lendo laudos, receitas e guias manualmente para digitar dados em sistemas legados. O processo é lento, caro e sujeito a erros que atrasam autorizações e colocam pacientes em risco.
 
-> ✏️ **[Descreva em 1–2 frases o problema que o projeto resolve e para quem.]**
+O **MediFlow** recebe documentos clínicos e administrativos em **PDF, imagem ou texto**, descobre sozinho o tipo do documento, extrai os dados clínicos, avalia a confiança e **roteia para o setor correto**. Quando há dúvida ou risco, o caso vai para revisão humana com o motivo registrado.
 
-E entrega como solução:
+> A solução é apoio à triagem documental. Não substitui diagnóstico, prescrição, decisão clínica ou auditoria profissional.
 
-> ✏️ **[Descreva em 1–2 frases como a solução funciona e qual é o principal benefício.]**
+## Como o agente funciona
 
-## Problema
+1. **Recebe** o documento (PDF digital, PDF digitalizado, imagem ou texto) e valida formato, tamanho e campos.
+2. **Classifica** o tipo, a especialidade e a prioridade (`URGENTE`, `ROTINA` ou `NAO_IDENTIFICADA`).
+3. **Extrai** paciente, médico/CRM, diagnóstico/CID, medicamentos, exames e sinais de urgência — sem inventar dados ausentes.
+4. **Avalia** consistência, conflitos e a nota combinada de confiança: `min(score_classificação, score_extração)`.
+5. **Decide** o destino no grafo condicional (LangGraph) e aciona revisão humana e alerta quando necessário.
+6. **Persiste** documento e resultado no OCI Object Storage e devolve a resposta em JSON validado.
 
-✏️ **Contexto:** quem sofre com o problema hoje, com que frequência e qual é o custo (tempo, dinheiro, risco) de continuar assim.
+## Regras de decisão
 
-- **Público-alvo:** [ex.: pequenas empresas, equipes de operações, estudantes]
-- **Dor principal:** [o que hoje é manual, lento ou caro]
-- **Soluções atuais:** [como as pessoas resolvem hoje e por que isso não basta]
+| Situação | Destino | Revisão humana | Alerta |
+| --- | --- | --- | --- |
+| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Sim | Sim |
+| Score combinado < 0,85 | `FILA_REVISAO_HUMANA` | Sim | Não, salvo urgência |
+| Urgência + ambiguidade/ilegibilidade | `FILA_URGENCIA_MEDICA` + `FILA_REVISAO_HUMANA` | Sim | Sim |
+| Receita de rotina | `FARMACIA_HOSPITALAR` | Não | Não |
+| Guia de procedimento de rotina | `AUDITORIA_AUTORIZACOES` | Não | Não |
+| Laudo, alta ou atestado de rotina | `PRONTUARIO_ELETRONICO` | Não | Não |
+| Tipo desconhecido ou fora da taxonomia | `FILA_REVISAO_HUMANA` | Sim | Só se urgente |
 
-## Solução
-
-✏️ **Proposta de valor:** [por que esta solução é melhor do que as alternativas].
-
-| Recurso | Descrição |
-| --- | --- |
-| [Recurso 1] | [O que faz e qual problema resolve] |
-| [Recurso 2] | [O que faz e qual problema resolve] |
-| [Recurso 3] | [O que faz e qual problema resolve] |
-
-## Arquitetura
-
-```text
-┌─────────────┐     HTTPS      ┌─────────────┐      ┌──────────────────────┐
-│  Frontend   │ ─────────────► │  API/Backend│ ───► │  Serviços OCI        │
-│  (web/app)  │ ◄───────────── │             │      │  (dados, IA, storage)│
-└─────────────┘                └─────────────┘      └──────────────────────┘
-```
-
-✏️ **Fluxo resumido:** [descreva o caminho de uma requisição, do usuário até o dado/serviço na OCI].
-
-## Serviços OCI previstos
-
-> Marque os serviços que o projeto realmente usa. Os itens abaixo são sugestões comuns em projetos de hackathon.
-
-- [ ] **OCI Generative AI** — [ex.: geração de respostas, resumos ou classificações]
-- [ ] **Autonomous Database** — [ex.: persistência dos dados da aplicação]
-- [ ] **Object Storage** — [ex.: armazenamento de arquivos e documentos]
-- [ ] **Functions** — [ex.: processamento sob demanda]
-- [ ] **Container Engine for Kubernetes (OKE)** — [ex.: deploy dos serviços]
-- [ ] **API Gateway** — [ex.: exposição e controle das APIs]
-- [ ] **Identity and Access Management (IAM)** — [ex.: autenticação e permissões]
+**Campos cuja ausência obriga revisão:** nome do paciente, idade, nome do médico solicitante, CRM e diagnóstico/hipótese. A ausência de CID-10, medicamentos ou exames **não** obriga revisão por si só.
 
 ## Stack
 
 | Camada | Tecnologia |
 | --- | --- |
-| Frontend | ✏️ [ex.: React, Next.js] |
-| Backend | ✏️ [ex.: Node.js, Python/FastAPI] |
-| Banco de dados | ✏️ [ex.: Autonomous Database, PostgreSQL] |
-| IA / Dados | ✏️ [ex.: OCI Generative AI, modelos próprios] |
-| Infraestrutura | Oracle Cloud Infrastructure (OCI) |
+| LLM multimodal | Google Gemini |
+| Orquestração | LangGraph |
+| Validação | Pydantic |
+| API | FastAPI |
+| Interface | React |
+| Armazenamento | OCI Object Storage (Always Free) |
+| Deploy (opcional) | OCI Compute (Always Free) |
 
-## Como executar
+## Arquitetura
 
-### Pré-requisitos
-
-- [ ] Conta na Oracle Cloud (OCI)
-- [ ] Git
-- [ ] ✏️ [runtime da stack, ex.: Node.js 20+ / Python 3.12+]
-- [ ] ✏️ [Docker, caso o projeto use containers]
-
-### Passos
-
-```bash
-# 1. Clone o repositório
-git clone https://github.com/berger33/hackatoon_oracle.git
-cd hackatoon_oracle
-
-# 2. Configure as variáveis de ambiente
-cp .env.example .env
-# edite o .env com as credenciais da sua tenancy OCI
-
-# 3. Instale as dependências
-✏️ [ex.: npm install / pip install -r requirements.txt]
-
-# 4. Rode a aplicação
-✏️ [ex.: npm run dev / uvicorn app:main --reload]
+```text
+┌──────────────┐     multipart/JSON      ┌──────────────────┐
+│  React       │ ──────────────────────► │  FastAPI         │
+│  triagem     │ ◄────────────────────── │  /api/v1/triagens│
+└──────────────┘     202 + polling       └────────┬─────────┘
+                                                  │
+                                       ┌──────────▼──────────┐
+                                       │  LangGraph          │
+                                       │  classificar →      │
+                                       │  extrair → avaliar  │
+                                       │  → rotear           │
+                                       └──────────┬──────────┘
+                                                  │
+                    ┌─────────────────────────────┼─────────────────────────────┐
+                    ▼                             ▼                             ▼
+          ┌──────────────────┐          ┌──────────────────┐          ┌──────────────────┐
+          │ Gemini           │          │ OCI Object       │          │ Filas lógicas    │
+          │ (multimodal)     │          │ Storage          │          │ (simuladas)      │
+          └──────────────────┘          └──────────────────┘          └──────────────────┘
 ```
 
-> Os comandos acima são um ponto de partida. Atualize esta seção conforme a stack for definida.
-
-### Variáveis de ambiente
-
-| Variável | Descrição | Obrigatória |
-| --- | --- | --- |
-| `OCI_TENANCY_OCID` | OCID da tenancy | Sim |
-| `OCI_USER_OCID` | OCID do usuário | Sim |
-| `OCI_FINGERPRINT` | Fingerprint da chave de API | Sim |
-| `OCI_PRIVATE_KEY_PATH` | Caminho da chave privada `.pem` | Sim |
-| `OCI_REGION` | Região da OCI (ex.: `sa-saopaulo-1`) | Sim |
-| `✏️ [OUTRA_VAR]` | [descrição] | [Sim/Não] |
+O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accepted` com `documento_id`, e o cliente consulta `GET /api/v1/triagens/{id}` até o estado terminal (`PROCESSADO` ou `EM_REVISAO`).
 
 ## Estrutura do repositório
 
 ```text
 .
-├── docs/                     # Documentos do projeto
-│   ├── README.md             # Índice da documentação
-│   └── modelo-documento.md   # Modelo base para novos documentos
-├── ✏️ src/                   # Código-fonte (criar quando a stack for definida)
-├── .env.example              # Exemplo de variáveis de ambiente (criar)
-└── README.md
+├── docs/
+│   ├── README.md
+│   ├── modelo-documento.md
+│   └── testes/
+│       └── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # quantos e quais fixtures criar
+├── tests/
+│   └── fixtures/
+│       ├── README.md
+│       └── manifest.csv                         # 67 fixtures com resultado esperado
+├── README.md
+└── .env.example
 ```
 
-## Roadmap
-
-- [x] Estrutura inicial de documentação
-- [ ] Definição do problema e da proposta de valor
-- [ ] Protótipo navegável / MVP
-- [ ] Integração com os serviços OCI
-- [ ] Deploy na OCI
-- [ ] Roteiro e ensaio do pitch final
-
-## Equipe
-
-| Nome | Papel | GitHub |
-| --- | --- | --- |
-| ✏️ [Nome] | [Papel] | [@usuario](https://github.com/usuario) |
+> O código da aplicação será adicionado nas próximas etapas. A especificação funcional está na base documental do projeto (Google Drive) e o catálogo de testes já está versionado aqui.
 
 ## Documentação
 
+- [Catálogo de documentos de teste](docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) — 12 para demonstrar, 57 para testar de verdade, 67 para cobertura completa.
+- [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.
 - [Índice de documentos](docs/README.md)
 - [Modelo de documento](docs/modelo-documento.md)
 
+## Critérios de aceite do MVP
+
+- [ ] Texto, pelo menos um PDF e uma imagem aceitos com resultado coerente
+- [ ] Documento padrão classificado, extraído e roteado para a rotina correta
+- [ ] Documento urgente detectado, roteado para a fila urgente com alerta simulado
+- [ ] Documento ambíguo/ilegível em revisão humana, sem dado inventado
+- [ ] Ausência dos 5 campos obrigatórios força revisão
+- [ ] Submissão `202` + consulta por `documento_id` + histórico ordenado
+- [ ] Score < 0,85 revisa; score = 0,85 não revisa por esse critério
+- [ ] Documento e resultado persistidos no OCI, com caminho lógico informado
+- [ ] Interface mostra estados, urgência, revisão e falhas sem expor segredos
+- [ ] README com arquitetura e demonstração dos 3 cenários
+
+## Configuração
+
+Copie `.env.example` para `.env` e preencha as credenciais da tenancy OCI. **Nunca comite o `.env`.**
+
+```bash
+cp .env.example .env
+```
+
+## Equipe
+
+| Nome | Papel |
+| --- | --- |
+| A definir | Product / Pitch |
+| A definir | Agentes e IA |
+| A definir | Back-end e OCI |
+| A definir | Front-end e QA |
+
 ## Licença
 
-✏️ **A definir.** Adicione um arquivo `LICENSE` na raiz quando a licença for escolhida.
+A definir.
