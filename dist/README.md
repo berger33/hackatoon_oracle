@@ -1,6 +1,6 @@
 # Pacote para download
 
-Arquivo: `hackatoon_oracle-mediflow-completo.zip` (14 MB · 344 arquivos)
+Arquivo: `hackatoon_oracle-mediflow-completo.zip` (14 MB · 276 arquivos)
 
 Conteúdo: README, documentação, os 67 fixtures (TXT + PDF + JPG + `expected.json`, em pastas com nome por extenso como `Matriz_Guia_Imagem`),
 os 3 PDFs de origem do hackathon, os geradores em `tools/` e o `LEIA-ME.txt`.
@@ -8,7 +8,7 @@ os 3 PDFs de origem do hackathon, os geradores em `tools/` e o `LEIA-ME.txt`.
 **Download direto:**
 
 ```text
-https://github.com/berger33/hackatoon_oracle/raw/arena/9bba261b-hackatoon-oracle/dist/hackatoon_oracle-mediflow-completo.zip
+https://github.com/berger33/hackatoon_oracle/raw/main/dist/hackatoon_oracle-mediflow-completo.zip
 ```
 
 Este ZIP é um artefato de entrega gerado a partir do repositório. Para recriá-lo:
@@ -17,5 +17,5 @@ Este ZIP é um artefato de entrega gerado a partir do repositório. Para recriá
 python3 tools/gerar_fixtures_demo.py
 python3 tools/gerar_fixtures_catalogo.py
 python3 tools/gerar_mapa_documentos.py
-zip -r -9 dist/hackatoon_oracle-mediflow-completo.zip . -x ".git/*" -x "dist/*" -x "*/__pycache__/*"
+python3 tools/gerar_pacote.py    # ZIP com nomes UTF-8 e datas fixas; atualiza a contagem acima
 ```

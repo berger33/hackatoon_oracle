@@ -150,7 +150,7 @@ referência do que se espera extrair:
 - campo ilegível aparece ilegível (`4?_ anos — mancha sobre o campo`), e a mancha na imagem cobre exatamente esse campo;
 - **todo CRM é `SP`**, porque o hospital é paulista.
 
-O verificador checa os quatro pontos caso a caso (`== 6. Coerência clínica` em
+O verificador checa os quatro pontos caso a caso (`== 5. Coerência clínica` em
 `tools/verificar_consistencia.py`), então uma edição futura que quebre a
 coerência falha o build em vez de virar um teste enganoso.
 
@@ -202,7 +202,7 @@ Resultado atual:
 
 ```text
 tests/testar_contrato.py        → 67 fixtures: 57 funcionais + 2 erros de leitura + 8 negativos, 0 falhas
-tools/verificar_consistencia.py → 67 pastas, 0 erros, 0 avisos
+tools/verificar_consistencia.py → 67 pastas (59 com 4 arquivos + 8 com 2), 0 erros, 0 avisos
 ```
 
 ---

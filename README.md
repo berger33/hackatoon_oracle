@@ -90,7 +90,8 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
 │       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 67 casos, bloco por bloco
-│       └── Mapa_de_Documentos_de_Teste_MediFlow.pdf
+│       ├── Mapa_de_Documentos_de_Teste_MediFlow.pdf
+│       └── AUDITORIA_2026-10-20.md              # auditoria de consistência: CRM-SP, datas, pacote, verificadores
 ├── tests/
 │   ├── testar_contrato.py                       # valida os 67 expected.json no contrato
 │   └── fixtures/
@@ -103,7 +104,8 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   ├── gerar_fixtures_demo.py                   # recria os 12 casos
 │   ├── gerar_fixtures_catalogo.py               # recria os 55 casos
 │   ├── gerar_mapa_documentos.py                 # recria o PDF do mapa
-│   └── verificar_consistencia.py                # estrutura, manifesto, legibilidade, duplicidade
+│   ├── gerar_pacote.py                          # gera o ZIP de entrega (nomes UTF-8, datas fixas)
+│   └── verificar_consistencia.py                # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
 ├── dist/
 │   └── hackatoon_oracle-mediflow-completo.zip   # pacote pronto para download
 └── README.md
@@ -115,7 +117,7 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pillow
 
 python3 tests/testar_contrato.py             # 67/67 expected.json válidos e estáveis
-python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, duplicidade
+python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
 ```
 
 Para regerar os documentos (só necessário se mudar um caso):

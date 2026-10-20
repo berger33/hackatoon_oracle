@@ -25,7 +25,8 @@ tools/
   gerar_fixtures_demo.py      Recria os 12 casos de demonstração
   gerar_fixtures_catalogo.py  Recria os 55 casos restantes
   gerar_mapa_documentos.py    Recria o PDF do mapa
-  verificar_consistencia.py   Audita estrutura, schema, manifesto e duplicidade
+  verificar_consistencia.py   Audita estrutura, schema, manifesto, CRM-SP e duplicidade
+  gerar_pacote.py            Gera este ZIP (nomes UTF-8, datas fixas)
 requirements.txt              pydantic, reportlab, pymupdf, pillow
 
 PDFs de origem (base documental do hackathon)
@@ -46,7 +47,7 @@ VERIFICAR (opcional, exige Python 3.11+)
 ---------------------------------------
   python3 -m pip install -r requirements.txt
   python3 tests/testar_contrato.py          # 67/67 no contrato
-  python3 tools/verificar_consistencia.py   # estrutura, manifesto, duplicidade
+  python3 tools/verificar_consistencia.py   # estrutura, manifesto, CRM-SP e duplicidade
 
 Os nomes das pastas não usam abreviações: Bloco_Assunto_Detalhe, por exemplo
 Matriz_Guia_Imagem (bloco Matriz, tipo guia, formato imagem). Os nove blocos são

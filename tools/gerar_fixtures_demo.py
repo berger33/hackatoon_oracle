@@ -12,6 +12,7 @@ Uso:
 """
 import json
 import os
+import random
 import sys
 import tempfile
 from io import BytesIO
@@ -30,6 +31,33 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "tests/fixtures/demo")
 
 from contrato_fixtures import expected_json  # noqa: E402
+
+
+def fixa_id_pdf(path, semente):
+    """O MuPDF grava um /ID aleatório a cada save. Trocamos por um valor derivado do
+    nome do caso (mesmo tamanho, então o xref não muda) para o build ser reprodutível."""
+    import hashlib
+    import re
+    with open(path, "rb") as fh:
+        dados = fh.read()
+    h = hashlib.md5(semente.encode("utf-8")).hexdigest().upper().encode("ascii")
+    dados = re.sub(rb"/ID\[<[0-9A-Fa-f]{32}><[0-9A-Fa-f]{32}>\]",
+                   b"/ID[<" + h + b"><" + h + b">]", dados)
+    with open(path, "wb") as fh:
+        fh.write(dados)
+
+
+def ruido_deterministico(size, sigma, seed):
+    """Ruído gaussiano (média 128) com semente fixa.
+
+    Image.effect_noise usa o rand() da libc, sem semente: o resultado dependia da
+    ordem dos casos gerados no mesmo processo e o build não era reprodutível.
+    Cada chamada tem a sua própria semente, então rodar de novo não muda um byte.
+    """
+    rng = random.Random(seed)
+    w, h = size
+    dados = bytes(min(255, max(0, int(round(rng.gauss(128, sigma))))) for _ in range(w * h))
+    return Image.frombytes("L", size, dados)
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"
 pdfmetrics.registerFont(TTFont("DejaVu", f"{FONT_DIR}/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DejaVu-Bold", f"{FONT_DIR}/DejaVuSans-Bold.ttf"))
@@ -243,7 +271,7 @@ def render_jpg(pdf_path, jpg_path, degrade=False):
         body = body.filter(ImageFilter.GaussianBlur(4.6))
         body = ImageEnhance.Contrast(body).enhance(0.62)
         body = ImageEnhance.Brightness(body).enhance(0.98)
-        noise = Image.effect_noise(body.size, 30).convert("L")
+        noise = ruido_deterministico(body.size, 30, 5)
         body = Image.composite(body, Image.new("RGB", body.size, (240, 240, 238)),
                                noise.point(lambda px: 26 if px > 138 else 0))
         img = img.copy()
@@ -273,6 +301,7 @@ def make_degraded(case, pdf_path, jpg_path):
     page = doc.new_page(width=W, height=H)
     page.insert_image(fitz.Rect(0, 0, W, H), filename=tmp_jpg)
     doc.save(pdf_path, deflate=True)
+    fixa_id_pdf(pdf_path, case["id"])
     doc.close()
     os.unlink(tmp_pdf)
     os.unlink(tmp_jpg)

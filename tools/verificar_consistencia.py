@@ -3,14 +3,14 @@
 
 Checa, para os 67 casos:
   1. estrutura das pastas (4 arquivos nos funcionais, 2 nos negativos técnicos)
-  2. nome da pasta = nome dos arquivos = fixture_id do expected.json
-  3. expected.json com o schema `mediflow.fixture/2` e os enums do domínio
-     (importados de `app/models.py`, para não haver duas listas)
-  4. manifest.csv x expected.json (tipo, status, revisão, notificação, destinos)
-  5. arquivos realmente legíveis (PDF abre, JPG abre, TXT tem marca de fictício)
-  6. coerência clínica: o que o expected diz ter sido extraído existe mesmo no TXT
+  2. nome da pasta = nome dos arquivos = fixture_id do expected.json; schema
+     `mediflow.fixture/2` e enums do domínio (importados de `app/models.py`,
+     para não haver duas listas)
+  3. manifest.csv x expected.json (tipo, status, revisão, notificação, destinos)
+  4. arquivos realmente legíveis (PDF abre, JPG abre, TXT tem marca de fictício)
+  5. coerência clínica: o que o expected diz ter sido extraído existe mesmo no TXT
      (paciente, médico, CRM, diagnóstico, CID, idade) e todo CRM é da UF do hospital
-  7. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
+  6. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
 
 A validação profunda do payload (ponto fixo das regras) fica em
 `tests/testar_contrato.py`.
@@ -41,6 +41,11 @@ DESTINOS = {x.value for x in Destino}
 SCHEMA = "mediflow.fixture/2"
 #: Nas 10 fixtures de erro não há tipo, destino nem revisão a comparar.
 NA = "-"
+#: Arquivos grandes que o .gitignore deixa fora do Git (regerados por script).
+#: Se faltarem, é aviso — não erro — e o verificador diz como gerá-los.
+NAO_VERSIONADOS = {
+    "Validacao_ArquivoGrande": "tools/gerar_fixtures_catalogo.py",
+}
 #: O Hospital Aurora fica em São Paulo: todo médico que assina tem CRM-SP.
 #: (Um CRM de outra UF num hospital paulista é erro de domínio, não variação.)
 UF_DO_HOSPITAL = "SP"
@@ -87,6 +92,7 @@ def normaliza_texto(path):
 def verifica_estrutura(manifest, quiet):
     print("\n== 1. Estrutura das pastas")
     total = {4: 0, 2: 0}
+    tipos = {}
     vistos = set()
     for kind, fid, d in pastas():
         if fid in vistos:
@@ -95,9 +101,18 @@ def verifica_estrutura(manifest, quiet):
         arquivos = sorted(os.listdir(d))
         negativo = fid.startswith("Validacao_")
         esperado = 2 if negativo else 4
-        if len(arquivos) != esperado:
+        if fid in NAO_VERSIONADOS and arquivos == ["expected.json"]:
+            add_aviso(f"{kind}/{fid}: arquivo ausente (no .gitignore); rode {NAO_VERSIONADOS[fid]}")
+        elif len(arquivos) != esperado:
             add_erro(f"{kind}/{fid}: {len(arquivos)} arquivos (esperado {esperado}): {arquivos}")
         total[esperado] = total.get(esperado, 0) + 1
+        if "expected.json" in arquivos:
+            try:
+                with open(os.path.join(d, "expected.json"), encoding="utf-8") as fh:
+                    t = json.load(fh).get("tipo_de_teste", "?")
+            except (OSError, ValueError):
+                t = "?"
+            tipos[t] = tipos.get(t, 0) + 1
 
         if not negativo:
             for suf in (".txt", ".pdf", ".jpg"):
@@ -117,11 +132,12 @@ def verifica_estrutura(manifest, quiet):
         if fid not in vistos:
             add_erro(f"{fid}: está no manifest.csv mas não tem pasta")
     info["pastas"] = len(vistos)
-    info["funcionais"] = total.get(4, 0)
+    info["tipos"] = tipos
     info["negativos"] = total.get(2, 0)
     if not quiet:
-        print(f"   {len(vistos)} pastas · {total.get(4,0)} funcionais (4 arquivos) · "
-              f"{total.get(2,0)} negativos (2 arquivos)")
+        print(f"   {len(vistos)} pastas · {total.get(4,0)} com 4 arquivos · "
+              f"{total.get(2,0)} com 2 arquivos (negativos técnicos)")
+        print("   por tipo_de_teste: " + ", ".join(f"{k}={v}" for k, v in sorted(tipos.items())))
 
 
 def verifica_expected(manifest, quiet):
@@ -298,7 +314,7 @@ def normaliza(s):
 
 def verifica_coerencia_clinica(quiet):
     """O TXT é a fonte dos dados extraídos: o que o expected afirma tem de estar lá."""
-    print("\n== 6. Coerência clínica (expected x TXT)")
+    print("\n== 5. Coerência clínica (expected x TXT)")
     conferidos = 0
     for kind, fid, d in pastas():
         e = json.load(open(os.path.join(d, "expected.json"), encoding="utf-8"))
@@ -368,7 +384,7 @@ def verifica_coerencia_clinica(quiet):
 
 
 def verifica_duplicidade(quiet):
-    print("\n== 7. Duplicidade e redundância")
+    print("\n== 6. Duplicidade e redundância")
     arquivos = sorted(p for p in glob.glob(os.path.join(BASE, "*/*/*")) if os.path.isfile(p))
     hashes = {}
     for p in arquivos:
@@ -433,8 +449,9 @@ def main():
     verifica_duplicidade(quiet)
 
     print("\n== Resumo")
-    print(f"   pastas: {info.get('pastas')} "
-          f"({info.get('funcionais')} funcionais + {info.get('negativos')} negativos)")
+    tipos = info.get("tipos", {})
+    detalhe = " + ".join(f"{v} {k}" for k, v in sorted(tipos.items()))
+    print(f"   pastas: {info.get('pastas')} ({detalhe})")
     print(f"   erros: {len(erros)}")
     print(f"   avisos: {len(avisos)}")
     for e in erros:
