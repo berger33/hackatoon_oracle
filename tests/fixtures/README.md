@@ -28,6 +28,59 @@ Cada pasta de fixture contém:
 
 Os 8 negativos do bloco V são a exceção: têm **um único arquivo inválido** (`V-DOCX.docx`, `V-VAZIO.pdf`, `V-GRANDE.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
 
+## Como ler os nomes (a letra é o bloco de teste)
+
+O primeiro caractere de cada ID indica **o que aquele grupo de documentos prova**. Não é ordem alfabética nem tipo de arquivo: é a categoria do teste.
+
+| Bloco | Quantos | Pergunta que responde | Exemplos |
+| --- | ---: | --- | --- |
+| **M** — Matriz | 24 | "O sistema acerta cada tipo de documento em cada formato?" | `M-REC-PDF`, `M-LAB-IMG`, `M-GUI-TXT` |
+| **A** — Ausência | 8 | "O que acontece quando falta um campo?" | `A-PAC-NOME`, `A-MED-CRM`, `A-CID-SO` |
+| **B** — Borda | 2 | "O comportamento muda exatamente no limiar 0,85?" | `B-084`, `B-085` |
+| **C** — Conflito | 5 | "O sistema detecta contradição clínica?" | `C-DOSE`, `C-CID-CONFLITO` |
+| **S** — Simultâneo | 2 | "E quando urgência e ambiguidade acontecem juntas?" | `S-URG-ILEGIVEL` |
+| **Q** — Qualidade | 8 | "E quando o arquivo está ruim ou protegido?" | `Q-FOTO-ROTACAO`, `Q-PDF-SENHA` |
+| **V** — Validação | 8 | "E quando a entrada é inválida?" | `V-DOCX`, `V-GRANDE`, `V-MIME` |
+| **E** — Escaneado | 6 | "E quando o PDF é só imagem, sem texto?" | `E-REC-PDFSCAN` |
+| **D** — Diferencial | 4 | "Os opcionais funcionam?" | `D-MANUSCRITA`, `D-HEMOGRAMA` |
+
+### Lendo o resto do nome
+
+Depois do bloco vêm **2 ou 3 partes separadas por hífen**:
+
+```text
+M-REC-PDF
+│  │   └── formato do arquivo: PDF, IMG (imagem) ou TXT (texto)
+│  └────── tipo de documento: REC=receituário, LAB=laboratorial, IMG=imagem,
+│           GUI=guia, ALT=alta, ATE=atestado, OUT=outro, NID=não identificado
+└───────── bloco M (matriz)
+```
+
+Atenção a um detalhe que confunde: **no meio é o tipo, no fim é o formato**. Em `M-IMG-IMG`, o primeiro `IMG` é *laudo de exame de imagem* e o segundo é *formato imagem*. Já `M-IMG-PDF` é o mesmo tipo de documento entregue em PDF.
+
+Nos outros blocos a lógica é **bloco + sujeito + o que está sendo testado**:
+
+| ID | Leitura |
+| --- | --- |
+| `A-PAC-NOME` | ausência · paciente · nome |
+| `A-MED-CRM` | ausência · médico · CRM |
+| `A-CID-SO` | ausência · CID · **so**mente o CID (que **não** gera revisão) |
+| `C-DOSE` | conflito · dose suspeita |
+| `Q-PDF-SENHA` | qualidade · PDF · protegido por senha |
+| `E-REC-PDFSCAN` | escaneado · receituário · PDF escaneado |
+| `B-084` / `B-085` | borda · score 0,84 / 0,85 |
+
+### Onde está cada coisa
+
+```text
+tests/fixtures/
+├── manifest.csv     ← comece por aqui: 67 linhas, uma por documento, com o resultado esperado
+├── demo/            ← 12 casos que cobrem o pitch (todos os blocos, exceto Q e V)
+└── catalogo/        ← 55 casos restantes (Q e V ficam só aqui)
+```
+
+O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. Para saber o que se espera de um documento, abra o `expected.json` dentro da pasta dele; para ver o catálogo inteiro de uma vez, use o `manifest.csv` ou o PDF em `docs/testes/`.
+
 ## Os 12 casos de pitch (`demo/`)
 
 | # | ID | Caso | Destino | Status |
