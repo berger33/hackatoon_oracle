@@ -1,7 +1,7 @@
 # Catálogo de documentos de teste — MediFlow
 
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
-**Versão:** 1.0 — 19/10/2026
+**Versão:** 1.1 — 20/10/2026
 **Base documental:** `Projeto_oracle.pdf`, `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` e `MediFlow_Especificacao_Funcional_v1.0.pdf`
 **Manifesto executável:** [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv)
 
@@ -340,18 +340,18 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 | Critério | Fixtures que comprovam |
 | --- | --- |
 | 1. Texto + 1 PDF + 1 imagem aceitos | `Matriz_Receituario_Texto`, `Matriz_Receituario_Pdf`, `Matriz_Receituario_Imagem` |
-| 2. Documento padrão classificado e roteado | `M-REC-*`, `M-LAB-*`, `M-GUI-*`, `M-ALT-*`, `M-ATE-*` |
+| 2. Documento padrão classificado e roteado | `Matriz_Receituario_*`, `Matriz_LaudoLaboratorial_*`, `Matriz_Guia_*`, `Matriz_RelatorioDeAlta_*`, `Matriz_Atestado_*` |
 | 3. Documento urgente com alerta | `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Guia_Imagem`, `Conflito_AltoRisco` |
-| 4. Documento ambíguo/ilegível em revisão | `M-NID-*`, `Qualidade_Foto_Desfocada`, `Matriz_RelatorioDeAlta_Texto` |
+| 4. Documento ambíguo/ilegível em revisão | `Matriz_NaoIdentificado_*`, `Qualidade_Foto_Desfocada`, `Matriz_RelatorioDeAlta_Texto` |
 | 5. Ausência dos 5 campos obrigatórios | `Ausencia_Paciente_Nome`, `Ausencia_Paciente_Idade`, `Ausencia_Medico_Nome`, `Ausencia_Medico_Crm`, `Ausencia_Diagnostico` |
 | 6. Submissão 202 + consulta posterior | Qualquer fixture funcional (mesmo `documento_id`) |
-| 7. Evento urgente simulado, sem envio externo | `Matriz_LaudoDeImagem_Pdf`, `S-URG-*` |
+| 7. Evento urgente simulado, sem envio externo | `Matriz_LaudoDeImagem_Pdf`, `Simultaneo_Urgencia_*` |
 | 8. Score < 0,85 revisa; == 0,85 não revisa | `Borda_Score_084`, `Borda_Score_085` |
-| 9. Campos ausentes não inferidos | `A-*`, `M-NID-*` |
+| 9. Campos ausentes não inferidos | `Ausencia_*`, `Matriz_NaoIdentificado_*` |
 | 10. Persistência no OCI informada | `Simulacao_OciFalhaNoOriginal`, `Simulacao_OciFalhaNoResultado` + qualquer fixture |
 | 11. Histórico ordenado e JSON validado | Qualquer fixture funcional + `GET /historico` |
-| 12. Regras, versão, justificativa e destino rastreáveis | `C-*`, `S-*` |
-| 13. Interface mostra estados sem segredos | `M-*`, `Simulacao_*` |
+| 12. Regras, versão, justificativa e destino rastreáveis | `Conflito_*`, `Simultaneo_*` |
+| 13. Interface mostra estados sem segredos | `Matriz_*`, `Simulacao_*` |
 | 14. README + demonstração dos 3 cenários | Kit de demonstração (12) |
 | 15. Nenhum opcional declarado sem prova | Bloco Diferencial (se implementado) |
 

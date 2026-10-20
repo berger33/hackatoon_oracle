@@ -74,8 +74,18 @@ def header(c, case):
     c.setFillColor(HexColor("#FFFFFF"))
     c.setFont("DejaVu-Bold", 7.2)
     c.drawString(MARGIN + 6, H - 78, FICTION)
-    c.setFont("DejaVu", 7.0)
-    c.drawRightString(W - MARGIN - 6, H - 78, f"Fixture {case['id']}")
+    # o ID pode ser longo: reduz a fonte até caber à direita do aviso
+    label = f"Fixture {case['id']}"
+    room = CONTENT_W - 12 - pdfmetrics.stringWidth(FICTION, "DejaVu-Bold", 7.2) - 10
+    size = 7.0
+    while size > 4.6 and pdfmetrics.stringWidth(label, "DejaVu", size) > room:
+        size -= 0.2
+    c.setFont("DejaVu", size)
+    if pdfmetrics.stringWidth(label, "DejaVu", size) > room:
+        while label and pdfmetrics.stringWidth(label + "...", "DejaVu", size) > room:
+            label = label[:-1]
+        label = label.rstrip() + "..."
+    c.drawRightString(W - MARGIN - 6, H - 78, label)
 
 
 def footer(c, case):
@@ -83,9 +93,14 @@ def footer(c, case):
     c.setLineWidth(0.6)
     c.line(MARGIN, 42, W - MARGIN, 42)
     c.setFillColor(MUTED)
+    right = "página 1 de 1 · gerado para testes automatizados"
     c.setFont("DejaVu", 7.0)
-    c.drawString(MARGIN, 30, f"MediFlow · fixture {case['id']} · dados sintéticos")
-    c.drawRightString(W - MARGIN, 30, "página 1 de 1 · gerado para testes automatizados")
+    room = CONTENT_W - pdfmetrics.stringWidth(right, "DejaVu", 7.0) - 12
+    left = f"MediFlow · fixture {case['id']} · dados sintéticos"
+    if pdfmetrics.stringWidth(left, "DejaVu", 7.0) > room:
+        left = f"MediFlow · dados sintéticos"
+    c.drawString(MARGIN, 30, left)
+    c.drawRightString(W - MARGIN, 30, right)
 
 
 def watermark(c):
