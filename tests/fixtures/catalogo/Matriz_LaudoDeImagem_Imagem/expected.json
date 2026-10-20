@@ -1,0 +1,57 @@
+{
+  "fixture_id": "Matriz_LaudoDeImagem_Imagem",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.txt",
+    "pdf": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.pdf",
+    "jpg": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_IMAGEM",
+    "especialidade": [
+      "Radiologia",
+      "Pneumologia"
+    ],
+    "nivel_prioridade": "URGENTE",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Antônio Carlos Vieira",
+      "idade": 71
+    },
+    "medico": {
+      "nome": "Dra. Renata Silveira",
+      "crm": {
+        "numero": "145892",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Pneumotórax espontâneo à direita",
+    "cid": null,
+    "medicamentos": [],
+    "exames": [
+      "Radiografia de tórax"
+    ],
+    "urgencia": "SIM"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_URGENCIA_MEDICA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": true
+  },
+  "assercoes": [
+    "Foto de laudo com achado crítico",
+    "Prioridade URGENTE detectada",
+    "Destino FILA_URGENCIA_MEDICA com alerta simulado"
+  ],
+  "observacoes": ""
+}

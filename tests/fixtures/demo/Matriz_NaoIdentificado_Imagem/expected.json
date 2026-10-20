@@ -1,0 +1,56 @@
+{
+  "fixture_id": "Matriz_NaoIdentificado_Imagem",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "demo/Matriz_NaoIdentificado_Imagem/Matriz_NaoIdentificado_Imagem.txt",
+    "pdf": "demo/Matriz_NaoIdentificado_Imagem/Matriz_NaoIdentificado_Imagem.pdf",
+    "jpg": "demo/Matriz_NaoIdentificado_Imagem/Matriz_NaoIdentificado_Imagem.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "NAO_IDENTIFICADO",
+    "especialidade": [],
+    "nivel_prioridade": "NAO_IDENTIFICADA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": null,
+      "idade": null
+    },
+    "medico": {
+      "nome": null,
+      "crm": null
+    },
+    "diagnostico": null,
+    "cid": null,
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "INDETERMINADO",
+    "campos_ausentes": [
+      "paciente.nome",
+      "paciente.idade",
+      "medico.nome",
+      "medico.crm",
+      "diagnostico_principal"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Documento ilegível não pode ser classificado",
+    "Nenhum dado clínico é inventado",
+    "Destino FILA_REVISAO_HUMANA e status EM_REVISAO"
+  ],
+  "observacoes": "O PDF e o JPG são intencionalmente degradados (somente imagem, sem camada de texto). O TXT simula uma transcrição OCR truncada."
+}

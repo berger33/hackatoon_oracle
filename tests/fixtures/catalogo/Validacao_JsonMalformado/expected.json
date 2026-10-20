@@ -1,0 +1,18 @@
+{
+  "fixture_id": "Validacao_JsonMalformado",
+  "documento_ficticio": true,
+  "tipo_de_teste": "negativo_tecnico",
+  "arquivo": "Validacao_JsonMalformado.json",
+  "requisicao": "POST /api/v1/triagens",
+  "erro_esperado": {
+    "http": 400,
+    "codigo_funcional": "REQUISICAO_INVALIDA",
+    "mensagem": "JSON com vírgula final e sintaxe inválida."
+  },
+  "assercoes": [
+    "Envelope não é interpretável.",
+    "Nenhuma inferência é executada para entrada inválida",
+    "Mensagem de erro é segura, sem stack trace ou segredo"
+  ],
+  "observacoes": "O expected deste fixture é um envelope de erro, não um JSON de triagem."
+}

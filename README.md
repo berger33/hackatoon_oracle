@@ -77,6 +77,8 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 
 ## Estrutura do repositório
 
+As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Imagem` é o bloco **Matriz**, tipo **guia**, formato **imagem**. Os blocos são Matriz, Ausencia, Borda, Conflito, Simultaneo, Qualidade, Validacao, Escaneado e Diferencial.
+
 ```text
 .
 ├── docs/
@@ -86,7 +88,7 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 │       └── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # quantos e quais fixtures criar
 ├── tests/
 │   └── fixtures/
-│       ├── README.md
+│       ├── README.md                            # como ler os nomes e os blocos
 │       ├── manifest.csv                         # 67 fixtures com resultado esperado
 │       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
 │       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
@@ -104,7 +106,7 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 
 - [Mapa de documentos de teste (PDF)](docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) — visão visual de cobertura, fluxo e catálogo completo.
 - [Catálogo de documentos de teste](docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) — 12 para demonstrar, 57 para testar de verdade, 67 para cobertura completa.
-- [Kit de demonstração](tests/fixtures/demo/README.md) — os 12 casos de pitch em TXT, PDF e JPG.
+- [Como ler os fixtures](tests/fixtures/README.md) — convenção de nomes (Bloco_Assunto_Detalhe) e os 12 casos de pitch.
 - [Catálogo completo de fixtures](tests/fixtures/catalogo/README.md) — os 55 casos restantes, incluindo negativos técnicos.
 - [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.
 - [Índice de documentos](docs/README.md)

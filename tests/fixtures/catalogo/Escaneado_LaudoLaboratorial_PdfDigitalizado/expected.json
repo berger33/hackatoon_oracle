@@ -1,0 +1,59 @@
+{
+  "fixture_id": "Escaneado_LaudoLaboratorial_PdfDigitalizado",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Escaneado_LaudoLaboratorial_PdfDigitalizado/Escaneado_LaudoLaboratorial_PdfDigitalizado.txt",
+    "pdf": "catalogo/Escaneado_LaudoLaboratorial_PdfDigitalizado/Escaneado_LaudoLaboratorial_PdfDigitalizado.pdf",
+    "jpg": "catalogo/Escaneado_LaudoLaboratorial_PdfDigitalizado/Escaneado_LaudoLaboratorial_PdfDigitalizado.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "",
+    "especialidade": [
+      "Reumatologia",
+      "Clínica Médica"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Jorge Luís Andrade",
+      "idade": 44
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Gota",
+    "cid": "M10.9",
+    "medicamentos": [],
+    "exames": [
+      "Ácido úrico",
+      "Creatinina",
+      "PCR"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "PDF escaneado sem camada de texto",
+    "Três analitos extraídos",
+    "Destino PRONTUARIO_ELETRONICO"
+  ],
+  "observacoes": ""
+}

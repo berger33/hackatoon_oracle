@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gera os 55 fixtures restantes do catalogo do MediFlow (blocos A a V).
+"""Gera os 55 fixtures restantes do catalogo do MediFlow (blocos Ausencia a Validacao).
 
 Saida: tests/fixtures/catalogo/{ID}/{ID}.txt|pdf|jpg|expected.json
 
@@ -45,7 +45,7 @@ def sec(title, body, mono=False):
 
 
 # ============================================================ BLOCO M (14)
-c(id="M-LAB-IMG", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Matriz_LaudoLaboratorial_Imagem", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Perfil lipídico e glicemia — rotina",
   meta=[("Paciente", "Sônia Regina Duarte"), ("Idade", "55 anos"), ("Documento", "DOC-LAB-2026-0013"),
         ("Data", "16/10/2026"), ("Origem", "Laboratório Central")],
@@ -63,7 +63,7 @@ c(id="M-LAB-IMG", titulo="LAUDO DE EXAME LABORATORIAL",
            ass=["Foto de laudo laboratorial aceita", "Cinco analitos extraídos com unidade e referência",
                 "Destino PRONTUARIO_ELETRONICO sem revisão"]))
 
-c(id="M-LAB-TXT", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Matriz_LaudoLaboratorial_Texto", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Glicemia e hemoglobina glicada — rotina, sem CID",
   meta=[("Paciente", "Elias Moreira Pires"), ("Idade", "62 anos"), ("Documento", "DOC-LAB-2026-0014"),
         ("Data", "16/10/2026"), ("Origem", "Ambulatório de Endocrinologia")],
@@ -80,7 +80,7 @@ c(id="M-LAB-TXT", titulo="LAUDO DE EXAME LABORATORIAL",
            ass=["Texto de laudo laboratorial aceito", "CID ausente permanece null",
                 "Ausência de CID isolada NÃO exige revisão (RF-21)"]))
 
-c(id="M-IMG-IMG", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Matriz_LaudoDeImagem_Imagem", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Radiografia de tórax — pronto-socorro",
   meta=[("Paciente", "Antônio Carlos Vieira"), ("Idade", "71 anos"), ("Documento", "DOC-IMG-2026-0015"),
         ("Data", "17/10/2026"), ("Origem", "Pronto-Socorro")],
@@ -97,7 +97,7 @@ c(id="M-IMG-IMG", titulo="LAUDO DE EXAME DE IMAGEM",
            ass=["Foto de laudo com achado crítico", "Prioridade URGENTE detectada",
                 "Destino FILA_URGENCIA_MEDICA com alerta simulado"]))
 
-c(id="M-IMG-TXT", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Matriz_LaudoDeImagem_Texto", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Ultrassonografia de abdome total — rotina",
   meta=[("Paciente", "Patrícia Nogueira Alves"), ("Idade", "38 anos"), ("Documento", "DOC-IMG-2026-0016"),
         ("Data", "17/10/2026"), ("Origem", "Ambulatório de Gastroenterologia")],
@@ -114,7 +114,7 @@ c(id="M-IMG-TXT", titulo="LAUDO DE EXAME DE IMAGEM",
            ass=["Texto de laudo de imagem de rotina", "Sem sinais de urgência",
                 "Destino PRONTUARIO_ELETRONICO"]))
 
-c(id="M-GUI-IMG", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Matriz_Guia_Imagem", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Endoscopia digestiva alta — urgência",
   meta=[("Paciente", "Márcia Helena dos Santos"), ("Idade", "49 anos"), ("Documento", "DOC-GUI-2026-0017"),
         ("Data", "17/10/2026"), ("Origem", "Pronto-Socorro")],
@@ -132,7 +132,7 @@ c(id="M-GUI-IMG", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
            ass=["Foto de guia com pedido de urgência", "Sinal crítico detectado no texto",
                 "Destino FILA_URGENCIA_MEDICA com alerta"]))
 
-c(id="M-GUI-TXT", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Matriz_Guia_Texto", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Colonoscopia — eletiva",
   meta=[("Paciente", "Roberto Yukio Tanaka"), ("Idade", "60 anos"), ("Documento", "DOC-GUI-2026-0018"),
         ("Data", "17/10/2026"), ("Origem", "Ambulatório de Gastroenterologia")],
@@ -150,7 +150,7 @@ c(id="M-GUI-TXT", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
            ass=["Texto de guia eletiva", "Destino AUDITORIA_AUTORIZACOES",
                 "Nenhum sinal de urgência"]))
 
-c(id="M-ALT-IMG", titulo="RELATÓRIO DE ALTA HOSPITALAR",
+c(id="Matriz_RelatorioDeAlta_Imagem", titulo="RELATÓRIO DE ALTA HOSPITALAR",
   sub="Internação por insuficiência cardíaca — alta por melhora",
   meta=[("Paciente", "José Ricardo Almeida"), ("Idade", "68 anos"), ("Documento", "DOC-ALT-2026-0019"),
         ("Data", "18/10/2026"), ("Origem", "Enfermaria 2A")],
@@ -170,7 +170,7 @@ c(id="M-ALT-IMG", titulo="RELATÓRIO DE ALTA HOSPITALAR",
            ass=["Foto de relatório de alta", "Dois medicamentos extraídos com dose e frequência",
                 "Destino PRONTUARIO_ELETRONICO"]))
 
-c(id="M-ALT-TXT", titulo="RELATÓRIO DE ALTA HOSPITALAR",
+c(id="Matriz_RelatorioDeAlta_Texto", titulo="RELATÓRIO DE ALTA HOSPITALAR",
   sub="Resumo de internação truncado — sem diagnóstico",
   meta=[("Paciente", "Vanessa Cristina Lopes"), ("Idade", "33 anos"), ("Documento", "DOC-ALT-2026-0020"),
         ("Data", "18/10/2026"), ("Origem", "Enfermaria 4C")],
@@ -189,7 +189,7 @@ c(id="M-ALT-TXT", titulo="RELATÓRIO DE ALTA HOSPITALAR",
                 "Ausência de diagnóstico força revisão (RF-21)",
                 "Nenhum diagnóstico é inventado"]))
 
-c(id="M-ATE-PDF", titulo="ATESTADO MÉDICO",
+c(id="Matriz_Atestado_Pdf", titulo="ATESTADO MÉDICO",
   sub="Afastamento de 3 dias — CID explícito",
   meta=[("Paciente", "Bruno Henrique Castro"), ("Idade", "26 anos"), ("Documento", "DOC-ATE-2026-0021"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Ortopedia")],
@@ -206,7 +206,7 @@ c(id="M-ATE-PDF", titulo="ATESTADO MÉDICO",
            ass=["Atestado em PDF digital", "CID explícito extraído",
                 "Destino PRONTUARIO_ELETRONICO"]))
 
-c(id="M-ATE-IMG", titulo="ATESTADO MÉDICO",
+c(id="Matriz_Atestado_Imagem", titulo="ATESTADO MÉDICO",
   sub="Atestado com carimbo e assinatura",
   meta=[("Paciente", "Larissa Fontes Amaral"), ("Idade", "31 anos"), ("Documento", "DOC-ATE-2026-0022"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
@@ -223,7 +223,7 @@ c(id="M-ATE-IMG", titulo="ATESTADO MÉDICO",
            ass=["Foto de atestado com carimbo", "Carimbo não interfere na extração",
                 "Destino PRONTUARIO_ELETRONICO"]))
 
-c(id="M-OUT-PDF", titulo="DECLARAÇÃO DE COMPARECIMENTO",
+c(id="Matriz_Outro_Pdf", titulo="DECLARAÇÃO DE COMPARECIMENTO",
   sub="Declaração emitida a acompanhante — fora da taxonomia",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-OUT-2026-0023"),
         ("Data", "18/10/2026"), ("Origem", "Recepção Ambulatorial")],
@@ -240,7 +240,7 @@ c(id="M-OUT-PDF", titulo="DECLARAÇÃO DE COMPARECIMENTO",
            ass=["Declaração administrativa fora da taxonomia clínica", "Classificação OUTRO",
                 "Destino não mapeado vai para FILA_REVISAO_HUMANA"]))
 
-c(id="M-OUT-IMG", titulo="RELATÓRIO DE ENFERMAGEM",
+c(id="Matriz_Outro_Imagem", titulo="RELATÓRIO DE ENFERMAGEM",
   sub="Registro de sinais vitais — fora da taxonomia",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-OUT-2026-0024"),
         ("Data", "18/10/2026"), ("Origem", "Enfermaria 3B")],
@@ -257,7 +257,7 @@ c(id="M-OUT-IMG", titulo="RELATÓRIO DE ENFERMAGEM",
            ass=["Registro de enfermagem não é documento médico do MVP", "Classificação OUTRO",
                 "Revisão humana obrigatória"]))
 
-c(id="M-NID-PDF", titulo="REGISTRO CLÍNICO",
+c(id="Matriz_NaoIdentificado_Pdf", titulo="REGISTRO CLÍNICO",
   sub="Documento escaneado ilegível",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-NID-2026-0025"),
         ("Data", "18/10/2026"), ("Origem", "Digitalização externa")],
@@ -275,7 +275,7 @@ c(id="M-NID-PDF", titulo="REGISTRO CLÍNICO",
                 "Nenhum dado inventado e revisão obrigatória"],
            obs="PDF somente imagem, com desfoque e ruído. Sem camada de texto."))
 
-c(id="M-NID-TXT", titulo="TEXTO SEM CONTEÚDO CLÍNICO",
+c(id="Matriz_NaoIdentificado_Texto", titulo="TEXTO SEM CONTEÚDO CLÍNICO",
   sub="Lista de compras enviada por engano",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-NID-2026-0026"),
         ("Data", "18/10/2026"), ("Origem", "Upload manual")],
@@ -292,7 +292,7 @@ c(id="M-NID-TXT", titulo="TEXTO SEM CONTEÚDO CLÍNICO",
                 "Revisão humana obrigatória"]))
 
 # ============================================================ BLOCO A (7)
-c(id="A-PAC-IDADE", titulo="RECEITUÁRIO MÉDICO",
+c(id="Ausencia_Paciente_Idade", titulo="RECEITUÁRIO MÉDICO",
   sub="Prescrição sem a idade do paciente",
   meta=[("Paciente", "Otávio Sampaio Reis"), ("Idade", "não informada"), ("Documento", "DOC-REC-2026-0027"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
@@ -310,7 +310,7 @@ c(id="A-PAC-IDADE", titulo="RECEITUÁRIO MÉDICO",
            ass=["Idade ausente força revisão (RF-21)", "Nome do paciente preservado",
                 "Idade não é inferida"]))
 
-c(id="A-MED-NOME", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Ausencia_Medico_Nome", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Laudo com CRM preenchido e nome do médico ausente",
   meta=[("Paciente", "Simone Aparecida Rocha"), ("Idade", "47 anos"), ("Documento", "DOC-LAB-2026-0028"),
         ("Data", "18/10/2026"), ("Origem", "Laboratório Central")],
@@ -327,7 +327,7 @@ c(id="A-MED-NOME", titulo="LAUDO DE EXAME LABORATORIAL",
            ass=["Nome do médico ausente força revisão", "CRM preservado e normalizado em número/UF",
                 "Nome não é inventado"]))
 
-c(id="A-MED-CRM", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Ausencia_Medico_Crm", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Laudo com nome do médico e CRM ausente",
   meta=[("Paciente", "Gustavo Henrique Barros"), ("Idade", "52 anos"), ("Documento", "DOC-LAB-2026-0029"),
         ("Data", "18/10/2026"), ("Origem", "Laboratório Central")],
@@ -345,7 +345,7 @@ c(id="A-MED-CRM", titulo="LAUDO DE EXAME LABORATORIAL",
            ass=["CRM ausente força revisão", "Nome do médico preservado",
                 "CRM não é inventado"]))
 
-c(id="A-DIAG", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Ausencia_Diagnostico", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Guia sem diagnóstico ou hipótese diagnóstica",
   meta=[("Paciente", "Heloísa Martins Braga"), ("Idade", "44 anos"), ("Documento", "DOC-GUI-2026-0030"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Dermatologia")],
@@ -364,7 +364,7 @@ c(id="A-DIAG", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
                 "Justificativa clínica não substitui o campo diagnóstico",
                 "Nenhum CID é sugerido"]))
 
-c(id="A-CID-SO", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Ausencia_SomenteCid", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Laudo com diagnóstico explícito e sem CID",
   meta=[("Paciente", "Celso Ribeiro Nunes"), ("Idade", "57 anos"), ("Documento", "DOC-IMG-2026-0031"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Ortopedia")],
@@ -383,7 +383,7 @@ c(id="A-CID-SO", titulo="LAUDO DE EXAME DE IMAGEM",
                 "CID ausente fica null e NÃO força revisão (RF-21)",
                 "Status PROCESSADO"]))
 
-c(id="A-MEDIC-SO", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Ausencia_SomenteMedicamentos", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Laudo sem medicamentos — lista vazia",
   meta=[("Paciente", "Débora Cristina Melo"), ("Idade", "29 anos"), ("Documento", "DOC-LAB-2026-0032"),
         ("Data", "18/10/2026"), ("Origem", "Laboratório Central")],
@@ -401,7 +401,7 @@ c(id="A-MEDIC-SO", titulo="LAUDO DE EXAME LABORATORIAL",
                 "Distinguir 'nenhum identificado' de 'leitura falhou'",
                 "Status PROCESSADO"]))
 
-c(id="A-EXAMES-SO", titulo="ATESTADO MÉDICO",
+c(id="Ausencia_SomenteExames", titulo="ATESTADO MÉDICO",
   sub="Atestado sem exames solicitados ou realizados",
   meta=[("Paciente", "Igor Nascimento Prado"), ("Idade", "24 anos"), ("Documento", "DOC-ATE-2026-0033"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
@@ -420,7 +420,7 @@ c(id="A-EXAMES-SO", titulo="ATESTADO MÉDICO",
                 "Status PROCESSADO"]))
 
 # ============================================================ BLOCO B (1)
-c(id="B-085", titulo="RECEITUÁRIO MÉDICO",
+c(id="Borda_Score_085", titulo="RECEITUÁRIO MÉDICO",
   sub="Prescrição ambulatorial — limiar exato de 0,85",
   meta=[("Paciente", "Ricardo Almeida Prado"), ("Idade", "45 anos"), ("Documento", "DOC-REC-2026-0034"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
@@ -441,7 +441,7 @@ c(id="B-085", titulo="RECEITUÁRIO MÉDICO",
            obs="Documento de rotina legível. O score forçado em 0,85 é a única borda testada."))
 
 # ============================================================ BLOCO C (5)
-c(id="C-CID-CONFLITO", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Conflito_Cid_Diagnostico", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Diagnóstico e CID incompatíveis",
   meta=[("Paciente", "Marcelo Tavares Lins"), ("Idade", "59 anos"), ("Documento", "DOC-IMG-2026-0035"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Cardiologia")],
@@ -462,7 +462,7 @@ c(id="C-CID-CONFLITO", titulo="LAUDO DE EXAME DE IMAGEM",
                 "Revisão humana obrigatória por conflito impeditivo"],
            obs="Exige o dicionário de CID-10 aprovado pela equipe para a regra de compatibilidade."))
 
-c(id="C-DOSE", titulo="RECEITUÁRIO MÉDICO",
+c(id="Conflito_Dose", titulo="RECEITUÁRIO MÉDICO",
   sub="Dose dez vezes acima do usual",
   meta=[("Paciente", "Neusa Ferreira Lima"), ("Idade", "73 anos"), ("Documento", "DOC-REC-2026-0036"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Cardiologia")],
@@ -482,7 +482,7 @@ c(id="C-DOSE", titulo="RECEITUÁRIO MÉDICO",
                 "Valor original 500 mg preservado", "Revisão humana obrigatória"],
            obs="Depende da tabela de doses de referência aprovada pela equipe."))
 
-c(id="C-PRIORIDADE", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Conflito_Prioridade", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Guia marcada como rotina, com texto de urgência",
   meta=[("Paciente", "Rogério Pinto Machado"), ("Idade", "61 anos"), ("Documento", "DOC-GUI-2026-0037"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Cirurgia Vascular")],
@@ -503,7 +503,7 @@ c(id="C-PRIORIDADE", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
                 "Sinal crítico prevalece sobre o cabeçalho (RN-03)",
                 "Dois destinos: urgência e revisão"]))
 
-c(id="C-DADOS", titulo="RELATÓRIO DE ALTA HOSPITALAR",
+c(id="Conflito_Dados", titulo="RELATÓRIO DE ALTA HOSPITALAR",
   sub="Identificação do paciente contraditória no documento",
   meta=[("Paciente", "Fernando Augusto Reis"), ("Idade", "66 anos"), ("Documento", "DOC-ALT-2026-0038"),
         ("Data", "18/10/2026"), ("Origem", "Enfermaria 5A")],
@@ -523,7 +523,7 @@ c(id="C-DADOS", titulo="RELATÓRIO DE ALTA HOSPITALAR",
            ass=["Contradição interna em nome e idade", "Valores originais preservados",
                 "Revisão humana obrigatória"]))
 
-c(id="C-ALTO-RISCO", titulo="RECEITUÁRIO MÉDICO",
+c(id="Conflito_AltoRisco", titulo="RECEITUÁRIO MÉDICO",
   sub="Prescrição de alto risco sem texto de urgência",
   meta=[("Paciente", "Alzira Mendes Coelho"), ("Idade", "70 anos"), ("Documento", "DOC-REC-2026-0039"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Cardiologia")],
@@ -543,7 +543,7 @@ c(id="C-ALTO-RISCO", titulo="RECEITUÁRIO MÉDICO",
            obs="Depende da lista de medicamentos de alto risco aprovada pela equipe."))
 
 # ============================================================ BLOCO S (2)
-c(id="S-URG-ILEGIVEL", titulo="RECEITUÁRIO MÉDICO",
+c(id="Simultaneo_Urgencia_Ilegivel", titulo="RECEITUÁRIO MÉDICO",
   sub="Prescrição urgente parcialmente ilegível",
   meta=[("Paciente", "Joana Batista Ferraz"), ("Idade", "58 anos"), ("Documento", "DOC-REC-2026-0040"),
         ("Data", "18/10/2026"), ("Origem", "Pronto-Socorro")],
@@ -564,7 +564,7 @@ c(id="S-URG-ILEGIVEL", titulo="RECEITUÁRIO MÉDICO",
                 "Nunca reduzir a decisão a um destino único"],
            obs="Imagem com desfoque leve: os campos de dose ficam incertos, o restante é legível."))
 
-c(id="S-URG-SCORE", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Simultaneo_Urgencia_Score", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Achado crítico com score abaixo do limiar",
   meta=[("Paciente", "Wilson Aparecido Rangel"), ("Idade", "64 anos"), ("Documento", "DOC-IMG-2026-0041"),
         ("Data", "18/10/2026"), ("Origem", "Pronto-Socorro")],
@@ -584,7 +584,7 @@ c(id="S-URG-SCORE", titulo="LAUDO DE EXAME DE IMAGEM",
                 "Exige FIXTURE_MODE para forçar os scores"]))
 
 # ============================================================ BLOCO Q (8)
-c(id="Q-FOTO-DESFOCO", titulo="RECEITUÁRIO MANUSCRITO",
+c(id="Qualidade_Foto_Desfocada", titulo="RECEITUÁRIO MANUSCRITO",
   sub="Foto de receita manuscrita muito desfocada",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-Q-2026-0042"),
         ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
@@ -602,7 +602,7 @@ c(id="Q-FOTO-DESFOCO", titulo="RECEITUÁRIO MANUSCRITO",
                 "Revisão humana indicada"],
            obs="JPG e PDF fortemente degradados; cabeçalho de identificação preservado."))
 
-c(id="Q-FOTO-ROTACAO", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Qualidade_Foto_Rotacionada", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Laudo fotografado com rotação de 90 graus",
   meta=[("Paciente", "Cláudio Roberto Farias"), ("Idade", "48 anos"), ("Documento", "DOC-Q-2026-0043"),
         ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
@@ -621,7 +621,7 @@ c(id="Q-FOTO-ROTACAO", titulo="LAUDO DE EXAME DE IMAGEM",
                 "Extração correta apesar da orientação", "Destino PRONTUARIO_ELETRONICO"],
            obs="A imagem e o PDF estão rotacionados; o texto permanece legível."))
 
-c(id="Q-FOTO-CORTADA", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Qualidade_Foto_Cortada", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Guia com metade da página fora do enquadramento",
   meta=[("Paciente", "Elaine Souza Barreto"), ("Idade", "36 anos"), ("Documento", "DOC-Q-2026-0044"),
         ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
@@ -641,7 +641,7 @@ c(id="Q-FOTO-CORTADA", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
                 "Demais campos permanecem extraíveis"],
            obs="A imagem e o PDF mostram apenas a metade superior da página."))
 
-c(id="Q-FOTO-BAIXA", titulo="ATESTADO MÉDICO",
+c(id="Qualidade_Foto_BaixoContraste", titulo="ATESTADO MÉDICO",
   sub="Atestado com sombra e baixo contraste",
   meta=[("Paciente", "Michele Andrade Pinto"), ("Idade", "40 anos"), ("Documento", "DOC-Q-2026-0045"),
         ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
@@ -661,7 +661,7 @@ c(id="Q-FOTO-BAIXA", titulo="ATESTADO MÉDICO",
                 "Revisão humana indicada"],
            obs="Degradação leve: sombra no canto inferior esquerdo compromete a linha da idade."))
 
-c(id="Q-PDF-SEM-TEXTO", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Qualidade_Pdf_SemTexto", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="PDF escaneado sem camada de texto",
   meta=[("Paciente", "Sérgio Luiz Monteiro"), ("Idade", "54 anos"), ("Documento", "DOC-Q-2026-0046"),
         ("Data", "18/10/2026"), ("Origem", "Digitalização externa")],
@@ -680,7 +680,7 @@ c(id="Q-PDF-SEM-TEXTO", titulo="LAUDO DE EXAME DE IMAGEM",
                 "Destino PRONTUARIO_ELETRONICO"],
            obs="PDF gerado somente com imagem (0 caracteres extraíveis)."))
 
-c(id="Q-PDF-MULTIPAGINA", titulo="RELATÓRIO DE ALTA HOSPITALAR",
+c(id="Qualidade_Pdf_Multipagina", titulo="RELATÓRIO DE ALTA HOSPITALAR",
   sub="Relatório extenso com seis páginas",
   meta=[("Paciente", "Iracema Barbosa Teixeira"), ("Idade", "74 anos"), ("Documento", "DOC-Q-2026-0047"),
         ("Data", "18/10/2026"), ("Origem", "Enfermaria 6B")],
@@ -705,7 +705,7 @@ c(id="Q-PDF-MULTIPAGINA", titulo="RELATÓRIO DE ALTA HOSPITALAR",
            ass=["PDF com 6+ páginas é aceito", "Conteúdo completo é considerado na extração",
                 "Limite de páginas ainda pendente na spec (§15)"]))
 
-c(id="Q-PDF-SENHA", titulo="RECEITUÁRIO MÉDICO",
+c(id="Qualidade_Pdf_ComSenha", titulo="RECEITUÁRIO MÉDICO",
   sub="PDF protegido por senha",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-Q-2026-0048"),
         ("Data", "18/10/2026"), ("Origem", "Upload manual")],
@@ -721,7 +721,7 @@ c(id="Q-PDF-SENHA", titulo="RECEITUÁRIO MÉDICO",
                 "Contrato de erro ainda a definir"],
            obs="Senha de teste: mediflow123. O fixture existe para testar a rejeição, não o sucesso."))
 
-c(id="Q-PDF-CORROMPIDO", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Qualidade_Pdf_Corrompido", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="PDF truncado / arquivo corrompido",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-Q-2026-0049"),
         ("Data", "18/10/2026"), ("Origem", "Upload manual")],
@@ -752,7 +752,7 @@ def ecase(id_, titulo, sub, paciente, idade, docnum, secs, doc, esp, dest, dados
                rev=False, notif=False, dados=dados, ass=ass))
 
 
-ecase("E-REC-PDFSCAN", "RECEITUÁRIO MÉDICO", "Receita impressa escaneada em PDF",
+ecase("Escaneado_Receituario_PdfDigitalizado", "RECEITUÁRIO MÉDICO", "Receita impressa escaneada em PDF",
       "Marli Aparecida Fonseca", "50 anos", "DOC-E-2026-0050",
       [sec("Hipótese diagnóstica", "Hipertensão arterial sistêmica — CID-10 I10."),
        sec("Prescrição", "Anlodipino 5 mg — 1 comprimido por via oral uma vez ao dia, por 30 dias."),
@@ -765,7 +765,7 @@ ecase("E-REC-PDFSCAN", "RECEITUÁRIO MÉDICO", "Receita impressa escaneada em PD
       ["PDF escaneado com camada de imagem", "Extração correta pelo caminho multimodal",
        "Destino FARMACIA_HOSPITALAR"])
 
-ecase("E-LAB-PDFSCAN", "LAUDO DE EXAME LABORATORIAL", "Laudo laboratorial escaneado em PDF",
+ecase("Escaneado_LaudoLaboratorial_PdfDigitalizado", "LAUDO DE EXAME LABORATORIAL", "Laudo laboratorial escaneado em PDF",
       "Jorge Luís Andrade", "44 anos", "DOC-E-2026-0051",
       [sec("Hipótese diagnóstica", "Gota — CID-10 M10.9."),
        sec("Resultados", "Ácido úrico: 9,2 mg/dL (referência 3,5–7,2)\nCreatinina: 1,0 mg/dL (referência 0,7–1,3)\nPCR: 18 mg/L (referência < 5)"),
@@ -778,7 +778,7 @@ ecase("E-LAB-PDFSCAN", "LAUDO DE EXAME LABORATORIAL", "Laudo laboratorial escane
       ["PDF escaneado sem camada de texto", "Três analitos extraídos",
        "Destino PRONTUARIO_ELETRONICO"])
 
-ecase("E-GUI-PDFSCAN", "GUIA DE SOLICITAÇÃO DE PROCEDIMENTO", "Guia de procedimento escaneada em PDF",
+ecase("Escaneado_Guia_PdfDigitalizado", "GUIA DE SOLICITAÇÃO DE PROCEDIMENTO", "Guia de procedimento escaneada em PDF",
       "Adriana Lopes Siqueira", "42 anos", "DOC-E-2026-0052",
       [sec("Diagnóstico / CID", "Hérnia de disco lombar — CID-10 M51.2."),
        sec("Procedimento solicitado", "Ressonância magnética de coluna lombar."),
@@ -791,7 +791,7 @@ ecase("E-GUI-PDFSCAN", "GUIA DE SOLICITAÇÃO DE PROCEDIMENTO", "Guia de procedi
       ["Guia escaneada é classificada corretamente", "Destino AUDITORIA_AUTORIZACOES",
        "CID e procedimento extraídos"])
 
-ecase("E-ALT-PDFSCAN", "RELATÓRIO DE ALTA HOSPITALAR", "Relatório de alta escaneado em PDF",
+ecase("Escaneado_RelatorioDeAlta_PdfDigitalizado", "RELATÓRIO DE ALTA HOSPITALAR", "Relatório de alta escaneado em PDF",
       "Sebastião Ferreira Gomes", "69 anos", "DOC-E-2026-0053",
       [sec("Período de internação", "Admissão em 12/10/2026, alta em 18/10/2026."),
        sec("Diagnóstico principal", "Doença pulmonar obstrutiva crônica exacerbada — CID-10 J44.1."),
@@ -806,7 +806,7 @@ ecase("E-ALT-PDFSCAN", "RELATÓRIO DE ALTA HOSPITALAR", "Relatório de alta esca
       ["Relatório escaneado é classificado", "Medicações de alta extraídas",
        "Destino PRONTUARIO_ELETRONICO"])
 
-ecase("E-ATE-PDFSCAN", "ATESTADO MÉDICO", "Atestado escaneado em PDF",
+ecase("Escaneado_Atestado_PdfDigitalizado", "ATESTADO MÉDICO", "Atestado escaneado em PDF",
       "Tânia Regina Oliveira", "35 anos", "DOC-E-2026-0054",
       [sec("Finalidade", "Atestado de afastamento de 1 dia."),
        sec("Texto do atestado", "Atesto que a paciente necessita de afastamento de suas atividades laborais por 1 (um) dia, em 18/10/2026."),
@@ -818,7 +818,7 @@ ecase("E-ATE-PDFSCAN", "ATESTADO MÉDICO", "Atestado escaneado em PDF",
       ["Atestado escaneado é classificado", "Afastamento e CID extraídos",
        "Destino PRONTUARIO_ELETRONICO"])
 
-c(id="E-OUT-PDFSCAN", titulo="TERMO DE CONSENTIMENTO",
+c(id="Escaneado_Outro_PdfDigitalizado", titulo="TERMO DE CONSENTIMENTO",
   sub="Termo administrativo escaneado — fora da taxonomia",
   meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-E-2026-0055"),
         ("Data", "18/10/2026"), ("Origem", "Digitalização externa")],
@@ -836,7 +836,7 @@ c(id="E-OUT-PDFSCAN", titulo="TERMO DE CONSENTIMENTO",
                 "Classificação OUTRO", "Revisão humana obrigatória"]))
 
 # ============================================================ BLOCO D (4)
-c(id="D-MANUSCRITA", titulo="RECEITUÁRIO MÉDICO",
+c(id="Diferencial_ReceituarioManuscrito", titulo="RECEITUÁRIO MÉDICO",
   sub="Receita manuscrita legível",
   meta=[("Paciente", "Vera Lúcia Santana"), ("Idade", "61 anos"), ("Documento", "DOC-D-2026-0056"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
@@ -854,7 +854,7 @@ c(id="D-MANUSCRITA", titulo="RECEITUÁRIO MÉDICO",
                 "Destino FARMACIA_HOSPITALAR"],
            obs="Diferencial opcional (OCR/visão). Não é critério de aceite obrigatório do MVP."))
 
-c(id="D-CARIMBO", titulo="LAUDO DE EXAME DE IMAGEM",
+c(id="Diferencial_CarimboSobreposto", titulo="LAUDO DE EXAME DE IMAGEM",
   sub="Laudo escaneado com carimbo sobreposto ao texto",
   meta=[("Paciente", "Hugo Leonardo Peixoto"), ("Idade", "46 anos"), ("Documento", "DOC-D-2026-0057"),
         ("Data", "18/10/2026"), ("Origem", "Digitalização externa")],
@@ -873,7 +873,7 @@ c(id="D-CARIMBO", titulo="LAUDO DE EXAME DE IMAGEM",
                 "Texto sob o carimbo permanece interpretável", "Destino PRONTUARIO_ELETRONICO"],
            obs="Diferencial opcional. Carimbo institucional aplicado sobre o rodapé do laudo."))
 
-c(id="D-HEMOGRAMA", titulo="LAUDO DE EXAME LABORATORIAL",
+c(id="Diferencial_HemogramaCompleto", titulo="LAUDO DE EXAME LABORATORIAL",
   sub="Tabela de hemograma com 20 analitos",
   meta=[("Paciente", "Otávio Luiz Cardoso"), ("Idade", "39 anos"), ("Documento", "DOC-D-2026-0058"),
         ("Data", "18/10/2026"), ("Origem", "Laboratório Central")],
@@ -914,7 +914,7 @@ c(id="D-HEMOGRAMA", titulo="LAUDO DE EXAME LABORATORIAL",
                 "Destino PRONTUARIO_ELETRONICO"],
            obs="Diferencial opcional. Tabela em fonte monoespaçada para testar leitura estruturada."))
 
-c(id="D-GUIA-TISS", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+c(id="Diferencial_GuiaTiss", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   sub="Guia no padrão TISS com códigos de procedimento",
   meta=[("Paciente", "Renata Aparecida Moura"), ("Idade", "38 anos"), ("Documento", "DOC-D-2026-0059"),
         ("Data", "18/10/2026"), ("Origem", "Ambulatório de Ginecologia")],
@@ -938,35 +938,35 @@ c(id="D-GUIA-TISS", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
 
 # ============================================================ BLOCO V (8) — erros
 V_CASES = [
-    dict(id="V-DOCX", arquivo="V-DOCX.docx", kind="docx",
+    dict(id="Validacao_ArquivoDocx", arquivo="Validacao_ArquivoDocx.docx", kind="docx",
          http=415, codigo="FORMATO_NAO_SUPORTADO",
          desc="Arquivo .docx válido: formato fora do allowlist do MVP.",
          aceita="Não deve chamar o modelo."),
-    dict(id="V-VAZIO", arquivo="V-VAZIO.pdf", kind="empty",
+    dict(id="Validacao_ArquivoVazio", arquivo="Validacao_ArquivoVazio.pdf", kind="empty",
          http=422, codigo="CAMPOS_INVALIDOS",
          desc="Arquivo de 0 bytes: rejeitar antes de chamar o modelo.",
          aceita="Arquivo vazio não pode ser processado."),
-    dict(id="V-JSON-MALFORMADO", arquivo="V-JSON-MALFORMADO.json", kind="badjson",
+    dict(id="Validacao_JsonMalformado", arquivo="Validacao_JsonMalformado.json", kind="badjson",
          http=400, codigo="REQUISICAO_INVALIDA",
          desc="JSON com vírgula final e sintaxe inválida.",
          aceita="Envelope não é interpretável."),
-    dict(id="V-ENVELOPE", arquivo="V-ENVELOPE.json", kind="emptyenvelope",
+    dict(id="Validacao_EnvelopeVazio", arquivo="Validacao_EnvelopeVazio.json", kind="emptyenvelope",
          http=422, codigo="CAMPOS_INVALIDOS",
          desc="Envelope JSON vazio, sem campos obrigatórios.",
          aceita="Faltam tipo_arquivo e conteúdo."),
-    dict(id="V-SEM-CONTEUDO", arquivo="V-SEM-CONTEUDO.http", kind="multipart",
+    dict(id="Validacao_SemConteudo", arquivo="Validacao_SemConteudo.http", kind="multipart",
          http=422, codigo="CAMPOS_INVALIDOS",
          desc="Requisição sem arquivo e sem documento_texto.",
          aceita="Requisição válida em sintaxe, vazia em conteúdo."),
-    dict(id="V-ZIP", arquivo="V-ZIP.zip", kind="zip",
+    dict(id="Validacao_ArquivoZip", arquivo="Validacao_ArquivoZip.zip", kind="zip",
          http=415, codigo="FORMATO_NAO_SUPORTADO",
          desc="Arquivo .zip: formato não suportado.",
          aceita="Não deve descompactar nem chamar o modelo."),
-    dict(id="V-GRANDE", arquivo="V-GRANDE.pdf", kind="big",
+    dict(id="Validacao_ArquivoGrande", arquivo="Validacao_ArquivoGrande.pdf", kind="big",
          http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
          desc="Arquivo de 25 MB: acima do limite configurado (limite ainda pendente na spec).",
          aceita="Rejeitar pelo tamanho antes de qualquer inferência."),
-    dict(id="V-MIME", arquivo="V-MIME.pdf", kind="fakemime",
+    dict(id="Validacao_MimeInvalido", arquivo="Validacao_MimeInvalido.pdf", kind="fakemime",
          http=415, codigo="MIME_INVALIDO (ou 422)",
          desc="Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.",
          aceita="Validar o conteúdo, não apenas a extensão."),
@@ -1250,16 +1250,16 @@ def make_handwritten(case, jpg_path, pdf_path):
     image_only_pdf(jpg_path, pdf_path)
 
 
-def expected_json(case):
+def expected_json(case, base="catalogo"):
     e = case["exp"]
     out = {
         "fixture_id": case["id"],
         "documento_ficticio": True,
         "formatos_disponiveis": ["TXT", "PDF", "JPG"],
         "renditions": {
-            "txt": f"{case['id']}/{case['id']}.txt",
-            "pdf": f"{case['id']}/{case['id']}.pdf",
-            "jpg": f"{case['id']}/{case['id']}.jpg",
+            "txt": f"{base}/{case['id']}/{case['id']}.txt",
+            "pdf": f"{base}/{case['id']}/{case['id']}.pdf",
+            "jpg": f"{base}/{case['id']}/{case['id']}.jpg",
         },
         "classificacao_esperada": {
             "tipo_documento": e["tipo"],

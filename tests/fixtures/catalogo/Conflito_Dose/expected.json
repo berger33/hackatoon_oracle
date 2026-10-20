@@ -1,0 +1,66 @@
+{
+  "fixture_id": "Conflito_Dose",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Conflito_Dose/Conflito_Dose.txt",
+    "pdf": "catalogo/Conflito_Dose/Conflito_Dose.pdf",
+    "jpg": "catalogo/Conflito_Dose/Conflito_Dose.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RECEITUARIO_MEDICO",
+    "especialidade": [
+      "Cardiologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Neusa Ferreira Lima",
+      "idade": 73
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Hipertensão arterial sistêmica",
+    "cid": "I10",
+    "medicamentos": [
+      "Losartana potássica 500 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Dose suspeita sinalizada sem alterar o valor (RF-16)",
+    "Valor original 500 mg preservado",
+    "Revisão humana obrigatória"
+  ],
+  "observacoes": "Depende da tabela de doses de referência aprovada pela equipe.",
+  "conflitos_esperados": [
+    {
+      "tipo": "DOSE_SUSPEITA",
+      "campos": [
+        "medicamentos[0].dose"
+      ],
+      "gravidade": "ALTA",
+      "descricao": "Losartana 500 mg excede a dose usual (50–100 mg)"
+    }
+  ]
+}

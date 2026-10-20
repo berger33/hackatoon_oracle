@@ -41,7 +41,7 @@ Tudo abaixo vem da especificação funcional v1.0 e define as dimensões do cat�
 
 ### Duas leituras importantes
 
-1. **`OUTRO` e `NAO_IDENTIFICADO` são resultados de classificação, não tipos que se "escrevem".** Você não cria um atestado "não identificado": você cria um documento fora da taxonomia (declaração de acompanhante, relatório de enfermagem) ou um documento ilegível, e o sistema deve devolver `OUTRO` ou `NAO_IDENTIFICADO`. Por isso o bloco M tem 3 arquivos para cada um: são **testes negativos de classificação**, não documentos clínicos válidos.
+1. **`OUTRO` e `NAO_IDENTIFICADO` são resultados de classificação, não tipos que se "escrevem".** Você não cria um atestado "não identificado": você cria um documento fora da taxonomia (declaração de acompanhante, relatório de enfermagem) ou um documento ilegível, e o sistema deve devolver `OUTRO` ou `NAO_IDENTIFICADO`. Por isso o bloco Matriz tem 3 arquivos para cada um: são **testes negativos de classificação**, não documentos clínicos válidos.
 2. **JSON não é um tipo de documento.** O JSON é o envelope da API (`documento_texto`, `metadados`, `canal_origem`). Um texto enviado como JSON continua sendo um documento de texto. Não é preciso criar "um JSON por tipo".
 
 ---
@@ -64,152 +64,152 @@ Um mesmo arquivo pode servir a vários **casos de teste** (submissão 202, polli
 
 | Bloco | Para que serve | Arquivos | Acumulado |
 | --- | --- | ---: | ---: |
-| **M** | Matriz 8 tipos × 3 formatos | 24 | 24 |
-| **A** | Ausência de campos (5 que revisam + 3 que não revisam) | 8 | 32 |
-| **B** | Fronteira do limiar (0,84 e 0,85) | 2 | 34 |
-| **C** | Conflitos, contradições e alto risco | 5 | 39 |
-| **S** | Urgência + ambiguidade simultâneas | 2 | 41 |
-| **Q** | Qualidade, ilegibilidade e PDFs especiais | 8 | 49 |
-| **V** | Negativos técnicos de entrada | 8 | 57 |
-| **E** | PDF digitalizado para os 6 tipos restantes | 6 | 63 |
-| **D** | Diferenciais opcionais | 4 | **67** |
+| **Matriz** | Tipos × formatos | 24 | 24 |
+| **Ausencia** | Campos ausentes (5 que revisam + 3 que não revisam) | 8 | 32 |
+| **Borda** | Fronteira do limiar (0,84 e 0,85) | 2 | 34 |
+| **Conflito** | Conflitos, contradições e alto risco | 5 | 39 |
+| **Simultaneo** | Urgência + ambiguidade simultâneas | 2 | 41 |
+| **Qualidade** | Ilegibilidade e PDFs especiais | 8 | 49 |
+| **Validacao** | Negativos técnicos de entrada | 8 | 57 |
+| **Escaneado** | PDF digitalizado para os 6 tipos restantes | 6 | 63 |
+| **Diferencial** | Itens opcionais | 4 | **67** |
 
 ---
 
-## 5. Bloco M — Matriz tipo × formato (24)
+## 5. Bloco Matriz — tipo × formato (24)
 
 Composição: 6 tipos clínicos × 3 formatos = 18; `OUTRO` × 3 = 3; `NAO_IDENTIFICADO` × 3 = 3.
 
 Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF digitalizado tem bloco próprio (Q e E), porque o caminho de leitura é diferente.
 
-#### Bloco M — Matriz tipo × formato (24)
+#### Bloco Matriz — tipo × formato (24)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `M-REC-PDF` | RECEITUARIO_MEDICO | PDF | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita médica de rotina, 2 medicamentos, paciente e CRM completos, legível. |
-| `M-REC-IMG` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
-| `M-REC-TXT` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Texto de receita de rotina com medicamento, dose, via e frequência explícitos. |
-| `M-LAB-PDF` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Hemograma de rotina com resultados nominais, sem medicamentos. |
-| `M-LAB-IMG` | LAUDO_EXAME_LABORATORIAL | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de laudo laboratorial impresso, boa qualidade, rotina. |
-| `M-LAB-TXT` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo laboratorial com exames realizados e ausência de CID (não exige revisão). |
-| `M-IMG-PDF` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
-| `M-IMG-IMG` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
-| `M-IMG-TXT` | LAUDO_EXAME_IMAGEM | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo de ultrassom de rotina, sem sinais de urgência. |
-| `M-GUI-PDF` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de solicitação de ressonância eletiva, diagnóstico e CID explícitos. |
-| `M-GUI-IMG` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de guia com pedido de urgência e justificativa clínica crítica. |
-| `M-GUI-TXT` | GUIA_PROCEDIMENTO | TEXTO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Texto de guia de procedimento eletivo, sem sinais de risco. |
-| `M-ALT-PDF` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta completo: diagnóstico, CID, medicações de alta e orientações. |
-| `M-ALT-IMG` | RELATORIO_ALTA_INTERNACAO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de relatório de internação impresso, rotina e legível. |
-| `M-ALT-TXT` | RELATORIO_ALTA_INTERNACAO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto de relatório de alta truncado, sem diagnóstico/hipótese: ausência obrigatória. |
-| `M-ATE-PDF` | ATESTADO_MEDICO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado de afastamento de 3 dias, com CID e CRM completos. |
-| `M-ATE-IMG` | ATESTADO_MEDICO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de atestado com carimbo e assinatura, dados legíveis. |
-| `M-ATE-TXT` | ATESTADO_MEDICO | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de atestado de comparecimento, sem exames e sem medicamentos (não exige revisão). |
-| `M-OUT-PDF` | OUTRO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Declaração de comparecimento de acompanhante: fora da taxonomia, destino não mapeado. |
-| `M-OUT-IMG` | OUTRO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto de relatório de enfermagem: fora da taxonomia de documentos clínicos do MVP. |
-| `M-OUT-TXT` | OUTRO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto administrativo de agendamento, sem dados clínicos: deve resultar em OUTRO + revisão. |
-| `M-NID-PDF` | NAO_IDENTIFICADO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | PDF escaneado ilegível (manchas/baixa qualidade): NAO_IDENTIFICADO, sem inventar dados. |
-| `M-NID-IMG` | NAO_IDENTIFICADO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto totalmente desfocada de um documento: NAO_IDENTIFICADO e revisão obrigatória. |
-| `M-NID-TXT` | NAO_IDENTIFICADO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto genérico sem conteúdo clínico (lista de compras): NAO_IDENTIFICADO e revisão. |
+| `Matriz_Receituario_Pdf` | RECEITUARIO_MEDICO | PDF | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita médica de rotina, 2 medicamentos, paciente e CRM completos, legível. |
+| `Matriz_Receituario_Imagem` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
+| `Matriz_Receituario_Texto` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Texto de receita de rotina com medicamento, dose, via e frequência explícitos. |
+| `Matriz_LaudoLaboratorial_Pdf` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Hemograma de rotina com resultados nominais, sem medicamentos. |
+| `Matriz_LaudoLaboratorial_Imagem` | LAUDO_EXAME_LABORATORIAL | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de laudo laboratorial impresso, boa qualidade, rotina. |
+| `Matriz_LaudoLaboratorial_Texto` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo laboratorial com exames realizados e ausência de CID (não exige revisão). |
+| `Matriz_LaudoDeImagem_Pdf` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
+| `Matriz_LaudoDeImagem_Imagem` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
+| `Matriz_LaudoDeImagem_Texto` | LAUDO_EXAME_IMAGEM | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo de ultrassom de rotina, sem sinais de urgência. |
+| `Matriz_Guia_Pdf` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de solicitação de ressonância eletiva, diagnóstico e CID explícitos. |
+| `Matriz_Guia_Imagem` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de guia com pedido de urgência e justificativa clínica crítica. |
+| `Matriz_Guia_Texto` | GUIA_PROCEDIMENTO | TEXTO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Texto de guia de procedimento eletivo, sem sinais de risco. |
+| `Matriz_RelatorioDeAlta_Pdf` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta completo: diagnóstico, CID, medicações de alta e orientações. |
+| `Matriz_RelatorioDeAlta_Imagem` | RELATORIO_ALTA_INTERNACAO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de relatório de internação impresso, rotina e legível. |
+| `Matriz_RelatorioDeAlta_Texto` | RELATORIO_ALTA_INTERNACAO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto de relatório de alta truncado, sem diagnóstico/hipótese: ausência obrigatória. |
+| `Matriz_Atestado_Pdf` | ATESTADO_MEDICO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado de afastamento de 3 dias, com CID e CRM completos. |
+| `Matriz_Atestado_Imagem` | ATESTADO_MEDICO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de atestado com carimbo e assinatura, dados legíveis. |
+| `Matriz_Atestado_Texto` | ATESTADO_MEDICO | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de atestado de comparecimento, sem exames e sem medicamentos (não exige revisão). |
+| `Matriz_Outro_Pdf` | OUTRO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Declaração de comparecimento de acompanhante: fora da taxonomia, destino não mapeado. |
+| `Matriz_Outro_Imagem` | OUTRO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto de relatório de enfermagem: fora da taxonomia de documentos clínicos do MVP. |
+| `Matriz_Outro_Texto` | OUTRO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto administrativo de agendamento, sem dados clínicos: deve resultar em OUTRO + revisão. |
+| `Matriz_NaoIdentificado_Pdf` | NAO_IDENTIFICADO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | PDF escaneado ilegível (manchas/baixa qualidade): NAO_IDENTIFICADO, sem inventar dados. |
+| `Matriz_NaoIdentificado_Imagem` | NAO_IDENTIFICADO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto totalmente desfocada de um documento: NAO_IDENTIFICADO e revisão obrigatória. |
+| `Matriz_NaoIdentificado_Texto` | NAO_IDENTIFICADO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Texto genérico sem conteúdo clínico (lista de compras): NAO_IDENTIFICADO e revisão. |
 
-#### Bloco A — Ausência de campos (8)
-
-| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `A-PAC-NOME` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita sem nome do paciente, com todos os demais campos presentes. |
-| `A-PAC-IDADE` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita sem idade do paciente, com nome presente. |
-| `A-MED-NOME` | LAUDO_EXAME_LABORATORIAL | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo sem nome do médico solicitante, mantendo CRM preenchido. |
-| `A-MED-CRM` | LAUDO_EXAME_LABORATORIAL | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo sem CRM do solicitante, mantendo nome preenchido. |
-| `A-DIAG` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia sem diagnóstico/hipótese diagnóstica. |
-| `A-CID-SO` | LAUDO_EXAME_IMAGEM | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo com diagnóstico explícito mas sem CID: ausência de CID isolada NÃO exige revisão. |
-| `A-MEDIC-SO` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo sem medicamentos (lista vazia): NÃO exige revisão por si só. |
-| `A-EXAMES-SO` | ATESTADO_MEDICO | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado sem exames: NÃO exige revisão por si só. |
-
-#### Bloco B — Limiar de confiança (2)
+#### Bloco Ausencia — campos ausentes (8)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `B-084` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Score combinado forçado em 0,84 (< 0,85): revisão obrigatória. Exige stub de score. |
-| `B-085` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Score combinado exatamente 0,85: NÃO revisa por esse critério isolado. Exige stub de score. |
+| `Ausencia_Paciente_Nome` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita sem nome do paciente, com todos os demais campos presentes. |
+| `Ausencia_Paciente_Idade` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita sem idade do paciente, com nome presente. |
+| `Ausencia_Medico_Nome` | LAUDO_EXAME_LABORATORIAL | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo sem nome do médico solicitante, mantendo CRM preenchido. |
+| `Ausencia_Medico_Crm` | LAUDO_EXAME_LABORATORIAL | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo sem CRM do solicitante, mantendo nome preenchido. |
+| `Ausencia_Diagnostico` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia sem diagnóstico/hipótese diagnóstica. |
+| `Ausencia_SomenteCid` | LAUDO_EXAME_IMAGEM | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo com diagnóstico explícito mas sem CID: ausência de CID isolada NÃO exige revisão. |
+| `Ausencia_SomenteMedicamentos` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo sem medicamentos (lista vazia): NÃO exige revisão por si só. |
+| `Ausencia_SomenteExames` | ATESTADO_MEDICO | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado sem exames: NÃO exige revisão por si só. |
 
-#### Bloco C — Conflitos e risco (5)
-
-| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `C-CID-CONFLITO` | LAUDO_EXAME_IMAGEM | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Diagnóstico de lombalgia com CID de infarto agudo (I21): conflito explícito CID × diagnóstico. |
-| `C-DOSE` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor. |
-| `C-PRIORIDADE` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
-| `C-DADOS` | RELATORIO_ALTA_INTERNACAO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna. |
-| `C-ALTO-RISCO` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
-
-#### Bloco S — Urgência + ambiguidade (2)
+#### Bloco Borda — limiar de confiança (2)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `S-URG-ILEGIVEL` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto de receita urgente parcialmente ilegível: dois destinos, alerta e revisão simultâneos. |
-| `S-URG-SCORE` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo legível com urgência e score forçado em 0,70: dois destinos e alerta. Exige stub de score. |
+| `Borda_Score_084` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Score combinado forçado em 0,84 (< 0,85): revisão obrigatória. Exige stub de score. |
+| `Borda_Score_085` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Score combinado exatamente 0,85: NÃO revisa por esse critério isolado. Exige stub de score. |
 
-#### Bloco Q — Qualidade, ilegibilidade e PDFs especiais (8)
-
-| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `Q-FOTO-DESFOCO` | NAO_IDENTIFICADO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita manuscrita muito desfocada: não preencher lacunas, encaminhar para revisão. |
-| `Q-FOTO-ROTACAO` | LAUDO_EXAME_IMAGEM | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo fotografado com rotação de 90 graus: testa robustez do pipeline multimodal. |
-| `Q-FOTO-CORTADA` | GUIA_PROCEDIMENTO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia com metade da página fora do enquadramento, sem CRM: ausência obrigatória. |
-| `Q-FOTO-BAIXA` | ATESTADO_MEDICO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados. |
-| `Q-PDF-SEM-TEXTO` | LAUDO_EXAME_IMAGEM | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado. |
-| `Q-PDF-MULTIPAGINA` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec. |
-| `Q-PDF-SENHA` | RECEITUARIO_MEDICO | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar). |
-| `Q-PDF-CORROMPIDO` | LAUDO_EXAME_LABORATORIAL | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta. |
-
-#### Bloco V — Negativos técnicos de entrada (8)
+#### Bloco Conflito — contradições e risco (5)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `V-DOCX` | N/A | DOCX | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .docx válido: formato fora do allowlist do MVP. |
-| `V-VAZIO` | N/A | ARQUIVO_0KB | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Arquivo de 0 bytes: rejeitar antes de chamar o modelo. |
-| `V-JSON-MALFORMADO` | N/A | JSON | ERRO | N/A | 400 REQUISICAO_INVALIDA | NAO | JSON com vírgula final/sintaxe inválida. |
-| `V-ENVELOPE` | N/A | JSON | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Envelope JSON vazio ou sem campos obrigatórios. |
-| `V-SEM-CONTEUDO` | N/A | MULTIPART | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
-| `V-ZIP` | N/A | ZIP | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
-| `V-GRANDE` | N/A | ARQUIVO_25MB | ERRO | N/A | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
-| `V-MIME` | N/A | PDF_FALSO | ERRO | N/A | 415/422 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
+| `Conflito_Cid_Diagnostico` | LAUDO_EXAME_IMAGEM | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Diagnóstico de lombalgia com CID de infarto agudo (I21): conflito explícito CID × diagnóstico. |
+| `Conflito_Dose` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor. |
+| `Conflito_Prioridade` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
+| `Conflito_Dados` | RELATORIO_ALTA_INTERNACAO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna. |
+| `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
 
-#### Bloco E — PDFs digitalizados dos 6 tipos restantes (6)
+#### Bloco Simultaneo — urgência + ambiguidade (2)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `E-REC-PDFSCAN` | RECEITUARIO_MEDICO | PDF_DIGITALIZADO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita impressa escaneada em PDF (com camada de imagem), rotina. |
-| `E-LAB-PDFSCAN` | LAUDO_EXAME_LABORATORIAL | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo laboratorial escaneado em PDF, rotina. |
-| `E-GUI-PDFSCAN` | GUIA_PROCEDIMENTO | PDF_DIGITALIZADO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de procedimento escaneada em PDF, rotina. |
-| `E-ALT-PDFSCAN` | RELATORIO_ALTA_INTERNACAO | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta escaneado em PDF, rotina. |
-| `E-ATE-PDFSCAN` | ATESTADO_MEDICO | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado médico escaneado em PDF, rotina. |
-| `E-OUT-PDFSCAN` | OUTRO | PDF_DIGITALIZADO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Documento administrativo escaneado fora da taxonomia: OUTRO + revisão. |
+| `Simultaneo_Urgencia_Ilegivel` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Foto de receita urgente parcialmente ilegível: dois destinos, alerta e revisão simultâneos. |
+| `Simultaneo_Urgencia_Score` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo legível com urgência e score forçado em 0,70: dois destinos e alerta. Exige stub de score. |
 
-#### Bloco D — Diferenciais opcionais (4)
+#### Bloco Qualidade — ilegibilidade e PDFs especiais (8)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `D-MANUSCRITA` | RECEITUARIO_MEDICO | IMAGEM | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita manuscrita legível (letra de médico): diferencial de OCR/visão. |
-| `D-CARIMBO` | LAUDO_EXAME_IMAGEM | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo escaneado com carimbo/assinatura sobreposta ao texto. |
-| `D-HEMOGRAMA` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Tabela de hemograma com 20 analitos, unidades e valores de referência. |
-| `D-GUIA-TISS` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia no formato TISS com códigos de procedimento e autorização. |
+| `Qualidade_Foto_Desfocada` | NAO_IDENTIFICADO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita manuscrita muito desfocada: não preencher lacunas, encaminhar para revisão. |
+| `Qualidade_Foto_Rotacionada` | LAUDO_EXAME_IMAGEM | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo fotografado com rotação de 90 graus: testa robustez do pipeline multimodal. |
+| `Qualidade_Foto_Cortada` | GUIA_PROCEDIMENTO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia com metade da página fora do enquadramento, sem CRM: ausência obrigatória. |
+| `Qualidade_Foto_BaixoContraste` | ATESTADO_MEDICO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados. |
+| `Qualidade_Pdf_SemTexto` | LAUDO_EXAME_IMAGEM | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado. |
+| `Qualidade_Pdf_Multipagina` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec. |
+| `Qualidade_Pdf_ComSenha` | RECEITUARIO_MEDICO | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar). |
+| `Qualidade_Pdf_Corrompido` | LAUDO_EXAME_LABORATORIAL | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta. |
+
+#### Bloco Validacao — negativos técnicos de entrada (8)
+
+| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Validacao_ArquivoDocx` | N/A | DOCX | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .docx válido: formato fora do allowlist do MVP. |
+| `Validacao_ArquivoVazio` | N/A | ARQUIVO_0KB | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Arquivo de 0 bytes: rejeitar antes de chamar o modelo. |
+| `Validacao_JsonMalformado` | N/A | JSON | ERRO | N/A | 400 REQUISICAO_INVALIDA | NAO | JSON com vírgula final/sintaxe inválida. |
+| `Validacao_EnvelopeVazio` | N/A | JSON | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Envelope JSON vazio ou sem campos obrigatórios. |
+| `Validacao_SemConteudo` | N/A | MULTIPART | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
+| `Validacao_ArquivoZip` | N/A | ZIP | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
+| `Validacao_ArquivoGrande` | N/A | ARQUIVO_25MB | ERRO | N/A | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
+| `Validacao_MimeInvalido` | N/A | PDF_FALSO | ERRO | N/A | 415/422 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
+
+#### Bloco Escaneado — PDFs digitalizados dos 6 tipos restantes (6)
+
+| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Escaneado_Receituario_PdfDigitalizado` | RECEITUARIO_MEDICO | PDF_DIGITALIZADO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita impressa escaneada em PDF (com camada de imagem), rotina. |
+| `Escaneado_LaudoLaboratorial_PdfDigitalizado` | LAUDO_EXAME_LABORATORIAL | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo laboratorial escaneado em PDF, rotina. |
+| `Escaneado_Guia_PdfDigitalizado` | GUIA_PROCEDIMENTO | PDF_DIGITALIZADO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de procedimento escaneada em PDF, rotina. |
+| `Escaneado_RelatorioDeAlta_PdfDigitalizado` | RELATORIO_ALTA_INTERNACAO | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta escaneado em PDF, rotina. |
+| `Escaneado_Atestado_PdfDigitalizado` | ATESTADO_MEDICO | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado médico escaneado em PDF, rotina. |
+| `Escaneado_Outro_PdfDigitalizado` | OUTRO | PDF_DIGITALIZADO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Documento administrativo escaneado fora da taxonomia: OUTRO + revisão. |
+
+#### Bloco Diferencial — itens opcionais (4)
+
+| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Diferencial_ReceituarioManuscrito` | RECEITUARIO_MEDICO | IMAGEM | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita manuscrita legível (letra de médico): diferencial de OCR/visão. |
+| `Diferencial_CarimboSobreposto` | LAUDO_EXAME_IMAGEM | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo escaneado com carimbo/assinatura sobreposta ao texto. |
+| `Diferencial_HemogramaCompleto` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Tabela de hemograma com 20 analitos, unidades e valores de referência. |
+| `Diferencial_GuiaTiss` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia no formato TISS com códigos de procedimento e autorização. |
 
 ---
 
-## 6. Simulações operacionais (bloco F — 8 cenários, sem documentos novos)
+## 6. Simulações operacionais (bloco Simulacao — 8 cenários, sem documentos novos)
 
-Estas falhas não se testam com um documento novo: testam-se com **stub, flag de ambiente ou mock do adaptador**. Reutilize `M-IMG-PDF` (urgente) ou `M-REC-TXT` (rotina) como entrada.
+Estas falhas não se testam com um documento novo: testam-se com **stub, flag de ambiente ou mock do adaptador**. Reutilize `Matriz_LaudoDeImagem_Pdf` (urgente) ou `Matriz_Receituario_Texto` (rotina) como entrada.
 
 | ID | Falha simulada | Resultado esperado | Regra |
 | --- | --- | --- | --- |
-| `F-GEMINI-TIMEOUT` | Gemini não responde no timeout | Retry limitado; se persistir, `ERRO_PROCESSAMENTO` (ou `EM_REVISAO` se já houver sinal de risco) | RF-04, §12 |
-| `F-GEMINI-503` | Provedor indisponível (502/503/504) | Erro seguro, sem stack trace; possibilidade de reenvio | RF-04, §10.1 |
-| `F-GEMINI-JSON` | Resposta do modelo não valida no Pydantic | Reparo limitado; se falhar, fallback para revisão/erro | RF-14, §12 |
-| `F-GEMINI-CAMPO` | Campo desconhecido ou tipo errado na resposta | Não quebrar o consumidor; validar campos obrigatórios e enums | RF-14 |
-| `F-OCI-ORIGINAL` | OCI falha ao gravar o original | `ERRO_PERSISTENCIA`; **não** declarar recebimento durável | RF-28/RF-30, §12 |
-| `F-OCI-RESULTADO` | OCI falha ao gravar o resultado | `ERRO_PERSISTENCIA`; não marcar sucesso completo | RF-30, §12 |
-| `F-ALERTA` | Falha ao registrar o evento de alerta | Preservar a triagem urgente e registrar a falha do evento | §12 |
-| `F-RETRY` | Retries esgotados | Estado de erro observável + correlação; permitir reenvio | RF-24 |
+| `Simulacao_GeminiTimeout` | Gemini não responde no timeout | Retry limitado; se persistir, `ERRO_PROCESSAMENTO` (ou `EM_REVISAO` se já houver sinal de risco) | RF-04, §12 |
+| `Simulacao_GeminiIndisponivel` | Provedor indisponível (502/503/504) | Erro seguro, sem stack trace; possibilidade de reenvio | RF-04, §10.1 |
+| `Simulacao_GeminiJsonInvalido` | Resposta do modelo não valida no Pydantic | Reparo limitado; se falhar, fallback para revisão/erro | RF-14, §12 |
+| `Simulacao_GeminiCampoInvalido` | Campo desconhecido ou tipo errado na resposta | Não quebrar o consumidor; validar campos obrigatórios e enums | RF-14 |
+| `Simulacao_OciFalhaNoOriginal` | OCI falha ao gravar o original | `ERRO_PERSISTENCIA`; **não** declarar recebimento durável | RF-28/RF-30, §12 |
+| `Simulacao_OciFalhaNoResultado` | OCI falha ao gravar o resultado | `ERRO_PERSISTENCIA`; não marcar sucesso completo | RF-30, §12 |
+| `Simulacao_FalhaNoAlerta` | Falha ao registrar o evento de alerta | Preservar a triagem urgente e registrar a falha do evento | §12 |
+| `Simulacao_RetriesEsgotados` | Retries esgotados | Estado de erro observável + correlação; permitir reenvio | RF-24 |
 
 ---
 
@@ -219,18 +219,18 @@ Se o tempo apertar, produza **estes 12** primeiro. Eles cobrem os 15 critérios 
 
 | # | ID | Prova que… |
 | ---: | --- | --- |
-| 1 | `M-REC-TXT` | Texto é aceito e uma receita de rotina vai para `FARMACIA_HOSPITALAR` |
-| 2 | `M-REC-PDF` | PDF digital é aceito e classificado |
-| 3 | `M-REC-IMG` | Imagem é aceita e um sinal de urgência nunca vira rotina |
-| 4 | `M-IMG-PDF` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta |
-| 5 | `M-LAB-PDF` | Laudo laboratorial de rotina vai para `PRONTUARIO_ELETRONICO` |
-| 6 | `M-GUI-PDF` | Guia de procedimento vai para `AUDITORIA_AUTORIZACOES` |
-| 7 | `M-ALT-PDF` | Relatório de alta é classificado e extraído |
-| 8 | `M-ATE-TXT` | Atestado é classificado; ausência de exames não gera revisão |
-| 9 | `M-NID-IMG` | Documento ilegível vira `NAO_IDENTIFICADO` + revisão, sem dado inventado |
-| 10 | `M-OUT-TXT` | Documento fora da taxonomia vira `OUTRO` + revisão |
-| 11 | `A-PAC-NOME` | Ausência de campo obrigatório força `EM_REVISAO` |
-| 12 | `B-084` | Score abaixo de 0,85 força `EM_REVISAO` |
+| 1 | `Matriz_Receituario_Texto` | Texto é aceito e uma receita de rotina vai para `FARMACIA_HOSPITALAR` |
+| 2 | `Matriz_Receituario_Pdf` | PDF digital é aceito e classificado |
+| 3 | `Matriz_Receituario_Imagem` | Imagem é aceita e um sinal de urgência nunca vira rotina |
+| 4 | `Matriz_LaudoDeImagem_Pdf` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta |
+| 5 | `Matriz_LaudoLaboratorial_Pdf` | Laudo laboratorial de rotina vai para `PRONTUARIO_ELETRONICO` |
+| 6 | `Matriz_Guia_Pdf` | Guia de procedimento vai para `AUDITORIA_AUTORIZACOES` |
+| 7 | `Matriz_RelatorioDeAlta_Pdf` | Relatório de alta é classificado e extraído |
+| 8 | `Matriz_Atestado_Texto` | Atestado é classificado; ausência de exames não gera revisão |
+| 9 | `Matriz_NaoIdentificado_Imagem` | Documento ilegível vira `NAO_IDENTIFICADO` + revisão, sem dado inventado |
+| 10 | `Matriz_Outro_Texto` | Documento fora da taxonomia vira `OUTRO` + revisão |
+| 11 | `Ausencia_Paciente_Nome` | Ausência de campo obrigatório força `EM_REVISAO` |
+| 12 | `Borda_Score_084` | Score abaixo de 0,85 força `EM_REVISAO` |
 
 **Cobertura do kit:** 5 destinos, 3 formatos, 3 cenários, 8 classes de tipo, 1 ausência obrigatória e 1 caso de limiar.
 
@@ -247,9 +247,9 @@ O documento sozinho não é um teste. Para cada fixture funcional, produza tamb�
 | **Fonte editável** (`source/{ID}.md` ou `.docx`) | 59 | Markdown/DOCX a partir do qual o PDF e a imagem são gerados |
 | **Manifesto** | 1 | `tests/fixtures/manifest.csv` (este catálogo, em formato de máquina) |
 
-Para os 8 negativos do bloco V, o "expected" é um **envelope de erro** (HTTP + código funcional), não um JSON de triagem. Para o bloco F, o expected é o estado final após a falha simulada.
+Para os 8 negativos do bloco Validacao, o "expected" é um **envelope de erro** (HTTP + código funcional), não um JSON de triagem. Para o bloco Simulacao, o expected é o estado final após a falha simulada.
 
-**Não compare scores exatos.** O score autorrelatado pelo LLM não é probabilidade calibrada (RF-17). Compare faixas (`< 0,85`, `>= 0,85`, `== 0,85`) e, para os casos de borda B-084/B-085/S-URG-SCORE, use **stub de score** — sem isso o teste é intermitente e não serve como evidência.
+**Não compare scores exatos.** O score autorrelatado pelo LLM não é probabilidade calibrada (RF-17). Compare faixas (`< 0,85`, `>= 0,85`, `== 0,85`) e, para os casos de borda Borda_Score_084/Borda_Score_085/Simultaneo_Urgencia_Score, use **stub de score** — sem isso o teste é intermitente e não serve como evidência.
 
 ---
 
@@ -257,8 +257,8 @@ Para os 8 negativos do bloco V, o "expected" é um **envelope de erro** (HTTP + 
 
 1. **Somente dados fictícios**, conforme decisão confirmada da especificação (§15, item 5). Nada de nome, CPF, telefone, CRM ou e-mail de pessoa real.
 2. **Marca d'água** em toda página: `DOCUMENTO FICTÍCIO — USO EXCLUSIVO EM TESTES`.
-3. **Identidades consistentes**: um mesmo hospital fictício, um mesmo paciente por fixture e um mesmo médico por fixture. Se o paciente muda no meio do documento, isso deve ser um teste de contradição (C-DADOS), não um acidente.
-4. **Uma variável por vez**: cada fixture de borda parte de um documento "base" e altera **só** o atributo testado. Se `A-PAC-NOME` também estiver sem CRM, você não sabe qual regra disparou.
+3. **Identidades consistentes**: um mesmo hospital fictício, um mesmo paciente por fixture e um mesmo médico por fixture. Se o paciente muda no meio do documento, isso deve ser um teste de contradição (Conflito_Dados), não um acidente.
+4. **Uma variável por vez**: cada fixture de borda parte de um documento "base" e altera **só** o atributo testado. Se `Ausencia_Paciente_Nome` também estiver sem CRM, você não sabe qual regra disparou.
 5. **CRM no formato `número-UF`** (RF-09), com `numero` e `uf` separados na saída.
 6. **CID-10 só quando explícito** (RF-10). Ausência vira `null`, nunca sugestão.
 7. **Ground truth revisada por uma pessoa** antes de virar `expected.json`. Um expected errado é pior do que não ter teste.
@@ -273,15 +273,15 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 
 | Pendência | Impacto nos testes | Recomendação para o time |
 | --- | --- | --- |
-| Limite de tamanho, páginas, MIME, timeout e retry | `V-GRANDE`, `Q-PDF-MULTIPAGINA`, `F-*` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
-| Contrato final do upload (multipart × JSON) | `V-SEM-CONTEUDO`, `V-ENVELOPE`, `V-MIME` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
-| Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `C-CID-CONFLITO`, `C-DOSE`, `C-ALTO-RISCO` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
+| Limite de tamanho, páginas, MIME, timeout e retry | `Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina`, `Simulacao_*` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
+| Contrato final do upload (multipart × JSON) | `Validacao_SemConteudo`, `Validacao_EnvelopeVazio`, `Validacao_MimeInvalido` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
+| Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_AltoRisco` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
 | **Urgência isolada exige revisão?** | A tabela §8.2 diz "Sim, obrigatória" para urgência; o parágrafo seguinte diz que a revisão é obrigatória **quando coexiste** com ambiguidade/dado ausente/score baixo. A §5.3 inclui "encontrou urgência" em `EM_REVISAO`. O exemplo do `Projeto_oracle.pdf` mostra um caso urgente com `requer_auditoria_humana: false` e status `processado`, o que conflita com a spec. | Padronizar: urgência → `EM_REVISAO` + `FILA_URGENCIA_MEDICA` + alerta; `FILA_REVISAO_HUMANA` só entra quando houver ambiguidade/dado ausente/score baixo. Este catálogo segue a **especificação v1.0** (documento mais recente e normativo), não o exemplo do brief. Registrar a decisão antes de codificar. |
 | Autenticação e autorização | `403` e consulta por terceiros não têm contrato | Fora do MVP; se entrar, criar fixtures de acesso negado |
 | Política de retenção | Não afeta o conteúdo, mas afeta o teste de persistência | Definir antes de qualquer dado real (que não deve existir no MVP) |
-| Meta de latência e precisão | `F-GEMINI-TIMEOUT` e `F-RETRY` dependem do alvo | Medir o primeiro pipeline e então fixar a meta |
+| Meta de latência e precisão | `Simulacao_GeminiTimeout` e `Simulacao_RetriesEsgotados` dependem do alvo | Medir o primeiro pipeline e então fixar a meta |
 
-**Dica de implementação:** exponha um modo `FIXTURE_MODE` no adaptador Gemini que leia `score_classificacao` e `score_extracao` de um mapa fixo por `documento_id`. Isso torna B-084, B-085 e S-URG-SCORE determinísticos sem alterar a lógica de negócio.
+**Dica de implementação:** exponha um modo `FIXTURE_MODE` no adaptador Gemini que leia `score_classificacao` e `score_extracao` de um mapa fixo por `documento_id`. Isso torna Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score determinísticos sem alterar a lógica de negócio.
 
 ---
 
@@ -292,19 +292,33 @@ tests/fixtures/
 ├── manifest.csv                  # este catálogo em formato de máquina
 ├── README.md                     # regras, convenção de nomes e casos especiais
 ├── demo/                         # ✅ 12 casos de pitch
-│   ├── M-REC-TXT/
-│   │   ├── M-REC-TXT.txt
-│   │   ├── M-REC-TXT.pdf
-│   │   ├── M-REC-TXT.jpg
+│   ├── Matriz_Receituario_Texto/
+│   │   ├── Matriz_Receituario_Texto.txt
+│   │   ├── Matriz_Receituario_Texto.pdf
+│   │   ├── Matriz_Receituario_Texto.jpg
 │   │   └── expected.json
 │   └── ... (12 pastas)
 └── catalogo/                     # ✅ 55 casos restantes
     ├── README.md
-    ├── A-PAC-IDADE/ ...          # 47 casos funcionais com 4 arquivos cada
-    └── V-GRANDE/                 # 8 negativos técnicos com 1 arquivo inválido cada
+    ├── Ausencia_Paciente_Idade/ ...          # 47 casos funcionais com 4 arquivos cada
+    └── Validacao_ArquivoGrande/              # 8 negativos técnicos com 1 arquivo inválido cada
 ```
 
-**Nome do arquivo:** use o ID como prefixo e o formato como sufixo: `M-REC-PDF.pdf`, `M-REC-IMG.jpg`, `M-REC-TXT.txt`. O ID já é único e casa com o `manifest.csv` e o `expected/`.
+**Nome da pasta e do arquivo:** o ID é a própria pasta e o prefixo dos arquivos — `Bloco_Assunto_Detalhe`, sem abreviações e sem acentos. O formato entra apenas como sufixo do arquivo: `Matriz_Receituario_Pdf.pdf`, `Matriz_Receituario_Imagem.jpg`, `Matriz_Receituario_Texto.txt`. O ID é único e casa com o `manifest.csv` e o `expected.json`.
+
+| Bloco | Prefixo da pasta | Regra do restante do nome |
+| --- | --- | --- |
+| Matriz | `Matriz_` | tipo + formato (`Matriz_Guia_Imagem`) |
+| Ausencia | `Ausencia_` | sujeito + campo ausente (`Ausencia_Paciente_Nome`) |
+| Borda | `Borda_` | score testado (`Borda_Score_084`) |
+| Conflito | `Conflito_` | tipo de contradição (`Conflito_Dose`) |
+| Simultaneo | `Simultaneo_` | condição + condição (`Simultaneo_Urgencia_Ilegivel`) |
+| Qualidade | `Qualidade_` | origem + defeito (`Qualidade_Foto_Rotacionada`) |
+| Validacao | `Validacao_` | entrada inválida (`Validacao_ArquivoDocx`) |
+| Escaneado | `Escaneado_` | tipo + condição (`Escaneado_Guia_PdfDigitalizado`) |
+| Diferencial | `Diferencial_` | item opcional (`Diferencial_GuiaTiss`) |
+
+Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assunto — e nenhum nome depende de abreviação para ser entendido.
 
 ---
 
@@ -314,9 +328,9 @@ tests/fixtures/
 
 1. **Escolha a fonte**: escreva o conteúdo clínico em `source/{ID}.md`, com dados fictícios e marca d'água.
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.
-3. **Crie as bordas**: para cada fixture dos blocos A, B, C e S, remova ou altere **um único** campo em relação ao documento base.
+3. **Crie as bordas**: para cada fixture dos blocos Ausencia, Borda, Conflito e Simultaneo, remova ou altere **um único** campo em relação ao documento base.
 4. **Escreva o `expected.json`** com tipo, prioridade, destinos, `requer_auditoria_humana`, campos ausentes/incertos, status e regra acionada.
-5. **Rode o pipeline** e compare com o expected. Para os blocos V e F, compare o envelope de erro e o status, não o JSON de triagem.
+5. **Rode o pipeline** e compare com o expected. Para os blocos Validacao e Simulacao, compare o envelope de erro e o status, não o JSON de triagem.
 6. **Atualize o manifesto** se algum comportamento mudar — o `manifest.csv` é a fonte de verdade dos testes.
 
 ---
@@ -325,21 +339,21 @@ tests/fixtures/
 
 | Critério | Fixtures que comprovam |
 | --- | --- |
-| 1. Texto + 1 PDF + 1 imagem aceitos | `M-REC-TXT`, `M-REC-PDF`, `M-REC-IMG` |
+| 1. Texto + 1 PDF + 1 imagem aceitos | `Matriz_Receituario_Texto`, `Matriz_Receituario_Pdf`, `Matriz_Receituario_Imagem` |
 | 2. Documento padrão classificado e roteado | `M-REC-*`, `M-LAB-*`, `M-GUI-*`, `M-ALT-*`, `M-ATE-*` |
-| 3. Documento urgente com alerta | `M-IMG-PDF`, `M-IMG-IMG`, `M-GUI-IMG`, `C-ALTO-RISCO` |
-| 4. Documento ambíguo/ilegível em revisão | `M-NID-*`, `Q-FOTO-DESFOCO`, `M-ALT-TXT` |
-| 5. Ausência dos 5 campos obrigatórios | `A-PAC-NOME`, `A-PAC-IDADE`, `A-MED-NOME`, `A-MED-CRM`, `A-DIAG` |
+| 3. Documento urgente com alerta | `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Guia_Imagem`, `Conflito_AltoRisco` |
+| 4. Documento ambíguo/ilegível em revisão | `M-NID-*`, `Qualidade_Foto_Desfocada`, `Matriz_RelatorioDeAlta_Texto` |
+| 5. Ausência dos 5 campos obrigatórios | `Ausencia_Paciente_Nome`, `Ausencia_Paciente_Idade`, `Ausencia_Medico_Nome`, `Ausencia_Medico_Crm`, `Ausencia_Diagnostico` |
 | 6. Submissão 202 + consulta posterior | Qualquer fixture funcional (mesmo `documento_id`) |
-| 7. Evento urgente simulado, sem envio externo | `M-IMG-PDF`, `S-URG-*` |
-| 8. Score < 0,85 revisa; == 0,85 não revisa | `B-084`, `B-085` |
+| 7. Evento urgente simulado, sem envio externo | `Matriz_LaudoDeImagem_Pdf`, `S-URG-*` |
+| 8. Score < 0,85 revisa; == 0,85 não revisa | `Borda_Score_084`, `Borda_Score_085` |
 | 9. Campos ausentes não inferidos | `A-*`, `M-NID-*` |
-| 10. Persistência no OCI informada | `F-OCI-ORIGINAL`, `F-OCI-RESULTADO` + qualquer fixture |
+| 10. Persistência no OCI informada | `Simulacao_OciFalhaNoOriginal`, `Simulacao_OciFalhaNoResultado` + qualquer fixture |
 | 11. Histórico ordenado e JSON validado | Qualquer fixture funcional + `GET /historico` |
 | 12. Regras, versão, justificativa e destino rastreáveis | `C-*`, `S-*` |
-| 13. Interface mostra estados sem segredos | `M-*`, `F-*` |
+| 13. Interface mostra estados sem segredos | `M-*`, `Simulacao_*` |
 | 14. README + demonstração dos 3 cenários | Kit de demonstração (12) |
-| 15. Nenhum opcional declarado sem prova | Bloco D (se implementado) |
+| 15. Nenhum opcional declarado sem prova | Bloco Diferencial (se implementado) |
 
 ---
 

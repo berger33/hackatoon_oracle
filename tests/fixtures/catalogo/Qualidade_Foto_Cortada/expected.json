@@ -1,0 +1,56 @@
+{
+  "fixture_id": "Qualidade_Foto_Cortada",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Qualidade_Foto_Cortada/Qualidade_Foto_Cortada.txt",
+    "pdf": "catalogo/Qualidade_Foto_Cortada/Qualidade_Foto_Cortada.pdf",
+    "jpg": "catalogo/Qualidade_Foto_Cortada/Qualidade_Foto_Cortada.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "GUIA_PROCEDIMENTO",
+    "especialidade": [
+      "Endocrinologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Elaine Souza Barreto",
+      "idade": 36
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": null
+    },
+    "diagnostico": "Nódulo tireoidiano a esclarecer",
+    "cid": "E04.1",
+    "medicamentos": [],
+    "exames": [
+      "Punção aspirativa por agulha fina de tireoide"
+    ],
+    "urgencia": "NAO",
+    "campos_ausentes": [
+      "medico.crm"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Recorte remove o CRM da assinatura",
+    "Ausência de CRM força revisão",
+    "Demais campos permanecem extraíveis"
+  ],
+  "observacoes": "A imagem e o PDF mostram apenas a metade superior da página."
+}

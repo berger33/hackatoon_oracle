@@ -1,0 +1,57 @@
+{
+  "fixture_id": "Qualidade_Foto_Rotacionada",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Qualidade_Foto_Rotacionada/Qualidade_Foto_Rotacionada.txt",
+    "pdf": "catalogo/Qualidade_Foto_Rotacionada/Qualidade_Foto_Rotacionada.pdf",
+    "jpg": "catalogo/Qualidade_Foto_Rotacionada/Qualidade_Foto_Rotacionada.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "LAUDO_EXAME_IMAGEM",
+    "especialidade": [
+      "Radiologia",
+      "Gastroenterologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Cláudio Roberto Farias",
+      "idade": 48
+    },
+    "medico": {
+      "nome": "Dr. Marcos Vinícius Tavares",
+      "crm": {
+        "numero": "176543",
+        "uf": "MG"
+      }
+    },
+    "diagnostico": "Colelitíase sem sinais inflamatórios agudos",
+    "cid": null,
+    "medicamentos": [],
+    "exames": [
+      "Ultrassonografia de abdome total"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Rotação de 90° deve ser tolerada pelo pipeline multimodal",
+    "Extração correta apesar da orientação",
+    "Destino PRONTUARIO_ELETRONICO"
+  ],
+  "observacoes": "A imagem e o PDF estão rotacionados; o texto permanece legível."
+}

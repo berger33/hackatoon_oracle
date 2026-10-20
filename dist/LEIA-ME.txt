@@ -1,6 +1,6 @@
 MEDIFLOW — PACOTE COMPLETO DE DOCUMENTOS E FIXTURES
 Hackathon ONE G10 · Oracle Next Education & Alura
-Gerado em 19/10/2026
+Gerado em 20/10/2026
 
 O QUE TEM NESTE ZIP
 -------------------
@@ -29,9 +29,13 @@ PDFs de origem (base documental do hackathon)
 COMO USAR
 ---------
 1. Envie {ID}.txt, {ID}.pdf e {ID}.jpg como três triagens independentes.
-2. Compare a resposta com expected/{ID}.json (no mesmo diretório do fixture).
+2. Compare a resposta com o expected.json (dentro da mesma pasta do fixture).
 3. Compare por asserção, nunca por score exato do modelo.
-4. Nos casos B-084, B-085 e S-URG-SCORE, ative o modo de fixture para forçar os scores.
+4. Nos casos Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score, ative o modo de fixture para forçar os scores.
+
+Os nomes das pastas não usam abreviações: Bloco_Assunto_Detalhe, por exemplo
+Matriz_Guia_Imagem (bloco Matriz, tipo guia, formato imagem). Os nove blocos são
+Matriz, Ausencia, Borda, Conflito, Simultaneo, Qualidade, Validacao, Escaneado e Diferencial.
 
 IMPORTANTE
 ----------
@@ -40,9 +44,9 @@ a pessoa real. Nenhum dado de paciente real é usado. Nenhuma credencial está n
 
 CASOS ESPECIAIS
 ---------------
-V-GRANDE.pdf         25 MB, testa limite de tamanho
-Q-PDF-SENHA.pdf      protegido por AES-256; senha de teste: mediflow123
-Q-PDF-CORROMPIDO.pdf truncado em 40% do tamanho original
-Q-PDF-MULTIPAGINA    7 páginas
-Q-FOTO-ROTACAO       imagem e PDF girados 90 graus
-M-NID-* e Q-FOTO-DESFOCO  documentos ilegíveis de propósito
+Validacao_ArquivoGrande.pdf          25 MB, testa limite de tamanho
+Qualidade_Pdf_ComSenha.pdf           protegido por AES-256; senha de teste: mediflow123
+Qualidade_Pdf_Corrompido.pdf         truncado em 40% do tamanho original
+Qualidade_Pdf_Multipagina.pdf        7 páginas
+Qualidade_Foto_Rotacionada.jpg/.pdf  imagem e PDF girados 90 graus
+Matriz_NaoIdentificado_* e Qualidade_Foto_Desfocada  documentos ilegíveis de propósito

@@ -256,7 +256,7 @@ def C(**kw):
 
 
 C(
-    id="M-REC-TXT",
+    id="Matriz_Receituario_Texto",
     title="RECEITUÁRIO MÉDICO",
     subtitle="Prescrição ambulatorial — rotina",
     meta=[("Paciente", "Marina Alves Ferreira"), ("Idade", "34 anos"),
@@ -283,7 +283,7 @@ C(
 )
 
 C(
-    id="M-REC-PDF",
+    id="Matriz_Receituario_Pdf",
     title="RECEITUÁRIO MÉDICO",
     subtitle="Prescrição ambulatorial — rotina com dois medicamentos",
     meta=[("Paciente", "Rafael Nunes de Souza"), ("Idade", "58 anos"),
@@ -310,7 +310,7 @@ C(
 )
 
 C(
-    id="M-REC-IMG",
+    id="Matriz_Receituario_Imagem",
     title="RECEITUÁRIO MÉDICO",
     subtitle="Prescrição em pronto-socorro — sinal de urgência",
     meta=[("Paciente", "João Batista Nogueira"), ("Idade", "67 anos"),
@@ -339,7 +339,7 @@ C(
 )
 
 C(
-    id="M-IMG-PDF",
+    id="Matriz_LaudoDeImagem_Pdf",
     title="LAUDO DE EXAME DE IMAGEM",
     subtitle="Tomografia computadorizada — pronto-socorro",
     meta=[("Paciente", "Carlos Eduardo Mendes"), ("Idade", "52 anos"),
@@ -369,7 +369,7 @@ C(
 )
 
 C(
-    id="M-LAB-PDF",
+    id="Matriz_LaudoLaboratorial_Pdf",
     title="LAUDO DE EXAME LABORATORIAL",
     subtitle="Hemograma completo — rotina",
     meta=[("Paciente", "Ana Paula Ribeiro"), ("Idade", "41 anos"),
@@ -396,7 +396,7 @@ C(
 )
 
 C(
-    id="M-GUI-PDF",
+    id="Matriz_Guia_Pdf",
     title="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
     subtitle="Ressonância magnética — eletiva",
     meta=[("Paciente", "Luciana Martins Costa"), ("Idade", "46 anos"),
@@ -423,7 +423,7 @@ C(
 )
 
 C(
-    id="M-ALT-PDF",
+    id="Matriz_RelatorioDeAlta_Pdf",
     title="RELATÓRIO DE ALTA HOSPITALAR",
     subtitle="Internação clínica — alta por melhora",
     meta=[("Paciente", "Beatriz Gonçalves Pereira"), ("Idade", "63 anos"),
@@ -453,7 +453,7 @@ C(
 )
 
 C(
-    id="M-ATE-TXT",
+    id="Matriz_Atestado_Texto",
     title="ATESTADO MÉDICO",
     subtitle="Atestado de comparecimento",
     meta=[("Paciente", "Thiago Almeida Santos"), ("Idade", "29 anos"),
@@ -481,7 +481,7 @@ C(
 )
 
 C(
-    id="M-NID-IMG",
+    id="Matriz_NaoIdentificado_Imagem",
     title="REGISTRO CLÍNICO",
     subtitle="Documento recebido com baixa qualidade",
     meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-NID-2026-0009"),
@@ -506,7 +506,7 @@ C(
 )
 
 C(
-    id="M-OUT-TXT",
+    id="Matriz_Outro_Texto",
     title="COMUNICAÇÃO ADMINISTRATIVA",
     subtitle="Mensagem do setor de agendamento",
     meta=[("Destinatário", "Paciente cadastrado"), ("Documento", "DOC-OUT-2026-0010"),
@@ -530,7 +530,7 @@ C(
 )
 
 C(
-    id="A-PAC-NOME",
+    id="Ausencia_Paciente_Nome",
     title="RECEITUÁRIO MÉDICO",
     subtitle="Prescrição ambulatorial — campo obrigatório ausente",
     meta=[("Paciente", "________________________"), ("Idade", "44 anos"),
@@ -558,7 +558,7 @@ C(
 )
 
 C(
-    id="B-084",
+    id="Borda_Score_084",
     title="RECEITUÁRIO MÉDICO",
     subtitle="Prescrição ambulatorial — teste de limiar de confiança",
     meta=[("Paciente", "Fernanda Lima Rocha"), ("Idade", "37 anos"),
@@ -587,16 +587,16 @@ C(
 )
 
 
-def expected_json(case):
+def expected_json(case, base="demo"):
     e = case["expected"]
     return {
         "fixture_id": case["id"],
         "documento_ficticio": True,
         "formatos_disponiveis": ["TXT", "PDF", "JPG"],
         "renditions": {
-            "txt": f"{case['id']}/{case['id']}.txt",
-            "pdf": f"{case['id']}/{case['id']}.pdf",
-            "jpg": f"{case['id']}/{case['id']}.jpg",
+            "txt": f"{base}/{case['id']}/{case['id']}.txt",
+            "pdf": f"{base}/{case['id']}/{case['id']}.pdf",
+            "jpg": f"{base}/{case['id']}/{case['id']}.jpg",
         },
         "classificacao_esperada": {
             "tipo_documento": e["tipo_documento"],
@@ -628,7 +628,7 @@ def main():
         jpg = os.path.join(d, f"{case['id']}.jpg")
 
         write_txt(case, txt)
-        if case["id"] == "M-NID-IMG":
+        if case["id"] == "Matriz_NaoIdentificado_Imagem":
             make_degraded(case, pdf, jpg)
         else:
             draw_pdf(case, pdf)

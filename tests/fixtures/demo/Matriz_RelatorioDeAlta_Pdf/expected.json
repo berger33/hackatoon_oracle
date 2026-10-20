@@ -1,0 +1,60 @@
+{
+  "fixture_id": "Matriz_RelatorioDeAlta_Pdf",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "demo/Matriz_RelatorioDeAlta_Pdf/Matriz_RelatorioDeAlta_Pdf.txt",
+    "pdf": "demo/Matriz_RelatorioDeAlta_Pdf/Matriz_RelatorioDeAlta_Pdf.pdf",
+    "jpg": "demo/Matriz_RelatorioDeAlta_Pdf/Matriz_RelatorioDeAlta_Pdf.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RELATORIO_ALTA_INTERNACAO",
+    "especialidade": [
+      "Clínica Médica",
+      "Pneumologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Beatriz Gonçalves Pereira",
+      "idade": 63
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Pneumonia adquirida na comunidade",
+    "cid": "J18.9",
+    "medicamentos": [
+      "Amoxicilina + clavulanato 875/125 mg"
+    ],
+    "exames": [
+      "Tomografia de tórax"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Relatório de alta multimodal",
+    "Diagnóstico, CID e medicação de alta extraídos",
+    "Destino PRONTUARIO_ELETRONICO",
+    "Sem revisão"
+  ],
+  "observacoes": ""
+}

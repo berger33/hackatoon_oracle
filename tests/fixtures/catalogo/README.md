@@ -1,39 +1,41 @@
 # Catálogo — 55 fixtures
 
-Casos que complementam o kit de demonstração. Cada pasta `{ID}/` contém `{ID}.txt`, `{ID}.pdf`, `{ID}.jpg` e `expected.json`, exceto os negativos técnicos do bloco V.
+Casos que complementam o kit de demonstração. Cada pasta `{ID}/` contém `{ID}.txt`, `{ID}.pdf`, `{ID}.jpg` e `expected.json`, exceto os negativos técnicos do bloco **Validacao**.
+
+O nome de cada pasta segue o padrão `Bloco_Assunto_Detalhe`, sem abreviações: começa pelo nome do bloco de teste, e por isso a ordenação alfabética do diretório já agrupa os casos por assunto.
 
 | Bloco | IDs | Foco |
 | --- | --- | --- |
-| **M** | `M-LAB-IMG`, `M-LAB-TXT`, `M-IMG-IMG`, `M-IMG-TXT`, `M-GUI-IMG`, `M-GUI-TXT`, `M-ALT-IMG`, `M-ALT-TXT`, `M-ATE-PDF`, `M-ATE-IMG`, `M-OUT-PDF`, `M-OUT-IMG`, `M-NID-PDF`, `M-NID-TXT` | Fecha a matriz 8 tipos × 3 formatos |
-| **A** | `A-PAC-IDADE`, `A-MED-NOME`, `A-MED-CRM`, `A-DIAG`, `A-CID-SO`, `A-MEDIC-SO`, `A-EXAMES-SO` | Ausência de campo: 4 obrigam revisão, 3 não obrigam |
-| **B** | `B-085` | Score exatamente 0,85 não revisa por esse critério |
-| **C** | `C-CID-CONFLITO`, `C-DOSE`, `C-PRIORIDADE`, `C-DADOS`, `C-ALTO-RISCO` | Conflitos e risco clínico |
-| **S** | `S-URG-ILEGIVEL`, `S-URG-SCORE` | Urgência + ambiguidade, com dois destinos |
-| **Q** | `Q-FOTO-DESFOCO`, `Q-FOTO-ROTACAO`, `Q-FOTO-CORTADA`, `Q-FOTO-BAIXA`, `Q-PDF-SEM-TEXTO`, `Q-PDF-MULTIPAGINA`, `Q-PDF-SENHA`, `Q-PDF-CORROMPIDO` | Qualidade, ilegibilidade e PDFs especiais |
-| **V** | `V-DOCX`, `V-VAZIO`, `V-JSON-MALFORMADO`, `V-ENVELOPE`, `V-SEM-CONTEUDO`, `V-ZIP`, `V-GRANDE`, `V-MIME` | Negativos técnicos de entrada |
-| **E** | `E-REC-PDFSCAN`, `E-LAB-PDFSCAN`, `E-GUI-PDFSCAN`, `E-ALT-PDFSCAN`, `E-ATE-PDFSCAN`, `E-OUT-PDFSCAN` | PDF escaneado (somente imagem) |
-| **D** | `D-MANUSCRITA`, `D-CARIMBO`, `D-HEMOGRAMA`, `D-GUIA-TISS` | Diferenciais opcionais |
+| **Matriz** | `Matriz_LaudoLaboratorial_Imagem`, `Matriz_LaudoLaboratorial_Texto`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_LaudoDeImagem_Texto`, `Matriz_Guia_Imagem`, `Matriz_Guia_Texto`, `Matriz_RelatorioDeAlta_Imagem`, `Matriz_RelatorioDeAlta_Texto`, `Matriz_Atestado_Pdf`, `Matriz_Atestado_Imagem`, `Matriz_Outro_Pdf`, `Matriz_Outro_Imagem`, `Matriz_NaoIdentificado_Pdf`, `Matriz_NaoIdentificado_Texto` | Fecha a matriz 8 tipos × 3 formatos |
+| **Ausencia** | `Ausencia_Paciente_Idade`, `Ausencia_Medico_Nome`, `Ausencia_Medico_Crm`, `Ausencia_Diagnostico`, `Ausencia_SomenteCid`, `Ausencia_SomenteMedicamentos`, `Ausencia_SomenteExames` | Ausência de campo: 4 obrigam revisão, 3 não obrigam |
+| **Borda** | `Borda_Score_085` | Score exatamente 0,85 não revisa por esse critério |
+| **Conflito** | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_Prioridade`, `Conflito_Dados`, `Conflito_AltoRisco` | Conflitos e risco clínico |
+| **Simultaneo** | `Simultaneo_Urgencia_Ilegivel`, `Simultaneo_Urgencia_Score` | Urgência + ambiguidade, com dois destinos |
+| **Qualidade** | `Qualidade_Foto_Desfocada`, `Qualidade_Foto_Rotacionada`, `Qualidade_Foto_Cortada`, `Qualidade_Foto_BaixoContraste`, `Qualidade_Pdf_SemTexto`, `Qualidade_Pdf_Multipagina`, `Qualidade_Pdf_ComSenha`, `Qualidade_Pdf_Corrompido` | Ilegibilidade e PDFs especiais |
+| **Validacao** | `Validacao_ArquivoDocx`, `Validacao_ArquivoVazio`, `Validacao_JsonMalformado`, `Validacao_EnvelopeVazio`, `Validacao_SemConteudo`, `Validacao_ArquivoZip`, `Validacao_ArquivoGrande`, `Validacao_MimeInvalido` | Negativos técnicos de entrada |
+| **Escaneado** | `Escaneado_Receituario_PdfDigitalizado`, `Escaneado_LaudoLaboratorial_PdfDigitalizado`, `Escaneado_Guia_PdfDigitalizado`, `Escaneado_RelatorioDeAlta_PdfDigitalizado`, `Escaneado_Atestado_PdfDigitalizado`, `Escaneado_Outro_PdfDigitalizado` | PDF digitalizado (somente imagem, sem texto) |
+| **Diferencial** | `Diferencial_ReceituarioManuscrito`, `Diferencial_CarimboSobreposto`, `Diferencial_HemogramaCompleto`, `Diferencial_GuiaTiss` | Itens opcionais |
 
-## Negativos técnicos (bloco V)
+## Negativos técnicos (bloco Validacao)
 
 Os 8 casos têm um único arquivo de entrada inválido e um `expected.json` com o **envelope de erro** (`http`, `codigo_funcional`, `mensagem`) — não há documento de triagem esperado.
 
 | ID | Arquivo | HTTP | Código funcional |
 | --- | --- | ---: | --- |
-| `V-DOCX` | `V-DOCX.docx` | 415 | `FORMATO_NAO_SUPORTADO` |
-| `V-VAZIO` | `V-VAZIO.pdf` (0 bytes) | 422 | `CAMPOS_INVALIDOS` |
-| `V-JSON-MALFORMADO` | `V-JSON-MALFORMADO.json` | 400 | `REQUISICAO_INVALIDA` |
-| `V-ENVELOPE` | `V-ENVELOPE.json` (`{}`) | 422 | `CAMPOS_INVALIDOS` |
-| `V-SEM-CONTEUDO` | `V-SEM-CONTEUDO.http` | 422 | `CAMPOS_INVALIDOS` |
-| `V-ZIP` | `V-ZIP.zip` | 415 | `FORMATO_NAO_SUPORTADO` |
-| `V-GRANDE` | `V-GRANDE.pdf` (25 MB) | 413 | `ARQUIVO_MAIOR_QUE_LIMITE` |
-| `V-MIME` | `V-MIME.pdf` (PNG real) | 415 | `MIME_INVALIDO` |
+| `Validacao_ArquivoDocx` | `Validacao_ArquivoDocx.docx` | 415 | `FORMATO_NAO_SUPORTADO` |
+| `Validacao_ArquivoVazio` | `Validacao_ArquivoVazio.pdf` (0 bytes) | 422 | `CAMPOS_INVALIDOS` |
+| `Validacao_JsonMalformado` | `Validacao_JsonMalformado.json` | 400 | `REQUISICAO_INVALIDA` |
+| `Validacao_EnvelopeVazio` | `Validacao_EnvelopeVazio.json` (`{}`) | 422 | `CAMPOS_INVALIDOS` |
+| `Validacao_SemConteudo` | `Validacao_SemConteudo.http` | 422 | `CAMPOS_INVALIDOS` |
+| `Validacao_ArquivoZip` | `Validacao_ArquivoZip.zip` | 415 | `FORMATO_NAO_SUPORTADO` |
+| `Validacao_ArquivoGrande` | `Validacao_ArquivoGrande.pdf` (25 MB) | 413 | `ARQUIVO_MAIOR_QUE_LIMITE` |
+| `Validacao_MimeInvalido` | `Validacao_MimeInvalido.pdf` (PNG real) | 415 | `MIME_INVALIDO` |
 
-> `V-GRANDE.pdf` não é versionado (25 MB). Regenere com `python3 tools/gerar_fixtures_catalogo.py`.
+> `Validacao_ArquivoGrande.pdf` não é versionado (25 MB). Regenere com `python3 tools/gerar_fixtures_catalogo.py`.
 
 ## Scores forçados
 
-`B-085` e `S-URG-SCORE` trazem `score_forcado` no `expected.json`. Use o modo de fixture para definir os scores de classificação e extração, senão o resultado é intermitente.
+`Borda_Score_085` e `Simultaneo_Urgencia_Score` trazem `score_forcado` no `expected.json`. Use o modo de fixture para definir os scores de classificação e extração, senão o resultado é intermitente.
 
 ## Regerar
 

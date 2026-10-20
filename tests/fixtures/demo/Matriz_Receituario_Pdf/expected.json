@@ -1,0 +1,57 @@
+{
+  "fixture_id": "Matriz_Receituario_Pdf",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "demo/Matriz_Receituario_Pdf/Matriz_Receituario_Pdf.txt",
+    "pdf": "demo/Matriz_Receituario_Pdf/Matriz_Receituario_Pdf.pdf",
+    "jpg": "demo/Matriz_Receituario_Pdf/Matriz_Receituario_Pdf.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "RECEITUARIO_MEDICO",
+    "especialidade": [
+      "Cardiologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Rafael Nunes de Souza",
+      "idade": 58
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Hipertensão arterial sistêmica",
+    "cid": "I10",
+    "medicamentos": [
+      "Losartana potássica 50 mg",
+      "Hidroclorotiazida 25 mg"
+    ],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "FARMACIA_HOSPITALAR"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "PDF digital aceito",
+    "Dois medicamentos extraídos com dose e frequência",
+    "Destino FARMACIA_HOSPITALAR sem revisão"
+  ],
+  "observacoes": ""
+}

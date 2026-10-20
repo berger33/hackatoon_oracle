@@ -26,57 +26,63 @@ Cada pasta de fixture contém:
 | `{ID}.jpg` | Mesma peça fotografada, em JPEG 150 dpi |
 | `expected.json` | Saída esperada: tipo, prioridade, destinos, revisão, dados e asserções |
 
-Os 8 negativos do bloco V são a exceção: têm **um único arquivo inválido** (`V-DOCX.docx`, `V-VAZIO.pdf`, `V-GRANDE.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
+Os 8 negativos do bloco **Validação** são a exceção: têm **um único arquivo inválido** (`Validacao_ArquivoDocx.docx`, `Validacao_ArquivoVazio.pdf`, `Validacao_ArquivoGrande.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
 
-## Como ler os nomes (a letra é o bloco de teste)
+## Como ler os nomes
 
-O primeiro caractere de cada ID indica **o que aquele grupo de documentos prova**. Não é ordem alfabética nem tipo de arquivo: é a categoria do teste.
+Nenhum nome usa abreviação. O padrão é **`Bloco_Assunto_Detalhe`**: três partes separadas por `_`, cada uma escrita por inteiro, com a primeira letra maiúscula e sem acentos (para o nome funcionar igual em qualquer sistema de arquivos).
 
 | Bloco | Quantos | Pergunta que responde | Exemplos |
 | --- | ---: | --- | --- |
-| **M** — Matriz | 24 | "O sistema acerta cada tipo de documento em cada formato?" | `M-REC-PDF`, `M-LAB-IMG`, `M-GUI-TXT` |
-| **A** — Ausência | 8 | "O que acontece quando falta um campo?" | `A-PAC-NOME`, `A-MED-CRM`, `A-CID-SO` |
-| **B** — Borda | 2 | "O comportamento muda exatamente no limiar 0,85?" | `B-084`, `B-085` |
-| **C** — Conflito | 5 | "O sistema detecta contradição clínica?" | `C-DOSE`, `C-CID-CONFLITO` |
-| **S** — Simultâneo | 2 | "E quando urgência e ambiguidade acontecem juntas?" | `S-URG-ILEGIVEL` |
-| **Q** — Qualidade | 8 | "E quando o arquivo está ruim ou protegido?" | `Q-FOTO-ROTACAO`, `Q-PDF-SENHA` |
-| **V** — Validação | 8 | "E quando a entrada é inválida?" | `V-DOCX`, `V-GRANDE`, `V-MIME` |
-| **E** — Escaneado | 6 | "E quando o PDF é só imagem, sem texto?" | `E-REC-PDFSCAN` |
-| **D** — Diferencial | 4 | "Os opcionais funcionam?" | `D-MANUSCRITA`, `D-HEMOGRAMA` |
+| **Matriz** | 24 | "O sistema acerta cada tipo de documento em cada formato?" | `Matriz_Receituario_Pdf`, `Matriz_LaudoLaboratorial_Imagem`, `Matriz_Guia_Texto` |
+| **Ausencia** | 8 | "O que acontece quando falta um campo?" | `Ausencia_Paciente_Nome`, `Ausencia_Medico_Crm`, `Ausencia_SomenteCid` |
+| **Borda** | 2 | "O comportamento muda exatamente no limiar 0,85?" | `Borda_Score_084`, `Borda_Score_085` |
+| **Conflito** | 5 | "O sistema detecta contradição clínica?" | `Conflito_Dose`, `Conflito_Cid_Diagnostico` |
+| **Simultaneo** | 2 | "E quando urgência e ambiguidade acontecem juntas?" | `Simultaneo_Urgencia_Ilegivel` |
+| **Qualidade** | 8 | "E quando o arquivo está ruim ou protegido?" | `Qualidade_Foto_Rotacionada`, `Qualidade_Pdf_ComSenha` |
+| **Validacao** | 8 | "E quando a entrada é inválida?" | `Validacao_ArquivoDocx`, `Validacao_ArquivoGrande`, `Validacao_MimeInvalido` |
+| **Escaneado** | 6 | "E quando o PDF é só imagem, sem texto?" | `Escaneado_Receituario_PdfDigitalizado` |
+| **Diferencial** | 4 | "Os opcionais funcionam?" | `Diferencial_ReceituarioManuscrito`, `Diferencial_HemogramaCompleto` |
 
-### Lendo o resto do nome
+Como todas as pastas começam pelo nome do bloco, a ordenação alfabética já agrupa os casos por assunto — não é preciso abrir cada uma para saber a que grupo pertence.
 
-Depois do bloco vêm **2 ou 3 partes separadas por hífen**:
+### Lendo um nome do bloco Matriz
+
+O bloco Matriz responde com **tipo de documento + formato**:
 
 ```text
-M-REC-PDF
-│  │   └── formato do arquivo: PDF, IMG (imagem) ou TXT (texto)
-│  └────── tipo de documento: REC=receituário, LAB=laboratorial, IMG=imagem,
-│           GUI=guia, ALT=alta, ATE=atestado, OUT=outro, NID=não identificado
-└───────── bloco M (matriz)
+Matriz_Guia_Imagem
+│      │    └── formato do arquivo: Pdf, Imagem ou Texto
+│      └─────── tipo de documento: Receituario, LaudoLaboratorial,
+│               LaudoDeImagem, Guia, RelatorioDeAlta, Atestado,
+│               Outro ou NaoIdentificado
+└────────────── bloco Matriz (tipo × formato)
 ```
 
-Atenção a um detalhe que confunde: **no meio é o tipo, no fim é o formato**. Em `M-IMG-IMG`, o primeiro `IMG` é *laudo de exame de imagem* e o segundo é *formato imagem*. Já `M-IMG-PDF` é o mesmo tipo de documento entregue em PDF.
+Atenção a um detalhe que confunde: **no meio está o tipo, no fim está o formato**. Em `Matriz_LaudoDeImagem_Imagem`, o primeiro `Imagem` é *laudo de exame de imagem* (o tipo) e o segundo é *formato imagem* (o arquivo). Já `Matriz_LaudoDeImagem_Pdf` é o mesmo tipo de documento entregue em PDF.
 
-Nos outros blocos a lógica é **bloco + sujeito + o que está sendo testado**:
+### Lendo um nome dos outros blocos
+
+A lógica é **bloco + sujeito + o que está sendo testado**:
 
 | ID | Leitura |
 | --- | --- |
-| `A-PAC-NOME` | ausência · paciente · nome |
-| `A-MED-CRM` | ausência · médico · CRM |
-| `A-CID-SO` | ausência · CID · **so**mente o CID (que **não** gera revisão) |
-| `C-DOSE` | conflito · dose suspeita |
-| `Q-PDF-SENHA` | qualidade · PDF · protegido por senha |
-| `E-REC-PDFSCAN` | escaneado · receituário · PDF escaneado |
-| `B-084` / `B-085` | borda · score 0,84 / 0,85 |
+| `Ausencia_Paciente_Nome` | ausência · paciente · nome |
+| `Ausencia_Medico_Crm` | ausência · médico · CRM |
+| `Ausencia_SomenteCid` | ausência · **somente** o CID (que **não** gera revisão) |
+| `Conflito_Dose` | conflito · dose suspeita |
+| `Qualidade_Pdf_ComSenha` | qualidade · PDF · protegido por senha |
+| `Escaneado_Receituario_PdfDigitalizado` | escaneado · receituário · PDF digitalizado |
+| `Borda_Score_084` / `Borda_Score_085` | borda · score 0,84 / 0,85 |
+| `Validacao_ArquivoGrande` | validação · arquivo · grande demais |
 
 ### Onde está cada coisa
 
 ```text
 tests/fixtures/
 ├── manifest.csv     ← comece por aqui: 67 linhas, uma por documento, com o resultado esperado
-├── demo/            ← 12 casos que cobrem o pitch (todos os blocos, exceto Q e V)
-└── catalogo/        ← 55 casos restantes (Q e V ficam só aqui)
+├── demo/            ← 12 casos que cobrem o pitch (todos os blocos, exceto Qualidade e Validacao)
+└── catalogo/        ← 55 casos restantes (Qualidade e Validacao ficam só aqui)
 ```
 
 O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. Para saber o que se espera de um documento, abra o `expected.json` dentro da pasta dele; para ver o catálogo inteiro de uma vez, use o `manifest.csv` ou o PDF em `docs/testes/`.
@@ -85,53 +91,53 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 
 | # | ID | Caso | Destino | Status |
 | ---: | --- | --- | --- | --- |
-| 1 | `M-REC-TXT` | Receituário — rotina | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
-| 2 | `M-REC-PDF` | Receituário — 2 medicamentos | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
-| 3 | `M-REC-IMG` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
-| 4 | `M-IMG-PDF` | TC de tórax — TEP agudo | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
-| 5 | `M-LAB-PDF` | Hemograma — rotina | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
-| 6 | `M-GUI-PDF` | Guia de ressonância — eletiva | `AUDITORIA_AUTORIZACOES` | `PROCESSADO` |
-| 7 | `M-ALT-PDF` | Relatório de alta — pneumonia | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
-| 8 | `M-ATE-TXT` | Atestado de comparecimento | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
-| 9 | `M-NID-IMG` | Documento ilegível | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
-| 10 | `M-OUT-TXT` | Comunicação administrativa | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
-| 11 | `A-PAC-NOME` | Receita sem nome do paciente | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
-| 12 | `B-084` | Score forçado em 0,84 | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
+| 1 | `Matriz_Receituario_Texto` | Receituário — rotina | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
+| 2 | `Matriz_Receituario_Pdf` | Receituário — 2 medicamentos | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
+| 3 | `Matriz_Receituario_Imagem` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
+| 4 | `Matriz_LaudoDeImagem_Pdf` | TC de tórax — TEP agudo | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
+| 5 | `Matriz_LaudoLaboratorial_Pdf` | Hemograma — rotina | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
+| 6 | `Matriz_Guia_Pdf` | Guia de ressonância — eletiva | `AUDITORIA_AUTORIZACOES` | `PROCESSADO` |
+| 7 | `Matriz_RelatorioDeAlta_Pdf` | Relatório de alta — pneumonia | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
+| 8 | `Matriz_Atestado_Texto` | Atestado de comparecimento | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
+| 9 | `Matriz_NaoIdentificado_Imagem` | Documento ilegível | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
+| 10 | `Matriz_Outro_Texto` | Comunicação administrativa | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
+| 11 | `Ausencia_Paciente_Nome` | Receita sem nome do paciente | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
+| 12 | `Borda_Score_084` | Score forçado em 0,84 | `FILA_REVISAO_HUMANA` | `EM_REVISAO` |
 
 ## Os 55 casos do catálogo (`catalogo/`)
 
 | Bloco | Casos | O que cobre |
 | --- | ---: | --- |
-| M | 14 | Matriz tipos × formatos (os 2 formatos que faltavam em cada tipo) |
-| A | 7 | Ausência de campos que revisam e que não revisam |
-| B | 1 | Limiar exato de 0,85 |
-| C | 5 | Conflitos, dose suspeita, contradições e alto risco |
-| S | 2 | Urgência + ambiguidade simultâneas |
-| Q | 8 | Desfoque, rotação, corte, sombra, PDF sem texto, 7 páginas, senha e corrompido |
-| V | 8 | Negativos técnicos (DOCX, 0 KB, JSON inválido, envelope vazio, ZIP, 25 MB, MIME falso) |
-| E | 6 | PDF escaneado dos tipos restantes |
-| D | 4 | Diferenciais: manuscrito, carimbo, hemograma de 20 analitos e guia TISS |
+| Matriz | 14 | Tipos × formatos (os 2 formatos que faltavam em cada tipo) |
+| Ausencia | 7 | Campos ausentes que revisam e que não revisam |
+| Borda | 1 | Limiar exato de 0,85 |
+| Conflito | 5 | Conflitos, dose suspeita, contradições e alto risco |
+| Simultaneo | 2 | Urgência + ambiguidade simultâneas |
+| Qualidade | 8 | Desfoque, rotação, corte, sombra, PDF sem texto, 7 páginas, senha e corrompido |
+| Validacao | 8 | Negativos técnicos (DOCX, 0 KB, JSON inválido, envelope vazio, ZIP, 25 MB, MIME falso) |
+| Escaneado | 6 | PDF digitalizado dos tipos restantes |
+| Diferencial | 4 | Manuscrito, carimbo, hemograma de 20 analitos e guia TISS |
 
 ## Casos especiais
 
 | Fixture | Particularidade |
 | --- | --- |
-| `M-NID-IMG`, `M-NID-PDF`, `Q-FOTO-DESFOCO` | PDF somente imagem e JPG com desfoque forte; cabeçalho de identificação preservado |
-| `Q-FOTO-ROTACAO` | Imagem e PDF rotacionados em 90° |
-| `Q-FOTO-CORTADA` | Recorte remove o CRM da assinatura — deve gerar revisão |
-| `Q-FOTO-BAIXA` | Mancha elíptica sobre a idade — campo incerto, não inventado |
-| `Q-PDF-SEM-TEXTO`, `E-*` | PDFs sem camada de texto (0 caracteres extraíveis) |
-| `Q-PDF-MULTIPAGINA` | 7 páginas, rodapé "página N de 7" |
-| `Q-PDF-SENHA` | Protegido por AES-256; senha de teste `mediflow123` |
-| `Q-PDF-CORROMPIDO` | Truncado em 40% do tamanho original |
-| `V-GRANDE` | 25 MB, **não versionado** — regenere com o script |
-| `B-084`, `B-085`, `S-URG-SCORE` | Exigem `FIXTURE_MODE` para forçar os scores |
+| `Matriz_NaoIdentificado_Imagem`, `Matriz_NaoIdentificado_Pdf`, `Qualidade_Foto_Desfocada` | PDF somente imagem e JPG com desfoque forte; cabeçalho de identificação preservado |
+| `Qualidade_Foto_Rotacionada` | Imagem e PDF rotacionados em 90° |
+| `Qualidade_Foto_Cortada` | Recorte remove o CRM da assinatura — deve gerar revisão |
+| `Qualidade_Foto_BaixoContraste` | Mancha elíptica sobre a idade — campo incerto, não inventado |
+| `Qualidade_Pdf_SemTexto`, `Escaneado_*` | PDFs sem camada de texto (0 caracteres extraíveis) |
+| `Qualidade_Pdf_Multipagina` | 7 páginas, rodapé "página N de 7" |
+| `Qualidade_Pdf_ComSenha` | Protegido por AES-256; senha de teste `mediflow123` |
+| `Qualidade_Pdf_Corrompido` | Truncado em 40% do tamanho original |
+| `Validacao_ArquivoGrande` | 25 MB, **não versionado** — regenere com o script |
+| `Borda_Score_084`, `Borda_Score_085`, `Simultaneo_Urgencia_Score` | Exigem `FIXTURE_MODE` para forçar os scores |
 
 ## Regras
 
 1. Somente dados fictícios, com a marca d'água `DOCUMENTO FICTÍCIO — USO EXCLUSIVO EM TESTES`.
 2. Um fixture de borda altera **apenas um** atributo em relação ao documento base.
-3. Toda fixture funcional tem `expected.json`; os blocos V e F usam envelope de erro/estado final.
+3. Toda fixture funcional tem `expected.json`; o bloco **Validacao** usa envelope de erro e o bloco **Simulacao** (sem arquivos) usa estado final.
 4. Não comparar scores exatos do LLM: use faixas e, nas bordas 0,84 / 0,85 / 0,70, o modo `FIXTURE_MODE`.
 5. Nenhum segredo, chave OCI ou dado pessoal real neste diretório.
 
@@ -145,4 +151,4 @@ python3 tools/gerar_fixtures_catalogo.py   # 55 casos → 204 arquivos em tests/
 python3 tools/gerar_mapa_documentos.py     # PDF do mapa em docs/testes/
 ```
 
-> `V-GRANDE.pdf` (25 MB) é ignorado pelo Git por padrão. O script o recria quando necessário.
+> `Validacao_ArquivoGrande.pdf` (25 MB) é ignorado pelo Git por padrão. O script o recria quando necessário.

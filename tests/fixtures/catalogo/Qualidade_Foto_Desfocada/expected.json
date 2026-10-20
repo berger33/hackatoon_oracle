@@ -1,0 +1,56 @@
+{
+  "fixture_id": "Qualidade_Foto_Desfocada",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Qualidade_Foto_Desfocada/Qualidade_Foto_Desfocada.txt",
+    "pdf": "catalogo/Qualidade_Foto_Desfocada/Qualidade_Foto_Desfocada.pdf",
+    "jpg": "catalogo/Qualidade_Foto_Desfocada/Qualidade_Foto_Desfocada.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "NAO_IDENTIFICADO",
+    "especialidade": [],
+    "nivel_prioridade": "NAO_IDENTIFICADA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": null,
+      "idade": null
+    },
+    "medico": {
+      "nome": null,
+      "crm": null
+    },
+    "diagnostico": null,
+    "cid": null,
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "INDETERMINADO",
+    "campos_ausentes": [
+      "paciente.nome",
+      "paciente.idade",
+      "medico.nome",
+      "medico.crm",
+      "diagnostico_principal"
+    ]
+  },
+  "decisao_esperada": {
+    "status": "EM_REVISAO",
+    "destinos": [
+      "FILA_REVISAO_HUMANA"
+    ],
+    "requer_auditoria_humana": true,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Imagem muito desfocada não permite extração",
+    "Nenhuma lacuna é preenchida",
+    "Revisão humana indicada"
+  ],
+  "observacoes": "JPG e PDF fortemente degradados; cabeçalho de identificação preservado."
+}

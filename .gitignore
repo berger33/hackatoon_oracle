@@ -14,7 +14,7 @@ keys/
 
 # Fixtures pesadas: regeradas por tools/gerar_fixtures_catalogo.py
 # (25 MB; acima do limite de arquivo do GitHub, que é 100 MB, mas evita engordar o repo)
-tests/fixtures/catalogo/V-GRANDE/V-GRANDE.pdf
+tests/fixtures/catalogo/Validacao_ArquivoGrande/Validacao_ArquivoGrande.pdf
 
 # Sistema
 .DS_Store

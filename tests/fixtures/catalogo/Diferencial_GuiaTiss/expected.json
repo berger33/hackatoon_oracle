@@ -1,0 +1,56 @@
+{
+  "fixture_id": "Diferencial_GuiaTiss",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Diferencial_GuiaTiss/Diferencial_GuiaTiss.txt",
+    "pdf": "catalogo/Diferencial_GuiaTiss/Diferencial_GuiaTiss.pdf",
+    "jpg": "catalogo/Diferencial_GuiaTiss/Diferencial_GuiaTiss.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "GUIA_PROCEDIMENTO",
+    "especialidade": [
+      "Ginecologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Renata Aparecida Moura",
+      "idade": 38
+    },
+    "medico": {
+      "nome": "Dra. Helena Prado",
+      "crm": {
+        "numero": "187432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Mioma uterino",
+    "cid": "D25.9",
+    "medicamentos": [],
+    "exames": [
+      "Histeroscopia diagnóstica com polipectomia"
+    ],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "AUDITORIA_AUTORIZACOES"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Guia TISS é classificada como GUIA_PROCEDIMENTO",
+    "Código TUSS e número de guia preservados",
+    "Destino AUDITORIA_AUTORIZACOES"
+  ],
+  "observacoes": "Diferencial opcional. Códigos TUSS fictícios, apenas para teste de extração."
+}

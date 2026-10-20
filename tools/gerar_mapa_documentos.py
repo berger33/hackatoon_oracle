@@ -31,8 +31,8 @@ GREEN = colors.HexColor("#047857")
 AMBER = colors.HexColor("#B45309")
 
 ROWS = list(csv.DictReader(open(os.path.join(ROOT, "tests/fixtures/manifest.csv"), encoding="utf-8")))
-DEMO_IDS = ["M-REC-TXT", "M-REC-PDF", "M-REC-IMG", "M-IMG-PDF", "M-LAB-PDF", "M-GUI-PDF",
-            "M-ALT-PDF", "M-ATE-TXT", "M-NID-IMG", "M-OUT-TXT", "A-PAC-NOME", "B-084"]
+DEMO_IDS = ["Matriz_Receituario_Texto", "Matriz_Receituario_Pdf", "Matriz_Receituario_Imagem", "Matriz_LaudoDeImagem_Pdf", "Matriz_LaudoLaboratorial_Pdf", "Matriz_Guia_Pdf",
+            "Matriz_RelatorioDeAlta_Pdf", "Matriz_Atestado_Texto", "Matriz_NaoIdentificado_Imagem", "Matriz_Outro_Texto", "Ausencia_Paciente_Nome", "Borda_Score_084"]
 
 
 def _produced():
@@ -47,36 +47,67 @@ def _produced():
 PRODUCED = _produced()
 
 TITLES = {
-    "M-REC-TXT": "Receituário — rotina (texto)",
-    "M-REC-PDF": "Receituário — rotina, 2 medicamentos (PDF)",
-    "M-REC-IMG": "Receituário — urgência com opioide (imagem)",
-    "M-IMG-PDF": "TC de tórax — TEP agudo (PDF)",
-    "M-LAB-PDF": "Hemograma — rotina (PDF)",
-    "M-GUI-PDF": "Guia de ressonância — eletiva (PDF)",
-    "M-ALT-PDF": "Relatório de alta — pneumonia (PDF)",
-    "M-ATE-TXT": "Atestado de comparecimento (texto)",
-    "M-NID-IMG": "Documento ilegível (imagem degradada)",
-    "M-OUT-TXT": "Comunicação administrativa (texto)",
-    "A-PAC-NOME": "Receita sem nome do paciente (texto)",
-    "B-084": "Receita com score forçado 0,84 (texto)",
+    "Matriz_Receituario_Texto": "Receituário — rotina (texto)",
+    "Matriz_Receituario_Pdf": "Receituário — rotina, 2 medicamentos (PDF)",
+    "Matriz_Receituario_Imagem": "Receituário — urgência com opioide (imagem)",
+    "Matriz_LaudoDeImagem_Pdf": "TC de tórax — TEP agudo (PDF)",
+    "Matriz_LaudoLaboratorial_Pdf": "Hemograma — rotina (PDF)",
+    "Matriz_Guia_Pdf": "Guia de ressonância — eletiva (PDF)",
+    "Matriz_RelatorioDeAlta_Pdf": "Relatório de alta — pneumonia (PDF)",
+    "Matriz_Atestado_Texto": "Atestado de comparecimento (texto)",
+    "Matriz_NaoIdentificado_Imagem": "Documento ilegível (imagem degradada)",
+    "Matriz_Outro_Texto": "Comunicação administrativa (texto)",
+    "Ausencia_Paciente_Nome": "Receita sem nome do paciente (texto)",
+    "Borda_Score_084": "Receita com score forçado 0,84 (texto)",
 }
 
 PAGE = {"n": 0}
 
 
+def _segments(word):
+    """Divide uma palavra em pedaços quebras nos underscores (IDs e enums)."""
+    if "_" not in word:
+        return [word]
+    parts, buf = [], ""
+    for ch in word:
+        buf += ch
+        if ch == "_":
+            parts.append(buf)
+            buf = ""
+    if buf:
+        parts.append(buf)
+    return parts
+
+
 def wrap(text, font, size, maxw):
     out, cur = [], ""
     for word in text.split(" "):
-        # quebra palavras longas que não cabem sozinhas na coluna
-        while pdfmetrics.stringWidth(word, font, size) > maxw:
-            cut = len(word)
-            while cut > 1 and pdfmetrics.stringWidth(word[:cut], font, size) > maxw:
-                cut -= 1
+        # quebra palavras longas: primeiro nos underscores, depois por caractere
+        if pdfmetrics.stringWidth(word, font, size) > maxw:
+            chunks, buf = [], ""
+            for part in _segments(word):
+                if pdfmetrics.stringWidth(buf + part, font, size) <= maxw:
+                    buf += part
+                else:
+                    if buf:
+                        chunks.append(buf)
+                    buf = ""
+                    while pdfmetrics.stringWidth(part, font, size) > maxw:
+                        cut = len(part)
+                        while cut > 1 and pdfmetrics.stringWidth(part[:cut], font, size) > maxw:
+                            cut -= 1
+                        chunks.append(part[:cut])
+                        part = part[cut:]
+                    buf = part
+            if buf:
+                chunks.append(buf)
+            chunks = [c for c in chunks if c]
             if cur:
                 out.append(cur)
                 cur = ""
-            out.append(word[:cut])
-            word = word[cut:]
+            out.extend(chunks[:-1])
+            cur = chunks[-1] if chunks else ""
+            continue
         test = (cur + " " + word).strip()
         if pdfmetrics.stringWidth(test, font, size) <= maxw:
             cur = test
@@ -350,17 +381,17 @@ def main():
     c.drawString(M, y, "Composição do catálogo por bloco")
     y -= 14
     blocos = [
-        ("M", "Matriz tipos × formatos", 24, "24"),
-        ("A", "Ausência de campos", 8, "32"),
-        ("B", "Fronteira do limiar (0,84 e 0,85)", 2, "34"),
-        ("C", "Conflitos, contradições e alto risco", 5, "39"),
-        ("S", "Urgência + ambiguidade simultâneas", 2, "41"),
-        ("Q", "Qualidade, ilegibilidade e PDFs especiais", 8, "49"),
-        ("V", "Negativos técnicos de entrada", 8, "57"),
-        ("E", "PDF escaneado dos 6 tipos restantes", 6, "63"),
-        ("D", "Diferenciais opcionais", 4, "67"),
+        ("Matriz", "Tipos × formatos", 24, "24"),
+        ("Ausencia", "Campos ausentes", 8, "32"),
+        ("Borda", "Fronteira do limiar (0,84 e 0,85)", 2, "34"),
+        ("Conflito", "Contradições e alto risco", 5, "39"),
+        ("Simultaneo", "Urgência + ambiguidade simultâneas", 2, "41"),
+        ("Qualidade", "Ilegibilidade e PDFs especiais", 8, "49"),
+        ("Validacao", "Negativos técnicos de entrada", 8, "57"),
+        ("Escaneado", "PDF escaneado dos 6 tipos restantes", 6, "63"),
+        ("Diferencial", "Itens opcionais", 4, "67"),
     ]
-    table(c, M, y, [(46, "Bloco"), (214, "O que cobre"), (56, "Arquivos"), (60, "Acumulado")],
+    table(c, M, y, [(72, "Bloco"), (196, "O que cobre"), (56, "Arquivos"), (60, "Acumulado")],
           [[b, d, str(n), acc] for b, d, n, acc in blocos], font_size=7.2, row_h=13)
 
     y = y - 13 * (len(blocos) + 1) - 20
@@ -442,16 +473,16 @@ def main():
     c.setFont("DJB", 9.4)
     c.drawString(M, ybr, "Fixture que exercita cada caminho")
     ybr -= 14
-    table(c, M, ybr, [(92, "Caminho"), (330, "Fixtures"), (52, "Bloco")],
-          [["Rotina", "M-REC-TXT · M-REC-PDF · M-LAB-PDF · M-GUI-PDF · M-ALT-PDF · M-ATE-TXT", "M"],
-           ["Urgência", "M-REC-IMG · M-IMG-PDF · C-ALTO-RISCO", "M · C"],
-           ["Ambiguidade", "M-NID-IMG · M-OUT-TXT · A-PAC-NOME · B-084", "M · A · B"],
-           ["Urgência + ambiguidade", "S-URG-ILEGIVEL · S-URG-SCORE", "S"],
-           ["Erro de entrada", "V-DOCX · V-VAZIO · V-JSON-MALFORMADO · V-MIME", "V"],
-           ["Erro de provedor/OCI", "F-GEMINI-TIMEOUT · F-OCI-ORIGINAL (sem arquivo novo)", "F"]],
-          font_size=6.8, row_h=15)
+    ybr = table(c, M, ybr, [(80, "Caminho"), (322, "Fixtures de teste"), (96, "Bloco")],
+                [["Rotina", "Matriz_Receituario_Texto · Matriz_Receituario_Pdf · Matriz_LaudoLaboratorial_Pdf · Matriz_Guia_Pdf · Matriz_RelatorioDeAlta_Pdf · Matriz_Atestado_Texto", "Matriz"],
+                 ["Urgência", "Matriz_Receituario_Imagem · Matriz_LaudoDeImagem_Pdf · Conflito_AltoRisco", "Matriz · Conflito"],
+                 ["Ambiguidade", "Matriz_NaoIdentificado_Imagem · Matriz_Outro_Texto · Ausencia_Paciente_Nome · Borda_Score_084", "Matriz · Ausência · Borda"],
+                 ["Urgência + ambiguidade", "Simultaneo_Urgencia_Ilegivel · Simultaneo_Urgencia_Score", "Simultâneo"],
+                 ["Erro de entrada", "Validacao_ArquivoDocx · Validacao_ArquivoVazio · Validacao_JsonMalformado · Validacao_MimeInvalido", "Validação"],
+                 ["Erro de provedor/OCI", "Simulacao_GeminiTimeout · Simulacao_OciFalhaNoOriginal (sem arquivo novo)", "Simulação"]],
+                font_size=6.4, row_h=9.6, wrap_cols=[0, 1, 2])
 
-    ybr = ybr - 15 * 7 - 22
+    ybr -= 22
     c.setFillColor(INK)
     c.setFont("DJB", 9.4)
     c.drawString(M, ybr, "Regras de bolso")
@@ -473,9 +504,9 @@ def main():
         r = next(x for x in ROWS if x["id"] == fid)
         demo_rows.append([str(i), fid, TITLES[fid], r["destinos_esperados"], r["status_esperado"],
                           "SIM" if r["revisao_humana"] == "SIM" else "—"])
-    table(c, M, H - 118, [(18, "#"), (70, "ID"), (196, "Caso"), (108, "Destino esperado"),
-                          (78, "Status"), (30, "Rev.")],
-          demo_rows, font_size=6.8, row_h=15.6)
+    table(c, M, H - 118, [(16, "#"), (112, "ID"), (150, "Caso"), (108, "Destino esperado"),
+                          (76, "Status"), (28, "Rev.")],
+          demo_rows, font_size=6.2, row_h=15.6, wrap_cols=[1, 2])
 
     y = H - 118 - 15.6 * 13 - 22
     c.setFillColor(INK)
@@ -503,20 +534,24 @@ def main():
 
     # ---------------------------------------------------------------- 4. catálogo
     blocks = [
-        ("M", "4.1 Bloco M — Matriz tipos × formatos (24)"),
-        ("A", "4.2 Bloco A — Ausência de campos (8)"),
-        ("B", "4.3 Bloco B — Fronteira do limiar (2)"),
-        ("C", "4.4 Bloco C — Conflitos e alto risco (5)"),
-        ("S", "4.5 Bloco S — Urgência + ambiguidade (2)"),
-        ("Q", "4.6 Bloco Q — Qualidade, ilegibilidade e PDFs especiais (8)"),
-        ("V", "4.7 Bloco V — Negativos técnicos de entrada (8)"),
-        ("E", "4.8 Bloco E — PDF escaneado dos tipos restantes (6)"),
-        ("D", "4.9 Bloco D — Diferenciais opcionais (4)"),
+        ("Matriz", "4.1 Bloco Matriz — tipos × formatos (24)"),
+        ("Ausencia", "4.2 Bloco Ausência — campos ausentes (8)"),
+        ("Borda", "4.3 Bloco Borda — fronteira do limiar (2)"),
+        ("Conflito", "4.4 Bloco Conflito — contradições e alto risco (5)"),
+        ("Simultaneo", "4.5 Bloco Simultâneo — urgência + ambiguidade (2)"),
+        ("Qualidade", "4.6 Bloco Qualidade — ilegibilidade e PDFs especiais (8)"),
+        ("Validacao", "4.7 Bloco Validação — negativos técnicos de entrada (8)"),
+        ("Escaneado", "4.8 Bloco Escaneado — PDF digitalizado dos tipos restantes (6)"),
+        ("Diferencial", "4.9 Bloco Diferencial — itens opcionais (4)"),
     ]
-    colspec = [(78, "ID"), (100, "Tipo"), (54, "Formato"), (46, "Cenário"),
-               (104, "Destino esperado"), (102, "Status / HTTP"), (15, "Rev"), (12, "OK")]
-    WRAP = [1, 4]
-    FS, RH = 5.8, 9.0
+    colspec = [(122, "ID / pasta"), (92, "Tipo"), (46, "Formato"), (44, "Cenário"),
+               (76, "Destino esperado"), (94, "Status / HTTP"), (14, "Rev"), (20, "OK")]
+    formato_rotulo = {"PDF": "PDF", "IMAGEM": "Imagem", "TEXTO": "Texto",
+                      "PDF_DIGITALIZADO": "PDF escaneado", "DOCX": "DOCX",
+                      "ARQUIVO_0KB": "Arquivo vazio", "JSON": "JSON", "MULTIPART": "Multipart",
+                      "ZIP": "ZIP", "ARQUIVO_25MB": "Arquivo 25 MB", "PDF_FALSO": "PDF falso"}
+    WRAP = [0, 1, 2, 4, 5]
+    FS, RH = 5.2, 8.4
 
     def rh(row):
         n = 1
@@ -531,7 +566,8 @@ def main():
         rows = [r for r in ROWS if r["bloco"] == key]
         data, fills = [], []
         for r in rows:
-            data.append([r["id"], r["tipo_documento"], r["formato"].replace("_", " ").title(),
+            data.append([r["id"], r["tipo_documento"],
+                         formato_rotulo.get(r["formato"], r["formato"].replace("_", " ").title()),
                          r["cenario"].title(), r["destinos_esperados"], r["status_esperado"],
                          "S" if r["revisao_humana"] == "SIM" else "—",
                          "✓" if r["id"] in PRODUCED else ""])
@@ -571,25 +607,25 @@ def main():
 
     c.setFillColor(MUTED)
     c.setFont("DJ", 7.2)
-    c.drawString(M, max(y, 62), "Cada linha corresponde a um arquivo de entrada. Os blocos V e F usam envelope de erro, não JSON de triagem.")
+    c.drawString(M, max(y, 62), "Cada linha corresponde a um arquivo de entrada. Os blocos Validacao e Simulacao usam envelope de erro, não JSON de triagem.")
 
     # ---------------------------------------------------------------- 5. pendências
     new_page(c, "5. Pendências e regeneração",
              "Pontos abertos na especificação v1.0 (§15) que ainda impedem resposta inequívoca em parte dos fixtures.")
 
     pend = [
-        ["Limite de tamanho, páginas, MIME, timeout e retry", "V-GRANDE, Q-PDF-MULTIPAGINA, F-*", "Fixar: 10 MB, 10 páginas, timeout 30 s, 2 retries"],
-        ["Contrato final do upload (multipart × JSON)", "V-SEM-CONTEUDO, V-ENVELOPE, V-MIME", "Multipart para arquivo; JSON para texto"],
-        ["Dicionário de achado crítico e alto risco", "C-CID-CONFLITO, C-DOSE, C-ALTO-RISCO", "Criar rules/cid10.csv e rules/medicamentos_alto_risco.csv"],
+        ["Limite de tamanho, páginas, MIME, timeout e retry", "Validacao_ArquivoGrande, Qualidade_Pdf_Multipagina, Simulacao_*", "Fixar: 10 MB, 10 páginas, timeout 30 s, 2 retries"],
+        ["Contrato final do upload (multipart × JSON)", "Validacao_SemConteudo, Validacao_EnvelopeVazio, Validacao_MimeInvalido", "Multipart para arquivo; JSON para texto"],
+        ["Dicionário de achado crítico e alto risco", "Conflito_Cid_Diagnostico, Conflito_Dose, Conflito_AltoRisco", "Criar rules/cid10.csv e rules/medicamentos_alto_risco.csv"],
         ["Urgência isolada exige revisão?", "Todos os casos URGENTE", "Spec diz sim (§8.2/§5.3); o exemplo do brief diz não. Padronizar."],
         ["Autenticação e autorização", "403 e consulta por terceiros", "Fora do MVP; se entrar, criar fixture de acesso negado"],
         ["Política de retenção e exclusão", "Teste de persistência no OCI", "Definir antes de qualquer dado real (que não deve existir)"],
-        ["Meta de latência e precisão", "F-GEMINI-TIMEOUT, F-RETRY", "Medir o primeiro pipeline e só então fixar a meta"],
+        ["Meta de latência e precisão", "Simulacao_GeminiTimeout, Simulacao_RetriesEsgotados", "Medir o primeiro pipeline e só então fixar a meta"],
     ]
-    table(c, M, H - 118, [(168, "Pendência"), (150, "O que fica bloqueado"), (191, "Recomendação")],
-          pend, font_size=6.4, row_h=11.4, wrap_cols=[0, 1, 2])
+    y_end = table(c, M, H - 118, [(168, "Pendência"), (150, "O que fica bloqueado"), (191, "Recomendação")],
+                  pend, font_size=6.4, row_h=11.4, wrap_cols=[0, 1, 2])
 
-    y = H - 118 - 11.4 * (len(pend) + 4) - 34
+    y = y_end - 30
     c.setFillColor(INK)
     c.setFont("DJB", 9.6)
     c.drawString(M, y, "Como regenerar o catálogo")

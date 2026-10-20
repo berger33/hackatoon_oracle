@@ -1,0 +1,54 @@
+{
+  "fixture_id": "Matriz_Atestado_Pdf",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Matriz_Atestado_Pdf/Matriz_Atestado_Pdf.txt",
+    "pdf": "catalogo/Matriz_Atestado_Pdf/Matriz_Atestado_Pdf.pdf",
+    "jpg": "catalogo/Matriz_Atestado_Pdf/Matriz_Atestado_Pdf.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "ATESTADO_MEDICO",
+    "especialidade": [
+      "Ortopedia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Bruno Henrique Castro",
+      "idade": 26
+    },
+    "medico": {
+      "nome": "Dr. André Luiz Barbosa",
+      "crm": {
+        "numero": "165432",
+        "uf": "SP"
+      }
+    },
+    "diagnostico": "Lombalgia aguda com radiculopatia",
+    "cid": "M54.5",
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Atestado em PDF digital",
+    "CID explícito extraído",
+    "Destino PRONTUARIO_ELETRONICO"
+  ],
+  "observacoes": ""
+}

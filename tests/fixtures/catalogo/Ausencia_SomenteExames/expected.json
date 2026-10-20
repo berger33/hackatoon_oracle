@@ -1,0 +1,55 @@
+{
+  "fixture_id": "Ausencia_SomenteExames",
+  "documento_ficticio": true,
+  "formatos_disponiveis": [
+    "TXT",
+    "PDF",
+    "JPG"
+  ],
+  "renditions": {
+    "txt": "catalogo/Ausencia_SomenteExames/Ausencia_SomenteExames.txt",
+    "pdf": "catalogo/Ausencia_SomenteExames/Ausencia_SomenteExames.pdf",
+    "jpg": "catalogo/Ausencia_SomenteExames/Ausencia_SomenteExames.jpg"
+  },
+  "classificacao_esperada": {
+    "tipo_documento": "ATESTADO_MEDICO",
+    "especialidade": [
+      "Clínica Médica",
+      "Dermatologia"
+    ],
+    "nivel_prioridade": "ROTINA",
+    "score_classificacao": ">= 0.85"
+  },
+  "dados_esperados": {
+    "paciente": {
+      "nome": "Igor Nascimento Prado",
+      "idade": 24
+    },
+    "medico": {
+      "nome": "Dr. Paulo Mendes Rocha",
+      "crm": {
+        "numero": "203114",
+        "uf": "RJ"
+      }
+    },
+    "diagnostico": "Dermatite de contato",
+    "cid": "L23.9",
+    "medicamentos": [],
+    "exames": [],
+    "urgencia": "NAO"
+  },
+  "decisao_esperada": {
+    "status": "PROCESSADO",
+    "destinos": [
+      "PRONTUARIO_ELETRONICO"
+    ],
+    "requer_auditoria_humana": false,
+    "notificacao": false
+  },
+  "assercoes": [
+    "Ausência de exames não força revisão (RF-21)",
+    "Diagnóstico presente mantém o fluxo",
+    "Status PROCESSADO"
+  ],
+  "observacoes": ""
+}
