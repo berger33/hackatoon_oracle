@@ -1,52 +1,76 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Matriz_LaudoDeImagem_Imagem",
   "documento_ficticio": true,
-  "formatos_disponiveis": [
-    "TXT",
-    "PDF",
-    "JPG"
-  ],
-  "renditions": {
-    "txt": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.txt",
-    "pdf": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.pdf",
-    "jpg": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.jpg"
-  },
-  "classificacao_esperada": {
-    "tipo_documento": "LAUDO_EXAME_IMAGEM",
-    "especialidade": [
-      "Radiologia",
-      "Pneumologia"
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT",
+      "PDF",
+      "JPG"
     ],
-    "nivel_prioridade": "URGENTE",
-    "score_classificacao": ">= 0.85"
+    "renditions": {
+      "txt": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.txt",
+      "pdf": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.pdf",
+      "jpg": "catalogo/Matriz_LaudoDeImagem_Imagem/Matriz_LaudoDeImagem_Imagem.jpg"
+    }
   },
-  "dados_esperados": {
-    "paciente": {
-      "nome": "Antônio Carlos Vieira",
-      "idade": 71
+  "resposta_esperada": {
+    "status": "EM_REVISAO",
+    "documento_id": "DOC-3ACD51ED",
+    "classificacao": {
+      "tipo_documento": "LAUDO_EXAME_IMAGEM",
+      "especialidade": [
+        "Radiologia",
+        "Pneumologia"
+      ],
+      "nivel_prioridade": "URGENTE",
+      "score_classificacao": 0.93
     },
-    "medico": {
-      "nome": "Dra. Renata Silveira",
-      "crm": {
-        "numero": "145892",
-        "uf": "SP"
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Antônio Carlos Vieira",
+        "idade": 71
+      },
+      "medico": {
+        "nome": "Dra. Renata Silveira",
+        "crm": {
+          "numero": "145892",
+          "uf": "SP"
+        }
+      },
+      "diagnostico": "Pneumotórax espontâneo à direita",
+      "cid": null,
+      "exames": [
+        "Radiografia de tórax"
+      ],
+      "medicamentos": [],
+      "urgencia": "SIM"
+    },
+    "qualidade": {
+      "score_extracao": 0.91,
+      "score_combinado": 0.91,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "FILA_URGENCIA_MEDICA",
+      "destinos": [
+        "FILA_URGENCIA_MEDICA"
+      ],
+      "requer_auditoria_humana": true,
+      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com notificação e auditoria humana na própria fila de urgência.",
+      "notificacao": {
+        "gerada": true,
+        "canal": "SIMULADO_SLACK_PLANTAO",
+        "status": "REGISTRADA",
+        "mensagem": "ALERTA URGENTE [DOC-3ACD51ED]: Pneumotórax espontâneo à direita"
       }
     },
-    "diagnostico": "Pneumotórax espontâneo à direita",
-    "cid": null,
-    "medicamentos": [],
-    "exames": [
-      "Radiografia de tórax"
-    ],
-    "urgencia": "SIM"
-  },
-  "decisao_esperada": {
-    "status": "EM_REVISAO",
-    "destinos": [
-      "FILA_URGENCIA_MEDICA"
-    ],
-    "requer_auditoria_humana": true,
-    "notificacao": true
+    "armazenamento_oci": null,
+    "erro": null
   },
   "assercoes": [
     "Foto de laudo com achado crítico",

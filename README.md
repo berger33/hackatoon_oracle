@@ -28,7 +28,7 @@ O **MediFlow** recebe documentos clínicos e administrativos em **PDF, imagem ou
 
 | Situação | Destino | Revisão humana | Alerta |
 | --- | --- | --- | --- |
-| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Sim | Sim |
+| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Sim (auditoria na própria fila) | Sim |
 | Score combinado < 0,85 | `FILA_REVISAO_HUMANA` | Sim | Não, salvo urgência |
 | Urgência + ambiguidade/ilegibilidade | `FILA_URGENCIA_MEDICA` + `FILA_REVISAO_HUMANA` | Sim | Sim |
 | Receita de rotina | `FARMACIA_HOSPITALAR` | Não | Não |
@@ -37,6 +37,8 @@ O **MediFlow** recebe documentos clínicos e administrativos em **PDF, imagem ou
 | Tipo desconhecido ou fora da taxonomia | `FILA_REVISAO_HUMANA` | Sim | Só se urgente |
 
 **Campos cuja ausência obriga revisão:** nome do paciente, idade, nome do médico solicitante, CRM e diagnóstico/hipótese. A ausência de CID-10, medicamentos ou exames **não** obriga revisão por si só.
+
+O contrato completo — enums, payload, formato de erro e o porquê de cada regra — está em [`docs/testes/CONTRATO_DE_DADOS.md`](docs/testes/CONTRATO_DE_DADOS.md) e é executável em [`app/models.py`](app/models.py).
 
 ## Stack
 
@@ -77,43 +79,52 @@ O processamento é **assíncrono**: `POST /api/v1/triagens` responde `202 Accept
 
 ## Estrutura do repositório
 
-As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Imagem` é o bloco **Matriz**, tipo **guia**, formato **imagem**. Os blocos são Matriz, Ausencia, Borda, Conflito, Simultaneo, Qualidade, Validacao, Escaneado e Diferencial.
+Este repositório entrega a **massa de dados de teste** do MediFlow e o **contrato** que ela valida. As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Imagem` é o bloco **Matriz**, tipo **guia**, formato **imagem**. Os blocos são Matriz, Ausencia, Borda, Conflito, Simultaneo, Qualidade, Validacao, Escaneado e Diferencial.
 
 ```text
 .
+├── app/
+│   └── models.py                                # CONTRATO v1.0 (Pydantic): payload, enums, regras
 ├── docs/
 │   ├── README.md
-│   ├── modelo-documento.md
 │   └── testes/
-│       └── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # quantos e quais fixtures criar
+│       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
+│       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 67 casos, bloco por bloco
+│       └── Mapa_de_Documentos_de_Teste_MediFlow.pdf
 ├── tests/
+│   ├── testar_contrato.py                       # valida os 67 expected.json no contrato
 │   └── fixtures/
 │       ├── README.md                            # como ler os nomes e os blocos
-│       ├── manifest.csv                         # 67 fixtures com resultado esperado
+│       ├── manifest.csv                         # 67 linhas: uma por documento
 │       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
 │       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
 ├── tools/
-│   ├── gerar_fixtures_demo.py
-│   ├── gerar_fixtures_catalogo.py
-│   ├── gerar_mapa_documentos.py
-│   └── verificar_consistencia.py                 # confere estrutura e duplicidade
-├── README.md
-└── .env.example
+│   ├── contrato_fixtures.py                     # monta os expected.json a partir do contrato
+│   ├── gerar_fixtures_demo.py                   # recria os 12 casos
+│   ├── gerar_fixtures_catalogo.py               # recria os 55 casos
+│   ├── gerar_mapa_documentos.py                 # recria o PDF do mapa
+│   └── verificar_consistencia.py                # estrutura, manifesto, legibilidade, duplicidade
+├── dist/
+│   └── hackatoon_oracle-mediflow-completo.zip   # pacote pronto para download
+└── README.md
 ```
 
-> O código da aplicação será adicionado nas próximas etapas. A especificação funcional está na base documental do projeto (Google Drive) e o catálogo de testes já está versionado aqui.
+## Como rodar
 
-## Documentação
+```bash
+python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pillow
 
-- [Mapa de documentos de teste (PDF)](docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) — visão visual de cobertura, fluxo e catálogo completo.
-- [Catálogo de documentos de teste](docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) — 12 para demonstrar, 57 para testar de verdade, 67 para cobertura completa.
-- [Revisão do modelo de contrato](docs/testes/REVISAO_DO_MODELO_DE_CONTRATO_v2.md) — o modelo da equipe contra os 67 fixtures: 49 representáveis, 12 decisões divergentes e o patch que fecha 57/57.
-- [Como ler os fixtures](tests/fixtures/README.md) — convenção de nomes (Bloco_Assunto_Detalhe) e os 12 casos de pitch.
-- [Catálogo completo de fixtures](tests/fixtures/catalogo/README.md) — os 55 casos restantes, incluindo negativos técnicos.
-- [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.
-- [Verificador de consistência](tools/verificar_consistencia.py) — `python3 tools/verificar_consistencia.py` confere estrutura, nomes, schema e duplicidade dos 67 casos.
-- [Índice de documentos](docs/README.md)
-- [Modelo de documento](docs/modelo-documento.md)
+python3 tests/testar_contrato.py             # 67/67 expected.json válidos e estáveis
+python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, duplicidade
+```
+
+Para regerar os documentos (só necessário se mudar um caso):
+
+```bash
+python3 tools/gerar_fixtures_demo.py
+python3 tools/gerar_fixtures_catalogo.py
+python3 tools/gerar_mapa_documentos.py
+```
 
 ## Critérios de aceite do MVP
 
@@ -128,13 +139,9 @@ As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Ima
 - [ ] Interface mostra estados, urgência, revisão e falhas sem expor segredos
 - [ ] README com arquitetura e demonstração dos 3 cenários
 
-## Configuração
+## Dados
 
-Copie `.env.example` para `.env` e preencha as credenciais da tenancy OCI. **Nunca comite o `.env`.**
-
-```bash
-cp .env.example .env
-```
+Todos os documentos são **fictícios**: nomes, CRMs, CIDs e resultados não correspondem a pessoa real. Nenhuma credencial ou dado pessoal está no repositório.
 
 ## Equipe
 

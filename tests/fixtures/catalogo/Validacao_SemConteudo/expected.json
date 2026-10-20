@@ -1,10 +1,13 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Validacao_SemConteudo",
   "documento_ficticio": true,
   "tipo_de_teste": "negativo_tecnico",
-  "arquivo": "Validacao_SemConteudo.http",
-  "requisicao": "POST /api/v1/triagens",
-  "erro_esperado": {
+  "entrada": {
+    "requisicao": "POST /api/v1/triagens",
+    "arquivo": "Validacao_SemConteudo.http"
+  },
+  "resposta_esperada": {
     "http": 422,
     "codigo_funcional": "CAMPOS_INVALIDOS",
     "mensagem": "Requisição sem arquivo e sem documento_texto."

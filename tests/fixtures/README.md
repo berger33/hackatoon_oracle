@@ -2,6 +2,7 @@
 
 Este diretório guarda os documentos fictícios usados nos testes do agente de triagem.
 
+- **Contrato (o que é uma resposta válida):** [`docs/testes/CONTRATO_DE_DADOS.md`](../../docs/testes/CONTRATO_DE_DADOS.md) e [`app/models.py`](../../app/models.py)
 - **Catálogo analítico:** [`docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md`](../../docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md)
 - **Mapa em PDF:** [`docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf`](../../docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf)
 - **Manifesto (fonte de verdade):** [`manifest.csv`](manifest.csv)
@@ -24,9 +25,30 @@ Cada pasta de fixture contém:
 | `{ID}.txt` | Documento em texto puro (UTF-8) |
 | `{ID}.pdf` | Mesma peça em PDF (digital, escaneado, protegido ou corrompido, conforme o caso) |
 | `{ID}.jpg` | Mesma peça fotografada, em JPEG 150 dpi |
-| `expected.json` | Saída esperada: tipo, prioridade, destinos, revisão, dados e asserções |
+| `expected.json` | Resposta esperada completa (`resposta_esperada`), no formato do contrato, + asserções em texto |
 
 Os 8 negativos do bloco **Validação** são a exceção: têm **um único arquivo inválido** (`Validacao_ArquivoDocx.docx`, `Validacao_ArquivoVazio.pdf`, `Validacao_ArquivoGrande.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
+
+### O que há dentro de um `expected.json`
+
+```jsonc
+{
+  "schema": "mediflow.fixture/2",
+  "fixture_id": "Conflito_Dose",
+  "documento_ficticio": true,
+  "tipo_de_teste": "funcional",        // funcional | erro_processamento | negativo_tecnico
+  "entrada": {
+    "formatos_disponiveis": ["TXT", "PDF", "JPG"],
+    "renditions": {"txt": "...", "pdf": "...", "jpg": "..."}
+  },
+  "resposta_esperada": { /* payload completo do contrato */ },
+  "modo_fixture": {"score_forcado": {"score_classificacao": 0.93, "score_extracao": 0.84}},
+  "assercoes": ["..."],
+  "observacoes": ""
+}
+```
+
+`resposta_esperada` **é** o JSON da API — não há tradução de nomes entre o fixture e a resposta. Os 67 arquivos validam no contrato (`python3 tests/testar_contrato.py`).
 
 ## Como ler os nomes
 
@@ -147,24 +169,29 @@ Três grupos compartilham a mesma saída esperada sem serem redundantes:
 | `Qualidade_Pdf_ComSenha` | Protegido por AES-256; senha de teste `mediflow123` |
 | `Qualidade_Pdf_Corrompido` | Truncado em 40% do tamanho original |
 | `Validacao_ArquivoGrande` | 25 MB, PDF **válido** (1 página + preenchimento); **não versionado** — regenere com o script |
-| `Borda_Score_084`, `Borda_Score_085`, `Simultaneo_Urgencia_Score` | Exigem `FIXTURE_MODE` para forçar os scores |
+| `Borda_Score_084`, `Borda_Score_085`, `Simultaneo_Urgencia_Score` | Exigem `FIXTURE_MODE` para forçar os scores — os valores estão em `modo_fixture.score_forcado` |
 
 ## Regras
 
 1. Somente dados fictícios, com a marca d'água `DOCUMENTO FICTÍCIO — USO EXCLUSIVO EM TESTES`.
 2. Um fixture de borda altera **apenas um** atributo em relação ao documento base.
-3. Toda fixture funcional tem `expected.json`; o bloco **Validacao** usa envelope de erro e o bloco **Simulacao** (sem arquivos) usa estado final.
+3. Toda fixture tem `expected.json` no schema `mediflow.fixture/2`; o bloco **Validacao** usa `ErroResposta` e os dois PDFs ilegíveis usam `TriagemMediFlow` com `status=ERRO_PROCESSAMENTO`.
 4. Não comparar scores exatos do LLM: use faixas e, nas bordas 0,84 / 0,85 / 0,70, o modo `FIXTURE_MODE`.
 5. Nenhum segredo, chave OCI ou dado pessoal real neste diretório.
 
-## Regerar
+## Verificar e regerar
 
 ```bash
-python3 -m pip install reportlab pymupdf pillow
+python3 -m pip install -r requirements.txt
+
+python3 tests/testar_contrato.py           # 67/67 expected.json válidos no contrato
+python3 tools/verificar_consistencia.py    # estrutura, manifesto, legibilidade e duplicidade
 
 python3 tools/gerar_fixtures_demo.py       # 12 casos → 48 arquivos em tests/fixtures/demo/
 python3 tools/gerar_fixtures_catalogo.py   # 55 casos → 204 arquivos em tests/fixtures/catalogo/
 python3 tools/gerar_mapa_documentos.py     # PDF do mapa em docs/testes/
 ```
+
+Se a mudança for **só no contrato** (nome de campo, enum, texto de justificativa), não é preciso redesenhar PDF/JPG: use `--somente-expected` nos dois geradores. Eles reescrevem apenas os `expected.json`, e abortam se a regra nova não reproduzir a intenção escrita em cada caso.
 
 > `Validacao_ArquivoGrande.pdf` (25 MB) é ignorado pelo Git por padrão. O script o recria quando necessário.

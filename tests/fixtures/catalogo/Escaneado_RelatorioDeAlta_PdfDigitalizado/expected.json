@@ -1,52 +1,79 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Escaneado_RelatorioDeAlta_PdfDigitalizado",
   "documento_ficticio": true,
-  "formatos_disponiveis": [
-    "TXT",
-    "PDF",
-    "JPG"
-  ],
-  "renditions": {
-    "txt": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.txt",
-    "pdf": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.pdf",
-    "jpg": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.jpg"
-  },
-  "classificacao_esperada": {
-    "tipo_documento": "RELATORIO_ALTA_INTERNACAO",
-    "especialidade": [
-      "Pneumologia"
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT",
+      "PDF",
+      "JPG"
     ],
-    "nivel_prioridade": "ROTINA",
-    "score_classificacao": ">= 0.85"
+    "renditions": {
+      "txt": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.txt",
+      "pdf": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.pdf",
+      "jpg": "catalogo/Escaneado_RelatorioDeAlta_PdfDigitalizado/Escaneado_RelatorioDeAlta_PdfDigitalizado.jpg"
+    }
   },
-  "dados_esperados": {
-    "paciente": {
-      "nome": "Sebastião Ferreira Gomes",
-      "idade": 69
-    },
-    "medico": {
-      "nome": "Dr. Paulo Mendes Rocha",
-      "crm": {
-        "numero": "203114",
-        "uf": "RJ"
-      }
-    },
-    "diagnostico": "Doença pulmonar obstrutiva crônica exacerbada",
-    "cid": "J44.1",
-    "medicamentos": [
-      "Prednisona 20 mg",
-      "Budesonida + formoterol 6/200 mcg"
-    ],
-    "exames": [],
-    "urgencia": "NAO"
-  },
-  "decisao_esperada": {
+  "resposta_esperada": {
     "status": "PROCESSADO",
-    "destinos": [
-      "PRONTUARIO_ELETRONICO"
-    ],
-    "requer_auditoria_humana": false,
-    "notificacao": false
+    "documento_id": "DOC-A91A6EC5",
+    "classificacao": {
+      "tipo_documento": "RELATORIO_ALTA_INTERNACAO",
+      "especialidade": [
+        "Pneumologia"
+      ],
+      "nivel_prioridade": "ROTINA",
+      "score_classificacao": 0.93
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Sebastião Ferreira Gomes",
+        "idade": 69
+      },
+      "medico": {
+        "nome": "Dr. Paulo Mendes Rocha",
+        "crm": {
+          "numero": "203114",
+          "uf": "RJ"
+        }
+      },
+      "diagnostico": "Doença pulmonar obstrutiva crônica exacerbada",
+      "cid": "J44.1",
+      "exames": [],
+      "medicamentos": [
+        {
+          "nome": "Prednisona",
+          "dosagem": "20 mg",
+          "frequencia": null
+        },
+        {
+          "nome": "Budesonida + formoterol",
+          "dosagem": "6/200 mcg",
+          "frequencia": null
+        }
+      ],
+      "urgencia": "NAO"
+    },
+    "qualidade": {
+      "score_extracao": 0.91,
+      "score_combinado": 0.91,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "PRONTUARIO_ELETRONICO",
+      "destinos": [
+        "PRONTUARIO_ELETRONICO"
+      ],
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Classificação de rotina: RELATORIO_ALTA_INTERNACAO encaminhado para PRONTUARIO_ELETRONICO.",
+      "notificacao": null
+    },
+    "armazenamento_oci": null,
+    "erro": null
   },
   "assercoes": [
     "Relatório escaneado é classificado",

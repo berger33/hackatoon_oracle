@@ -1,10 +1,13 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Validacao_ArquivoDocx",
   "documento_ficticio": true,
   "tipo_de_teste": "negativo_tecnico",
-  "arquivo": "Validacao_ArquivoDocx.docx",
-  "requisicao": "POST /api/v1/triagens",
-  "erro_esperado": {
+  "entrada": {
+    "requisicao": "POST /api/v1/triagens",
+    "arquivo": "Validacao_ArquivoDocx.docx"
+  },
+  "resposta_esperada": {
     "http": 415,
     "codigo_funcional": "FORMATO_NAO_SUPORTADO",
     "mensagem": "Arquivo .docx válido: formato fora do allowlist do MVP."

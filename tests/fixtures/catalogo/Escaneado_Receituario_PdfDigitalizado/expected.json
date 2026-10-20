@@ -1,51 +1,74 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Escaneado_Receituario_PdfDigitalizado",
   "documento_ficticio": true,
-  "formatos_disponiveis": [
-    "TXT",
-    "PDF",
-    "JPG"
-  ],
-  "renditions": {
-    "txt": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.txt",
-    "pdf": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.pdf",
-    "jpg": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.jpg"
-  },
-  "classificacao_esperada": {
-    "tipo_documento": "RECEITUARIO_MEDICO",
-    "especialidade": [
-      "Cardiologia"
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT",
+      "PDF",
+      "JPG"
     ],
-    "nivel_prioridade": "ROTINA",
-    "score_classificacao": ">= 0.85"
+    "renditions": {
+      "txt": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.txt",
+      "pdf": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.pdf",
+      "jpg": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.jpg"
+    }
   },
-  "dados_esperados": {
-    "paciente": {
-      "nome": "Marli Aparecida Fonseca",
-      "idade": 50
-    },
-    "medico": {
-      "nome": "Dr. Marcos Vinícius Tavares",
-      "crm": {
-        "numero": "176543",
-        "uf": "MG"
-      }
-    },
-    "diagnostico": "Hipertensão arterial sistêmica",
-    "cid": "I10",
-    "medicamentos": [
-      "Anlodipino 5 mg"
-    ],
-    "exames": [],
-    "urgencia": "NAO"
-  },
-  "decisao_esperada": {
+  "resposta_esperada": {
     "status": "PROCESSADO",
-    "destinos": [
-      "FARMACIA_HOSPITALAR"
-    ],
-    "requer_auditoria_humana": false,
-    "notificacao": false
+    "documento_id": "DOC-177238CD",
+    "classificacao": {
+      "tipo_documento": "RECEITUARIO_MEDICO",
+      "especialidade": [
+        "Cardiologia"
+      ],
+      "nivel_prioridade": "ROTINA",
+      "score_classificacao": 0.93
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Marli Aparecida Fonseca",
+        "idade": 50
+      },
+      "medico": {
+        "nome": "Dr. Marcos Vinícius Tavares",
+        "crm": {
+          "numero": "176543",
+          "uf": "MG"
+        }
+      },
+      "diagnostico": "Hipertensão arterial sistêmica",
+      "cid": "I10",
+      "exames": [],
+      "medicamentos": [
+        {
+          "nome": "Anlodipino",
+          "dosagem": "5 mg",
+          "frequencia": null
+        }
+      ],
+      "urgencia": "NAO"
+    },
+    "qualidade": {
+      "score_extracao": 0.91,
+      "score_combinado": 0.91,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "FARMACIA_HOSPITALAR",
+      "destinos": [
+        "FARMACIA_HOSPITALAR"
+      ],
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Classificação de rotina: RECEITUARIO_MEDICO encaminhado para FARMACIA_HOSPITALAR.",
+      "notificacao": null
+    },
+    "armazenamento_oci": null,
+    "erro": null
   },
   "assercoes": [
     "PDF escaneado com camada de imagem",

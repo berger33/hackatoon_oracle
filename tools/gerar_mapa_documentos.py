@@ -479,7 +479,7 @@ def main():
                  ["Ambiguidade", "Matriz_NaoIdentificado_Imagem · Matriz_Outro_Texto · Ausencia_Paciente_Nome · Borda_Score_084", "Matriz · Ausência · Borda"],
                  ["Urgência + ambiguidade", "Simultaneo_Urgencia_Ilegivel · Simultaneo_Urgencia_Score", "Simultâneo"],
                  ["Erro de entrada", "Validacao_ArquivoDocx · Validacao_ArquivoVazio · Validacao_JsonMalformado · Validacao_MimeInvalido", "Validação"],
-                 ["Erro de provedor/OCI", "Simulacao_GeminiTimeout · Simulacao_OciFalhaNoOriginal (sem arquivo novo)", "Simulação"]],
+                 ["Erro de provedor/OCI", "falhas de Gemini e OCI são simuladas por stub, sem arquivo novo", "Simulação"]],
                 font_size=6.4, row_h=9.6, wrap_cols=[0, 1, 2])
 
     ybr -= 22
@@ -607,20 +607,20 @@ def main():
 
     c.setFillColor(MUTED)
     c.setFont("DJ", 7.2)
-    c.drawString(M, max(y, 62), "Cada linha corresponde a um arquivo de entrada. Os blocos Validacao e Simulacao usam envelope de erro, não JSON de triagem.")
+    c.drawString(M, max(y, 62), "Cada linha corresponde a um arquivo de entrada. O bloco Validacao usa envelope de erro (HTTP + código); os PDFs ilegíveis usam ERRO_PROCESSAMENTO.")
 
     # ---------------------------------------------------------------- 5. pendências
     new_page(c, "5. Pendências e regeneração",
              "Pontos abertos na especificação v1.0 (§15) que ainda impedem resposta inequívoca em parte dos fixtures.")
 
     pend = [
-        ["Limite de tamanho, páginas, MIME, timeout e retry", "Validacao_ArquivoGrande, Qualidade_Pdf_Multipagina, Simulacao_*", "Fixar: 10 MB, 10 páginas, timeout 30 s, 2 retries"],
+        ["Limite de tamanho, páginas, MIME, timeout e retry", "Validacao_ArquivoGrande, Qualidade_Pdf_Multipagina", "Fixar: 10 MB, 10 páginas, timeout 30 s, 2 retries"],
         ["Contrato final do upload (multipart × JSON)", "Validacao_SemConteudo, Validacao_EnvelopeVazio, Validacao_MimeInvalido", "Multipart para arquivo; JSON para texto"],
         ["Dicionário de achado crítico e alto risco", "Conflito_Cid_Diagnostico, Conflito_Dose, Conflito_AltoRisco", "Criar rules/cid10.csv e rules/medicamentos_alto_risco.csv"],
-        ["Urgência isolada exige revisão?", "Todos os casos URGENTE", "Spec diz sim (§8.2/§5.3); o exemplo do brief diz não. Padronizar."],
+        ["Urgência isolada exige revisão?", "Resolvido no contrato (R1)", "Auditoria na própria fila de urgência; FILA_REVISAO_HUMANA só com ambiguidade (R4)"],
         ["Autenticação e autorização", "403 e consulta por terceiros", "Fora do MVP; se entrar, criar fixture de acesso negado"],
         ["Política de retenção e exclusão", "Teste de persistência no OCI", "Definir antes de qualquer dado real (que não deve existir)"],
-        ["Meta de latência e precisão", "Simulacao_GeminiTimeout, Simulacao_RetriesEsgotados", "Medir o primeiro pipeline e só então fixar a meta"],
+        ["Meta de latência e precisão", "Medição do primeiro pipeline", "Medir e só então fixar a meta"],
     ]
     y_end = table(c, M, H - 118, [(168, "Pendência"), (150, "O que fica bloqueado"), (191, "Recomendação")],
                   pend, font_size=6.4, row_h=11.4, wrap_cols=[0, 1, 2])
@@ -631,11 +631,11 @@ def main():
     c.drawString(M, y, "Como regenerar o catálogo")
     y -= 15
     steps = [
-        "Instalar as dependências: python3 -m pip install reportlab pymupdf pillow.",
+        "Instalar as dependências: python3 -m pip install -r requirements.txt.",
         "python3 tools/gerar_fixtures_demo.py — recria os 12 casos do kit de demonstração.",
         "python3 tools/gerar_fixtures_catalogo.py — recria os 55 restantes, incluindo PDFs escaneados, senha e corrompido.",
         "python3 tools/gerar_mapa_documentos.py — recria este PDF.",
-        "Rodar o pipeline e comparar por asserção, nunca por score exato do LLM.",
+        "python3 tests/testar_contrato.py — confere os 67 expected.json no contrato (app/models.py).",
     ]
     for i, st in enumerate(steps, 1):
         c.setFillColor(RED)

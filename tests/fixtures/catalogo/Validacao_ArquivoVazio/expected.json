@@ -1,10 +1,13 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Validacao_ArquivoVazio",
   "documento_ficticio": true,
   "tipo_de_teste": "negativo_tecnico",
-  "arquivo": "Validacao_ArquivoVazio.pdf",
-  "requisicao": "POST /api/v1/triagens",
-  "erro_esperado": {
+  "entrada": {
+    "requisicao": "POST /api/v1/triagens",
+    "arquivo": "Validacao_ArquivoVazio.pdf"
+  },
+  "resposta_esperada": {
     "http": 422,
     "codigo_funcional": "CAMPOS_INVALIDOS",
     "mensagem": "Arquivo de 0 bytes: rejeitar antes de chamar o modelo."

@@ -1,10 +1,13 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Validacao_ArquivoZip",
   "documento_ficticio": true,
   "tipo_de_teste": "negativo_tecnico",
-  "arquivo": "Validacao_ArquivoZip.zip",
-  "requisicao": "POST /api/v1/triagens",
-  "erro_esperado": {
+  "entrada": {
+    "requisicao": "POST /api/v1/triagens",
+    "arquivo": "Validacao_ArquivoZip.zip"
+  },
+  "resposta_esperada": {
     "http": 415,
     "codigo_funcional": "FORMATO_NAO_SUPORTADO",
     "mensagem": "Arquivo .zip: formato não suportado."

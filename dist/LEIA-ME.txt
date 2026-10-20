@@ -5,28 +5,28 @@ Gerado em 20/10/2026
 O QUE TEM NESTE ZIP
 -------------------
 README.md                     Visão do produto, arquitetura, regras e critérios de aceite
+app/
+  models.py                   CONTRATO v1.0 (Pydantic): payload, enums e regras de decisão
 docs/
   README.md                   Índice da documentação
-  modelo-documento.md         Modelo base para novos documentos
   testes/
+    CONTRATO_DE_DADOS.md      O contrato em português, com o porquê de cada regra
     CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
     Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
-    REVISAO_DO_MODELO_DE_CONTRATO_v2.md   O modelo Pydantic da equipe contra os 67 fixtures
 tests/fixtures/
   manifest.csv                67 fixtures em formato de máquina
   README.md                   Regras, convenções e casos especiais
   demo/                       12 casos de pitch (TXT + PDF + JPG + expected.json)
   catalogo/                   55 casos restantes (inclui os 8 negativos técnicos)
-tests/contrato/
-  comparar_com_fixtures.py    Mede o modelo v2.0 contra os 67 fixtures
-  comparar_v3.py              Mede a versão corrigida (57/57 + 10/10)
-  verificar_regras_do_contrato.py  Especificação executável das regras
-  modelo_v3_sugerido.py       Referência para o app/models.py definitivo
+tests/
+  testar_contrato.py          Valida os 67 expected.json no contrato
 tools/
+  contrato_fixtures.py        Monta os expected.json a partir do contrato
   gerar_fixtures_demo.py      Recria os 12 casos de demonstração
   gerar_fixtures_catalogo.py  Recria os 55 casos restantes
   gerar_mapa_documentos.py    Recria o PDF do mapa
   verificar_consistencia.py   Audita estrutura, schema, manifesto e duplicidade
+requirements.txt              pydantic, reportlab, pymupdf, pillow
 
 PDFs de origem (base documental do hackathon)
   Projeto_oracle.pdf
@@ -36,9 +36,17 @@ PDFs de origem (base documental do hackathon)
 COMO USAR
 ---------
 1. Envie {ID}.txt, {ID}.pdf e {ID}.jpg como três triagens independentes.
-2. Compare a resposta com o expected.json (dentro da mesma pasta do fixture).
+2. Compare a resposta com "resposta_esperada" no expected.json da mesma pasta:
+   o bloco é o payload completo, no formato do contrato (app/models.py).
 3. Compare por asserção, nunca por score exato do modelo.
-4. Nos casos Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score, ative o modo de fixture para forçar os scores.
+4. Nos casos Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score, ative
+   o modo de fixture para forçar os scores de "modo_fixture.score_forcado".
+
+VERIFICAR (opcional, exige Python 3.11+)
+---------------------------------------
+  python3 -m pip install -r requirements.txt
+  python3 tests/testar_contrato.py          # 67/67 no contrato
+  python3 tools/verificar_consistencia.py   # estrutura, manifesto, duplicidade
 
 Os nomes das pastas não usam abreviações: Bloco_Assunto_Detalhe, por exemplo
 Matriz_Guia_Imagem (bloco Matriz, tipo guia, formato imagem). Os nove blocos são

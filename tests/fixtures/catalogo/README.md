@@ -36,7 +36,9 @@ Os 8 casos têm um único arquivo de entrada inválido e um `expected.json` com 
 
 ## Scores forçados
 
-`Borda_Score_085` e `Simultaneo_Urgencia_Score` trazem `score_forcado` no `expected.json`. Use o modo de fixture para definir os scores de classificação e extração, senão o resultado é intermitente.
+`Borda_Score_085` e `Simultaneo_Urgencia_Score` trazem `modo_fixture.score_forcado` no `expected.json`. Use o modo de fixture para definir os scores de classificação e extração, senão o resultado é intermitente.
+
+O payload esperado fica em `resposta_esperada`, no formato do contrato ([`app/models.py`](../../../app/models.py)); o porquê de cada regra está em [`docs/testes/CONTRATO_DE_DADOS.md`](../../../docs/testes/CONTRATO_DE_DADOS.md).
 
 ## Casos que compartilham a mesma saída esperada
 

@@ -5,15 +5,14 @@ __pycache__/
 .venv/
 venv/
 
-# Ambiente e segredos (nunca comitar credenciais da OCI)
+# Ambiente e segredos (nunca comitar credenciais)
 .env
 .env.*
-!.env.example
 keys/
 *.pem
 
-# Fixtures pesadas: regeradas por tools/gerar_fixtures_catalogo.py
-# (25 MB; acima do limite de arquivo do GitHub, que é 100 MB, mas evita engordar o repo)
+# Fixture pesada: regerada por tools/gerar_fixtures_catalogo.py
+# (25 MB; abaixo do limite de 100 MB do GitHub, mas não precisa engordar o histórico)
 tests/fixtures/catalogo/Validacao_ArquivoGrande/Validacao_ArquivoGrande.pdf
 
 # Sistema

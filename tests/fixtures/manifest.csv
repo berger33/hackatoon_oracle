@@ -46,16 +46,16 @@ Qualidade_Foto_Cortada,Qualidade,GUIA_PROCEDIMENTO,IMAGEM,AMBIGUIDADE,FILA_REVIS
 Qualidade_Foto_BaixoContraste,Qualidade,ATESTADO_MEDICO,IMAGEM,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-04/RF-21,RECOMENDADO,NAO,Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados.
 Qualidade_Pdf_SemTexto,Qualidade,LAUDO_EXAME_IMAGEM,PDF_DIGITALIZADO,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/RF-04,OBRIGATORIO,NAO,PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado.
 Qualidade_Pdf_Multipagina,Qualidade,RELATORIO_ALTA_INTERNACAO,PDF,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-03,RECOMENDADO,NAO,Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec.
-Qualidade_Pdf_ComSenha,Qualidade,N/A,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-03/12,RECOMENDADO,NAO,PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar).
-Qualidade_Pdf_Corrompido,Qualidade,N/A,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-04/12,RECOMENDADO,NAO,"PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta."
-Validacao_ArquivoDocx,Validacao,N/A,DOCX,ERRO,N/A,415 FORMATO_NAO_SUPORTADO,NAO,NAO,RF-03,OBRIGATORIO,NAO,Arquivo .docx válido: formato fora do allowlist do MVP.
-Validacao_ArquivoVazio,Validacao,N/A,ARQUIVO_0KB,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO,RF-03,OBRIGATORIO,NAO,Arquivo de 0 bytes: rejeitar antes de chamar o modelo.
-Validacao_JsonMalformado,Validacao,N/A,JSON,ERRO,N/A,400 REQUISICAO_INVALIDA,NAO,NAO,RF-03,OBRIGATORIO,NAO,JSON com vírgula final/sintaxe inválida.
-Validacao_EnvelopeVazio,Validacao,N/A,JSON,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO,RF-03,OBRIGATORIO,NAO,Envelope JSON vazio ou sem campos obrigatórios.
-Validacao_SemConteudo,Validacao,N/A,MULTIPART,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO,RF-01/RF-03,OBRIGATORIO,NAO,Requisição sem arquivo e sem documento_texto.
-Validacao_ArquivoZip,Validacao,N/A,ZIP,ERRO,N/A,415 FORMATO_NAO_SUPORTADO,NAO,NAO,RF-03,RECOMENDADO,NAO,Arquivo .zip: formato não suportado.
-Validacao_ArquivoGrande,Validacao,N/A,ARQUIVO_25MB,ERRO,N/A,413 ARQUIVO_MAIOR_QUE_LIMITE,NAO,NAO,RF-03,RECOMENDADO,NAO,Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes.
-Validacao_MimeInvalido,Validacao,N/A,PDF_FALSO,ERRO,N/A,415 MIME_INVALIDO,NAO,NAO,RF-03,RECOMENDADO,NAO,Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.
+Qualidade_Pdf_ComSenha,Qualidade,-,PDF,ERRO,-,ERRO_PROCESSAMENTO,-,NAO,RF-03/12,RECOMENDADO,NAO,PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar).
+Qualidade_Pdf_Corrompido,Qualidade,-,PDF,ERRO,-,ERRO_PROCESSAMENTO,-,NAO,RF-04/12,RECOMENDADO,NAO,"PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta."
+Validacao_ArquivoDocx,Validacao,-,DOCX,ERRO,-,415 FORMATO_NAO_SUPORTADO,-,NAO,RF-03,OBRIGATORIO,NAO,Arquivo .docx válido: formato fora do allowlist do MVP.
+Validacao_ArquivoVazio,Validacao,-,ARQUIVO_0KB,ERRO,-,422 CAMPOS_INVALIDOS,-,NAO,RF-03,OBRIGATORIO,NAO,Arquivo de 0 bytes: rejeitar antes de chamar o modelo.
+Validacao_JsonMalformado,Validacao,-,JSON,ERRO,-,400 REQUISICAO_INVALIDA,-,NAO,RF-03,OBRIGATORIO,NAO,JSON com vírgula final/sintaxe inválida.
+Validacao_EnvelopeVazio,Validacao,-,JSON,ERRO,-,422 CAMPOS_INVALIDOS,-,NAO,RF-03,OBRIGATORIO,NAO,Envelope JSON vazio ou sem campos obrigatórios.
+Validacao_SemConteudo,Validacao,-,MULTIPART,ERRO,-,422 CAMPOS_INVALIDOS,-,NAO,RF-01/RF-03,OBRIGATORIO,NAO,Requisição sem arquivo e sem documento_texto.
+Validacao_ArquivoZip,Validacao,-,ZIP,ERRO,-,415 FORMATO_NAO_SUPORTADO,-,NAO,RF-03,RECOMENDADO,NAO,Arquivo .zip: formato não suportado.
+Validacao_ArquivoGrande,Validacao,-,ARQUIVO_25MB,ERRO,-,413 ARQUIVO_MAIOR_QUE_LIMITE,-,NAO,RF-03,RECOMENDADO,NAO,Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes.
+Validacao_MimeInvalido,Validacao,-,PDF_FALSO,ERRO,-,415 MIME_INVALIDO,-,NAO,RF-03,RECOMENDADO,NAO,Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.
 Escaneado_Receituario_PdfDigitalizado,Escaneado,RECEITUARIO_MEDICO,PDF_DIGITALIZADO,ROTINA,FARMACIA_HOSPITALAR,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Receita impressa escaneada em PDF (com camada de imagem), rotina."
 Escaneado_LaudoLaboratorial_PdfDigitalizado,Escaneado,LAUDO_EXAME_LABORATORIAL,PDF_DIGITALIZADO,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Laudo laboratorial escaneado em PDF, rotina."
 Escaneado_Guia_PdfDigitalizado,Escaneado,GUIA_PROCEDIMENTO,PDF_DIGITALIZADO,ROTINA,AUDITORIA_AUTORIZACOES,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Guia de procedimento escaneada em PDF, rotina."

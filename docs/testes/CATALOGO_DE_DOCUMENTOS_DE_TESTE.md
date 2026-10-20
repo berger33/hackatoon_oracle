@@ -20,9 +20,9 @@ Você não precisa de um documento por especialidade médica. Precisa de **um do
 
 > **Mínimo literal dos critérios de aceite (seção 16 da especificação): 8 arquivos.** Três rendições do mesmo conteúdo (texto, PDF e imagem) + cinco variações de campo ausente. Esse número passa na leitura literal, mas não prova os 5 destinos nem os 8 tipos — por isso não recomendo usá-lo como meta.
 
-**Distribuição do kit completo (67):** 19 PDFs digitais, 7 PDFs digitalizados, 16 imagens, 17 textos e 8 arquivos inválidos. Por desfecho: 29 de rotina, 7 de urgência, 21 de ambiguidade e 10 de erro.
+**Distribuição do kit completo (67):** 19 PDFs digitais, 7 PDFs digitalizados, 16 imagens, 17 textos e 8 arquivos inválidos. Por cenário: 29 de rotina, 7 de urgência, 21 de ambiguidade e 10 de erro.
 
-> **Status: 67 de 67 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 47 casos funcionais × 4 arquivos + 8 negativos técnicos = 196 arquivos. O mapa visual dos 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+> **Status: 67 de 67 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 47 casos funcionais × 4 arquivos + 8 negativos técnicos × 2 = 204 arquivos. O mapa visual dos 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
 
 ---
 
@@ -158,21 +158,21 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Qualidade_Foto_BaixoContraste` | ATESTADO_MEDICO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados. |
 | `Qualidade_Pdf_SemTexto` | LAUDO_EXAME_IMAGEM | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado. |
 | `Qualidade_Pdf_Multipagina` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec. |
-| `Qualidade_Pdf_ComSenha` | N/A (não é classificado) | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar). |
-| `Qualidade_Pdf_Corrompido` | N/A (não é classificado) | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta. |
+| `Qualidade_Pdf_ComSenha` | — | PDF | ERRO | — | ERRO_PROCESSAMENTO | — | PDF protegido por senha: `ERRO_PROCESSAMENTO` + código `PDF_PROTEGIDO`, sem dados extraídos. |
+| `Qualidade_Pdf_Corrompido` | — | PDF | ERRO | — | ERRO_PROCESSAMENTO | — | PDF truncado: `ERRO_PROCESSAMENTO` + código `PDF_CORROMPIDO`, sem dados extraídos. |
 
 #### Bloco Validacao — negativos técnicos de entrada (8)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| `Validacao_ArquivoDocx` | N/A | DOCX | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .docx válido: formato fora do allowlist do MVP. |
-| `Validacao_ArquivoVazio` | N/A | ARQUIVO_0KB | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Arquivo de 0 bytes: rejeitar antes de chamar o modelo. |
-| `Validacao_JsonMalformado` | N/A | JSON | ERRO | N/A | 400 REQUISICAO_INVALIDA | NAO | JSON com vírgula final/sintaxe inválida. |
-| `Validacao_EnvelopeVazio` | N/A | JSON | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Envelope JSON vazio ou sem campos obrigatórios. |
-| `Validacao_SemConteudo` | N/A | MULTIPART | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
-| `Validacao_ArquivoZip` | N/A | ZIP | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
-| `Validacao_ArquivoGrande` | N/A | ARQUIVO_25MB | ERRO | N/A | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
-| `Validacao_MimeInvalido` | N/A | PDF_FALSO | ERRO | N/A | 415 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
+| `Validacao_ArquivoDocx` | — | DOCX | ERRO | — | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .docx válido: formato fora do allowlist do MVP. |
+| `Validacao_ArquivoVazio` | — | ARQUIVO_0KB | ERRO | — | 422 CAMPOS_INVALIDOS | NAO | Arquivo de 0 bytes: rejeitar antes de chamar o modelo. |
+| `Validacao_JsonMalformado` | — | JSON | ERRO | — | 400 REQUISICAO_INVALIDA | NAO | JSON com vírgula final/sintaxe inválida. |
+| `Validacao_EnvelopeVazio` | — | JSON | ERRO | — | 422 CAMPOS_INVALIDOS | NAO | Envelope JSON vazio ou sem campos obrigatórios. |
+| `Validacao_SemConteudo` | — | MULTIPART | ERRO | — | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
+| `Validacao_ArquivoZip` | — | ZIP | ERRO | — | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
+| `Validacao_ArquivoGrande` | — | ARQUIVO_25MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
+| `Validacao_MimeInvalido` | — | PDF_FALSO | ERRO | — | 415 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
 
 #### Bloco Escaneado — PDFs digitalizados dos 6 tipos restantes (6)
 
@@ -196,9 +196,9 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 
 ---
 
-## 6. Simulações operacionais (bloco Simulacao — 8 cenários, sem documentos novos)
+## 6. Simulações operacionais (8 cenários, **sem arquivos neste pacote**)
 
-Estas falhas não se testam com um documento novo: testam-se com **stub, flag de ambiente ou mock do adaptador**. Reutilize `Matriz_LaudoDeImagem_Pdf` (urgente) ou `Matriz_Receituario_Texto` (rotina) como entrada.
+Estas falhas não se testam com um documento novo: testam-se com **stub, flag de ambiente ou mock do adaptador**, durante a implementação do pipeline. Nenhum arquivo é entregue aqui — a lista existe para o plano de testes da aplicação. Reutilize `Matriz_LaudoDeImagem_Pdf` (urgente) ou `Matriz_Receituario_Texto` (rotina) como entrada.
 
 | ID | Falha simulada | Resultado esperado | Regra |
 | --- | --- | --- | --- |
@@ -242,12 +242,19 @@ O documento sozinho não é um teste. Para cada fixture funcional, produza tamb�
 
 | Artefato | Quantidade | Formato |
 | --- | ---: | --- |
-| Documento de entrada | 67 | PDF / JPG / PNG / TXT |
-| **Saída esperada** (`expected/{ID}.json`) | 67 | JSON com tipo, prioridade, destinos, revisão, campos ausentes e status |
-| **Fonte editável** (`source/{ID}.md` ou `.docx`) | 59 | Markdown/DOCX a partir do qual o PDF e a imagem são gerados |
+| Documento de entrada | 67 | TXT / PDF / JPG — mais os 8 arquivos inválidos do bloco Validacao |
+| **Saída esperada** (`expected.json`) | 67 | `resposta_esperada` no formato do contrato: tipo, prioridade, destinos, revisão, qualidade e status |
 | **Manifesto** | 1 | `tests/fixtures/manifest.csv` (este catálogo, em formato de máquina) |
 
-Para os 8 negativos do bloco Validacao, o "expected" é um **envelope de erro** (HTTP + código funcional), não um JSON de triagem. Para o bloco Simulacao, o expected é o estado final após a falha simulada.
+O `expected.json` segue o schema `mediflow.fixture/2`:
+
+| `tipo_de_teste` | Quantos | `resposta_esperada` |
+| --- | ---: | --- |
+| `funcional` | 57 | `TriagemMediFlow` completa |
+| `erro_processamento` | 2 | `TriagemMediFlow` com `status=ERRO_PROCESSAMENTO` e `erro.codigo` |
+| `negativo_tecnico` | 8 | `ErroResposta` (HTTP + código funcional) |
+
+O contrato executável é [`app/models.py`](../../app/models.py); a explicação em português é [`CONTRATO_DE_DADOS.md`](CONTRATO_DE_DADOS.md).
 
 **Não compare scores exatos.** O score autorrelatado pelo LLM não é probabilidade calibrada (RF-17). Compare faixas (`< 0,85`, `>= 0,85`, `== 0,85`) e, para os casos de borda Borda_Score_084/Borda_Score_085/Simultaneo_Urgencia_Score, use **stub de score** — sem isso o teste é intermitente e não serve como evidência.
 
@@ -273,13 +280,13 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 
 | Pendência | Impacto nos testes | Recomendação para o time |
 | --- | --- | --- |
-| Limite de tamanho, páginas, MIME, timeout e retry | `Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina`, `Simulacao_*` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
+| Limite de tamanho, páginas, MIME, timeout e retry | `Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
 | Contrato final do upload (multipart × JSON) | `Validacao_SemConteudo`, `Validacao_EnvelopeVazio`, `Validacao_MimeInvalido` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
 | Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_AltoRisco` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
 | **Urgência isolada exige revisão?** | A tabela §8.2 diz "Sim, obrigatória" para urgência; o parágrafo seguinte diz que a revisão é obrigatória **quando coexiste** com ambiguidade/dado ausente/score baixo. A §5.3 inclui "encontrou urgência" em `EM_REVISAO`. O exemplo do `Projeto_oracle.pdf` mostra um caso urgente com `requer_auditoria_humana: false` e status `processado`, o que conflita com a spec. | Padronizar: urgência → `EM_REVISAO` + `FILA_URGENCIA_MEDICA` + alerta; `FILA_REVISAO_HUMANA` só entra quando houver ambiguidade/dado ausente/score baixo. Este catálogo segue a **especificação v1.0** (documento mais recente e normativo), não o exemplo do brief. Registrar a decisão antes de codificar. |
 | Autenticação e autorização | `403` e consulta por terceiros não têm contrato | Fora do MVP; se entrar, criar fixtures de acesso negado |
 | Política de retenção | Não afeta o conteúdo, mas afeta o teste de persistência | Definir antes de qualquer dado real (que não deve existir no MVP) |
-| Meta de latência e precisão | `Simulacao_GeminiTimeout` e `Simulacao_RetriesEsgotados` dependem do alvo | Medir o primeiro pipeline e então fixar a meta |
+| Meta de latência e precisão | depende do primeiro pipeline | Medir e então fixar a meta |
 
 **Dica de implementação:** exponha um modo `FIXTURE_MODE` no adaptador Gemini que leia `score_classificacao` e `score_extracao` de um mapa fixo por `documento_id`. Isso torna Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score determinísticos sem alterar a lógica de negócio.
 
@@ -330,7 +337,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.
 3. **Crie as bordas**: para cada fixture dos blocos Ausencia, Borda, Conflito e Simultaneo, remova ou altere **um único** campo em relação ao documento base.
 4. **Escreva o `expected.json`** com tipo, prioridade, destinos, `requer_auditoria_humana`, campos ausentes/incertos, status e regra acionada.
-5. **Rode o pipeline** e compare com o expected. Para os blocos Validacao e Simulacao, compare o envelope de erro e o status, não o JSON de triagem.
+5. **Rode o pipeline** e compare com `resposta_esperada`. No bloco Validacao, compare o envelope de erro (`http` + `codigo_funcional`); nos dois PDFs ilegíveis, compare o `status` e o `erro.codigo`.
 6. **Atualize o manifesto** se algum comportamento mudar — o `manifest.csv` é a fonte de verdade dos testes.
 
 ---
@@ -348,10 +355,10 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 | 7. Evento urgente simulado, sem envio externo | `Matriz_LaudoDeImagem_Pdf`, `Simultaneo_Urgencia_*` |
 | 8. Score < 0,85 revisa; == 0,85 não revisa | `Borda_Score_084`, `Borda_Score_085` |
 | 9. Campos ausentes não inferidos | `Ausencia_*`, `Matriz_NaoIdentificado_*` |
-| 10. Persistência no OCI informada | `Simulacao_OciFalhaNoOriginal`, `Simulacao_OciFalhaNoResultado` + qualquer fixture |
+| 10. Persistência no OCI informada | qualquer fixture + simulação de falha do OCI |
 | 11. Histórico ordenado e JSON validado | Qualquer fixture funcional + `GET /historico` |
 | 12. Regras, versão, justificativa e destino rastreáveis | `Conflito_*`, `Simultaneo_*` |
-| 13. Interface mostra estados sem segredos | `Matriz_*`, `Simulacao_*` |
+| 13. Interface mostra estados sem segredos | `Matriz_*` |
 | 14. README + demonstração dos 3 cenários | Kit de demonstração (12) |
 | 15. Nenhum opcional declarado sem prova | Bloco Diferencial (se implementado) |
 

@@ -1,7 +1,18 @@
 #!/usr/bin/env python3
-"""Gera o kit de demonstração do MediFlow: 12 casos x 3 rendições + expected.json."""
+"""Gera o kit de demonstração do MediFlow: 12 casos x 3 rendições + expected.json.
+
+O `expected.json` é montado pelo contrato oficial (`app/models.py`) através de
+`tools/contrato_fixtures.py`: o caso descreve os fatos clínicos e o contrato
+calcula status, destinos, revisão e notificação. Se os dois divergirem, a
+geração aborta.
+
+Uso:
+    python3 tools/gerar_fixtures_demo.py                  # rendições + expected.json
+    python3 tools/gerar_fixtures_demo.py --somente-expected  # só reescreve os expected.json
+"""
 import json
 import os
+import sys
 import tempfile
 from io import BytesIO
 
@@ -13,8 +24,12 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfgen import canvas
 import pymupdf as fitz
 
-ROOT = __import__("os").path.dirname(__import__("os").path.dirname(__import__("os").path.abspath(__file__)))
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, "tests/fixtures/demo")
+
+from contrato_fixtures import expected_json  # noqa: E402
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"
 pdfmetrics.registerFont(TTFont("DejaVu", f"{FONT_DIR}/DejaVuSans.ttf"))
 pdfmetrics.registerFont(TTFont("DejaVu-Bold", f"{FONT_DIR}/DejaVuSans-Bold.ttf"))
@@ -512,7 +527,7 @@ C(
         "revisao": True, "notificacao": False,
         "dados": {"paciente": {"nome": None, "idade": None}, "medico": {"nome": None, "crm": None},
                   "diagnostico": None, "cid": None, "medicamentos": [], "exames": [], "urgencia": "INDETERMINADO",
-                  "campos_ausentes": ["paciente.nome", "paciente.idade", "medico.nome", "medico.crm", "diagnostico_principal"]},
+                  "campos_ausentes": ["paciente.nome", "paciente.idade", "medico.nome", "medico.crm", "diagnostico"]},
         "assercoes": ["Documento ilegível não pode ser classificado",
                       "Nenhum dado clínico é inventado",
                       "Destino FILA_REVISAO_HUMANA e status EM_REVISAO"],
@@ -538,7 +553,7 @@ C(
         "revisao": True, "notificacao": False,
         "dados": {"paciente": {"nome": None, "idade": None}, "medico": {"nome": None, "crm": None},
                   "diagnostico": None, "cid": None, "medicamentos": [], "exames": [], "urgencia": "INDETERMINADO",
-                  "campos_ausentes": ["paciente.nome", "paciente.idade", "medico.nome", "medico.crm", "diagnostico_principal"]},
+                  "campos_ausentes": ["paciente.nome", "paciente.idade", "medico.nome", "medico.crm", "diagnostico"]},
         "assercoes": ["Documento fora da taxonomia clínica", "Classificação OUTRO",
                       "Destino FILA_REVISAO_HUMANA (destino não mapeado)"],
     },
@@ -602,57 +617,56 @@ C(
 )
 
 
-def expected_json(case, base="demo"):
+def exp_do_contrato(case):
+    """Traduz os nomes usados nas tabelas de demonstração para os do contrato."""
     e = case["expected"]
     return {
-        "fixture_id": case["id"],
-        "documento_ficticio": True,
-        "formatos_disponiveis": ["TXT", "PDF", "JPG"],
-        "renditions": {
-            "txt": f"{base}/{case['id']}/{case['id']}.txt",
-            "pdf": f"{base}/{case['id']}/{case['id']}.pdf",
-            "jpg": f"{base}/{case['id']}/{case['id']}.jpg",
-        },
-        "classificacao_esperada": {
-            "tipo_documento": e["tipo_documento"],
-            "especialidade": e["especialidade"],
-            "nivel_prioridade": e["prioridade"],
-            "score_classificacao": ">= 0.85" if not e.get("score_forcado") else e["score_forcado"]["score_classificacao"],
-        },
-        "dados_esperados": e["dados"],
-        "decisao_esperada": {
-            "status": e["status"],
-            "destinos": e["destinos"],
-            "requer_auditoria_humana": e["revisao"],
-            "notificacao": e["notificacao"],
-        },
-        "assercoes": e["assercoes"],
-        "observacoes": e.get("obs", ""),
-        **({"score_forcado": e["score_forcado"]} if e.get("score_forcado") else {}),
+        "tipo": e["tipo_documento"],
+        "esp": e["especialidade"],
+        "prio": e["prioridade"],
+        "status": e["status"],
+        "dest": e["destinos"],
+        "rev": e["revisao"],
+        "notif": e["notificacao"],
+        "dados": e["dados"],
+        "score": e.get("score_forcado"),
+        "conflitos": e.get("conflitos"),
     }
 
 
+def escreve_expected(case):
+    exp = exp_do_contrato(case)
+    dados = expected_json(
+        case["id"], exp, base="demo",
+        assercoes=case["expected"]["assercoes"],
+        observacoes=case["expected"].get("obs", ""),
+    )
+    d = os.path.join(OUT, case["id"])
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
+        json.dump(dados, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
 def main():
-    os.makedirs(OUT, exist_ok=True)
+    somente_expected = "--somente-expected" in sys.argv
     total = 0
     for case in CASES:
         d = os.path.join(OUT, case["id"])
-        os.makedirs(d, exist_ok=True)
-        txt = os.path.join(d, f"{case['id']}.txt")
-        pdf = os.path.join(d, f"{case['id']}.pdf")
-        jpg = os.path.join(d, f"{case['id']}.jpg")
-
-        write_txt(case, txt)
-        if case["id"] == "Matriz_NaoIdentificado_Imagem":
-            make_degraded(case, pdf, jpg)
-        else:
-            draw_pdf(case, pdf)
-            render_jpg(pdf, jpg)
-
-        with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
-            json.dump(expected_json(case), f, ensure_ascii=False, indent=2)
+        if not somente_expected:
+            os.makedirs(d, exist_ok=True)
+            txt = os.path.join(d, f"{case['id']}.txt")
+            pdf = os.path.join(d, f"{case['id']}.pdf")
+            jpg = os.path.join(d, f"{case['id']}.jpg")
+            write_txt(case, txt)
+            if case["id"] == "Matriz_NaoIdentificado_Imagem":
+                make_degraded(case, pdf, jpg)
+            else:
+                draw_pdf(case, pdf)
+                render_jpg(pdf, jpg)
+        escreve_expected(case)
         total += 4
-        print(f"ok {case['id']}: txt + pdf + jpg + expected.json")
+        print(f"ok {case['id']}: expected.json" + ("" if somente_expected else " + txt + pdf + jpg"))
     print(f"\n{len(CASES)} casos, {total} arquivos em {OUT}")
 
 

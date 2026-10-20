@@ -1,54 +1,76 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Ausencia_Paciente_Idade",
   "documento_ficticio": true,
-  "formatos_disponiveis": [
-    "TXT",
-    "PDF",
-    "JPG"
-  ],
-  "renditions": {
-    "txt": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.txt",
-    "pdf": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.pdf",
-    "jpg": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.jpg"
-  },
-  "classificacao_esperada": {
-    "tipo_documento": "RECEITUARIO_MEDICO",
-    "especialidade": [
-      "Clínica Médica"
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT",
+      "PDF",
+      "JPG"
     ],
-    "nivel_prioridade": "ROTINA",
-    "score_classificacao": ">= 0.85"
+    "renditions": {
+      "txt": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.txt",
+      "pdf": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.pdf",
+      "jpg": "catalogo/Ausencia_Paciente_Idade/Ausencia_Paciente_Idade.jpg"
+    }
   },
-  "dados_esperados": {
-    "paciente": {
-      "nome": "Otávio Sampaio Reis",
-      "idade": null
-    },
-    "medico": {
-      "nome": "Dra. Camila Ferreira Lopes",
-      "crm": {
-        "numero": "198765",
-        "uf": "SP"
-      }
-    },
-    "diagnostico": "Cistite aguda não complicada",
-    "cid": "N30.0",
-    "medicamentos": [
-      "Nitrofurantoína 100 mg"
-    ],
-    "exames": [],
-    "urgencia": "NAO",
-    "campos_ausentes": [
-      "paciente.idade"
-    ]
-  },
-  "decisao_esperada": {
+  "resposta_esperada": {
     "status": "EM_REVISAO",
-    "destinos": [
-      "FILA_REVISAO_HUMANA"
-    ],
-    "requer_auditoria_humana": true,
-    "notificacao": false
+    "documento_id": "DOC-DBE66B8D",
+    "classificacao": {
+      "tipo_documento": "RECEITUARIO_MEDICO",
+      "especialidade": [
+        "Clínica Médica"
+      ],
+      "nivel_prioridade": "ROTINA",
+      "score_classificacao": 0.93
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Otávio Sampaio Reis",
+        "idade": null
+      },
+      "medico": {
+        "nome": "Dra. Camila Ferreira Lopes",
+        "crm": {
+          "numero": "198765",
+          "uf": "SP"
+        }
+      },
+      "diagnostico": "Cistite aguda não complicada",
+      "cid": "N30.0",
+      "exames": [],
+      "medicamentos": [
+        {
+          "nome": "Nitrofurantoína",
+          "dosagem": "100 mg",
+          "frequencia": null
+        }
+      ],
+      "urgencia": "NAO"
+    },
+    "qualidade": {
+      "score_extracao": 0.91,
+      "score_combinado": 0.91,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [
+        "paciente.idade"
+      ],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "FILA_REVISAO_HUMANA",
+      "destinos": [
+        "FILA_REVISAO_HUMANA"
+      ],
+      "requer_auditoria_humana": true,
+      "justificativa_roteamento": "Revisão humana obrigatória: campos obrigatórios ausentes: paciente.idade.",
+      "notificacao": null
+    },
+    "armazenamento_oci": null,
+    "erro": null
   },
   "assercoes": [
     "Idade ausente força revisão (RF-21)",

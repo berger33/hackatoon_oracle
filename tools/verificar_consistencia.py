@@ -4,10 +4,14 @@
 Checa, para os 67 casos:
   1. estrutura das pastas (4 arquivos nos funcionais, 2 nos negativos técnicos)
   2. nome da pasta = nome dos arquivos = fixture_id do expected.json
-  3. expected.json válido, com schema mínimo e enums do domínio
+  3. expected.json com o schema `mediflow.fixture/2` e os enums do domínio
+     (importados de `app/models.py`, para não haver duas listas)
   4. manifest.csv x expected.json (tipo, status, revisão, notificação, destinos)
   5. arquivos realmente legíveis (PDF abre, JPG abre, TXT tem marca de fictício)
   6. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
+
+A validação profunda do payload (ponto fixo das regras) fica em
+`tests/testar_contrato.py`.
 
 Uso:
     python3 tools/verificar_consistencia.py           # relatório completo
@@ -23,15 +27,18 @@ import re
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
 BASE = os.path.join(ROOT, "tests/fixtures")
 
-TIPOS = {"RECEITUARIO_MEDICO", "LAUDO_EXAME_LABORATORIAL", "LAUDO_EXAME_IMAGEM",
-         "GUIA_PROCEDIMENTO", "RELATORIO_ALTA_INTERNACAO", "ATESTADO_MEDICO",
-         "OUTRO", "NAO_IDENTIFICADO", "N/A"}
-PRIORIDADES = {"URGENTE", "ROTINA", "NAO_IDENTIFICADA"}
-STATUS = {"PROCESSADO", "EM_REVISAO", "ERRO_PROCESSAMENTO", "ERRO_PERSISTENCIA", "N/A"}
-DESTINOS = {"FILA_URGENCIA_MEDICA", "FARMACIA_HOSPITALAR", "AUDITORIA_AUTORIZACOES",
-            "PRONTUARIO_ELETRONICO", "FILA_REVISAO_HUMANA", "N/A"}
+from app.models import Destino, NivelPrioridade, StatusTriagem, TipoDocumento  # noqa: E402
+
+TIPOS = {x.value for x in TipoDocumento}
+PRIORIDADES = {x.value for x in NivelPrioridade}
+STATUS = {x.value for x in StatusTriagem}
+DESTINOS = {x.value for x in Destino}
+SCHEMA = "mediflow.fixture/2"
+#: Nas 10 fixtures de erro não há tipo, destino nem revisão a comparar.
+NA = "-"
 
 erros = []
 avisos = []
@@ -126,39 +133,48 @@ def verifica_expected(manifest, quiet):
 
         if e.get("fixture_id") != fid:
             add_erro(f"{fid}: fixture_id = {e.get('fixture_id')!r}")
-
-        if "erro_esperado" in e:
-            ee = e["erro_esperado"]
-            for k in ("http", "codigo_funcional", "mensagem"):
-                if k not in ee:
-                    add_erro(f"{fid}: envelope de erro sem {k}")
-            continue
-
-        for k in ("formatos_disponiveis", "renditions", "classificacao_esperada",
-                  "dados_esperados", "decisao_esperada", "assercoes"):
-            if k not in e:
-                add_erro(f"{fid}: expected sem {k}")
-
-        c = e.get("classificacao_esperada", {})
-        dec = e.get("decisao_esperada", {})
-        if c.get("tipo_documento") not in TIPOS:
-            add_erro(f"{fid}: tipo_documento inválido {c.get('tipo_documento')!r}")
-        if c.get("nivel_prioridade") not in PRIORIDADES:
-            add_erro(f"{fid}: nivel_prioridade inválido {c.get('nivel_prioridade')!r}")
-        if dec.get("status") not in STATUS:
-            add_erro(f"{fid}: status inválido {dec.get('status')!r}")
-        for dest in dec.get("destinos", []):
-            if dest not in DESTINOS:
-                add_erro(f"{fid}: destino inválido {dest!r}")
-        if not isinstance(dec.get("requer_auditoria_humana"), (bool, type(None))):
-            add_erro(f"{fid}: requer_auditoria_humana não é booleano/null")
-        if dec.get("status") == "ERRO_PROCESSAMENTO" and dec.get("requer_auditoria_humana") is not None:
-            add_aviso(f"{fid}: erro de processamento com revisão definida "
-                      f"({dec.get('requer_auditoria_humana')}); o esperado é null")
+        if e.get("schema") != SCHEMA:
+            add_erro(f"{fid}: schema = {e.get('schema')!r} (esperado {SCHEMA})")
         if not e.get("assercoes"):
             add_erro(f"{fid}: sem asserções")
 
-        for k, rel in e.get("renditions", {}).items():
+        tipo_teste = e.get("tipo_de_teste")
+        if tipo_teste not in ("funcional", "erro_processamento", "negativo_tecnico"):
+            add_erro(f"{fid}: tipo_de_teste inválido {tipo_teste!r}")
+        resp = e.get("resposta_esperada") or {}
+
+        if tipo_teste == "negativo_tecnico":
+            for k in ("http", "codigo_funcional", "mensagem"):
+                if k not in resp:
+                    add_erro(f"{fid}: envelope de erro sem {k}")
+            if "entrada" not in e or "requisicao" not in e["entrada"]:
+                add_erro(f"{fid}: negativo sem 'entrada.requisicao'")
+            continue
+
+        c = resp.get("classificacao") or {}
+        dec = resp.get("decisao_roteamento") or {}
+        if tipo_teste == "funcional":
+            if c.get("tipo_documento") not in TIPOS:
+                add_erro(f"{fid}: tipo_documento inválido {c.get('tipo_documento')!r}")
+            if c.get("nivel_prioridade") not in PRIORIDADES:
+                add_erro(f"{fid}: nivel_prioridade inválido {c.get('nivel_prioridade')!r}")
+            if resp.get("status") not in STATUS:
+                add_erro(f"{fid}: status inválido {resp.get('status')!r}")
+            for dest in dec.get("destinos", []):
+                if dest not in DESTINOS:
+                    add_erro(f"{fid}: destino inválido {dest!r}")
+            if not isinstance(dec.get("requer_auditoria_humana"), bool):
+                add_erro(f"{fid}: requer_auditoria_humana não é booleano")
+        else:  # erro_processamento
+            if resp.get("status") != StatusTriagem.ERRO_PROCESSAMENTO.value:
+                add_erro(f"{fid}: status de erro esperado ERRO_PROCESSAMENTO")
+            erro = resp.get("erro") or {}
+            if "codigo" not in erro or "mensagem" not in erro:
+                add_erro(f"{fid}: erro de processamento sem código/mensagem")
+            if c or resp.get("dados_extraidos"):
+                add_erro(f"{fid}: erro de processamento não pode ter dados extraídos")
+
+        for k, rel in (e.get("entrada", {}).get("renditions") or {}).items():
             if not os.path.exists(os.path.join(BASE, rel)):
                 add_erro(f"{fid}: rendition {k} aponta para arquivo inexistente ({rel})")
     if not quiet:
@@ -173,29 +189,37 @@ def verifica_manifest(manifest, quiet):
         if not r:
             continue
         e = json.load(open(os.path.join(d, "expected.json"), encoding="utf-8"))
-        if "erro_esperado" in e:
-            ee = e["erro_esperado"]
+        resp = e["resposta_esperada"]
+
+        if e["tipo_de_teste"] == "negativo_tecnico":
             st = r["status_esperado"]
-            if str(ee["http"]) not in st:
-                add_erro(f"{fid}: HTTP {ee['http']} não bate com '{st}'")
+            if str(resp["http"]) not in st:
+                add_erro(f"{fid}: HTTP {resp['http']} não bate com '{st}'")
                 divergencias += 1
-            codigo = ee["codigo_funcional"].split()[0]
-            if codigo not in st:
-                add_erro(f"{fid}: código {codigo} não bate com '{st}'")
+            if resp["codigo_funcional"] not in st:
+                add_erro(f"{fid}: código {resp['codigo_funcional']} não bate com '{st}'")
                 divergencias += 1
             continue
 
-        c = e["classificacao_esperada"]
-        dec = e["decisao_esperada"]
+        if e["tipo_de_teste"] == "erro_processamento":
+            if r["status_esperado"] != resp["status"]:
+                add_erro(f"{fid}: status manifest={r['status_esperado']} expected={resp['status']}")
+                divergencias += 1
+            for campo in ("tipo_documento", "destinos_esperados", "revisao_humana"):
+                if r[campo] != NA:
+                    add_erro(f"{fid}: {campo} deveria ser '{NA}' em caso de erro")
+                    divergencias += 1
+            continue
+
+        c = resp["classificacao"]
+        dec = resp["decisao_roteamento"]
         if r["tipo_documento"] != c["tipo_documento"]:
             add_erro(f"{fid}: tipo manifest={r['tipo_documento']} expected={c['tipo_documento']}")
             divergencias += 1
-        if r["status_esperado"] != dec["status"]:
-            add_erro(f"{fid}: status manifest={r['status_esperado']} expected={dec['status']}")
+        if r["status_esperado"] != resp["status"]:
+            add_erro(f"{fid}: status manifest={r['status_esperado']} expected={resp['status']}")
             divergencias += 1
         rev = "SIM" if dec["requer_auditoria_humana"] else "NAO"
-        if dec["requer_auditoria_humana"] is None:
-            rev = "N/A"
         if r["revisao_humana"] != rev:
             add_erro(f"{fid}: revisão manifest={r['revisao_humana']} expected={rev}")
             divergencias += 1
@@ -289,14 +313,17 @@ def verifica_duplicidade(quiet):
     saidas = {}
     for kind, fid, d in pastas():
         e = json.load(open(os.path.join(d, "expected.json"), encoding="utf-8"))
-        if "erro_esperado" in e:
-            ee = e["erro_esperado"]
-            chave = ("erro", ee["http"], ee["codigo_funcional"], e.get("arquivo"))
+        resp = e["resposta_esperada"]
+        if e["tipo_de_teste"] == "negativo_tecnico":
+            chave = ("erro", resp["http"], resp["codigo_funcional"], e["entrada"].get("arquivo"))
+        elif e["tipo_de_teste"] == "erro_processamento":
+            chave = ("erro_processamento", resp["erro"]["codigo"])
         else:
-            c, dec, dd = e["classificacao_esperada"], e["decisao_esperada"], e["dados_esperados"]
+            c, dec, dd = resp["classificacao"], resp["decisao_roteamento"], resp["dados_extraidos"]
             chave = (c["tipo_documento"], c["nivel_prioridade"], tuple(dec["destinos"]),
-                     dec["status"], dec["requer_auditoria_humana"], dec["notificacao"],
-                     dd.get("paciente", {}).get("nome"), dd.get("diagnostico"), dd.get("cid"))
+                     resp["status"], dec["requer_auditoria_humana"],
+                     bool(dec["notificacao"]),
+                     (dd.get("paciente") or {}).get("nome"), dd.get("diagnostico"), dd.get("cid"))
         saidas.setdefault(chave, []).append(fid)
     iguais_saida = [v for v in saidas.values() if len(v) > 1]
 

@@ -1,10 +1,13 @@
 {
+  "schema": "mediflow.fixture/2",
   "fixture_id": "Validacao_JsonMalformado",
   "documento_ficticio": true,
   "tipo_de_teste": "negativo_tecnico",
-  "arquivo": "Validacao_JsonMalformado.json",
-  "requisicao": "POST /api/v1/triagens",
-  "erro_esperado": {
+  "entrada": {
+    "requisicao": "POST /api/v1/triagens",
+    "arquivo": "Validacao_JsonMalformado.json"
+  },
+  "resposta_esperada": {
     "http": 400,
     "codigo_funcional": "REQUISICAO_INVALIDA",
     "mensagem": "JSON com vírgula final e sintaxe inválida."

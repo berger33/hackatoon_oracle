@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 """Gera os 55 fixtures restantes do catalogo do MediFlow (blocos Ausencia a Validacao).
 
+O `expected.json` é montado pelo contrato oficial (`app/models.py`) via
+`tools/contrato_fixtures.py`. Uso:
+
+    python3 tools/gerar_fixtures_catalogo.py                    # rendições + expected.json
+    python3 tools/gerar_fixtures_catalogo.py --somente-expected  # só reescreve os expected.json
+
+
 Saida: tests/fixtures/catalogo/{ID}/{ID}.txt|pdf|jpg|expected.json
 
 Casos especiais:
@@ -27,7 +34,10 @@ from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps  # noqa: E
 from reportlab.pdfbase.ttfonts import TTFont  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, ROOT)
 OUT = os.path.join(ROOT, "tests/fixtures/catalogo")
+
+from contrato_fixtures import expected_json, expected_negativo  # noqa: E402
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"
 pdfmetrics.registerFont(TTFont("DejaVuMono", f"{FONT_DIR}/DejaVuSansMono.ttf"))
 
@@ -184,7 +194,7 @@ c(id="Matriz_RelatorioDeAlta_Texto", titulo="RELATÓRIO DE ALTA HOSPITALAR",
            dados=dict(paciente=dict(nome="Vanessa Cristina Lopes", idade=33),
                       medico=dict(nome="Dr. André Luiz Barbosa", crm=dict(numero="165432", uf="SP")),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="NAO",
-                      campos_ausentes=["diagnostico_principal"]),
+                      campos_ausentes=["diagnostico"]),
            ass=["Documento truncado sem diagnóstico/hipótese",
                 "Ausência de diagnóstico força revisão (RF-21)",
                 "Nenhum diagnóstico é inventado"]))
@@ -236,7 +246,7 @@ c(id="Matriz_Outro_Pdf", titulo="DECLARAÇÃO DE COMPARECIMENTO",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["Declaração administrativa fora da taxonomia clínica", "Classificação OUTRO",
                 "Destino não mapeado vai para FILA_REVISAO_HUMANA"]))
 
@@ -253,7 +263,7 @@ c(id="Matriz_Outro_Imagem", titulo="RELATÓRIO DE ENFERMAGEM",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["Registro de enfermagem não é documento médico do MVP", "Classificação OUTRO",
                 "Revisão humana obrigatória"]))
 
@@ -270,7 +280,7 @@ c(id="Matriz_NaoIdentificado_Pdf", titulo="REGISTRO CLÍNICO",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["PDF escaneado ilegível não é classificado", "Classificação NAO_IDENTIFICADO",
                 "Nenhum dado inventado e revisão obrigatória"],
            obs="PDF somente imagem, com desfoque e ruído. Sem camada de texto."))
@@ -287,7 +297,7 @@ c(id="Matriz_NaoIdentificado_Texto", titulo="TEXTO SEM CONTEÚDO CLÍNICO",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["Texto sem conteúdo clínico", "Classificação NAO_IDENTIFICADO",
                 "Revisão humana obrigatória"]))
 
@@ -359,7 +369,7 @@ c(id="Ausencia_Diagnostico", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
                       medico=dict(nome="Dra. Helena Prado", crm=dict(numero="187432", uf="SP")),
                       diagnostico=None, cid=None, medicamentos=[],
                       exames=["Exérese de lesão cutânea"], urgencia="NAO",
-                      campos_ausentes=["diagnostico_principal"]),
+                      campos_ausentes=["diagnostico"]),
            ass=["Diagnóstico/hipótese ausente força revisão",
                 "Justificativa clínica não substitui o campo diagnóstico",
                 "Nenhum CID é sugerido"]))
@@ -378,7 +388,7 @@ c(id="Ausencia_SomenteCid", titulo="LAUDO DE EXAME DE IMAGEM",
                       medico=dict(nome="Dr. André Luiz Barbosa", crm=dict(numero="165432", uf="SP")),
                       diagnostico="Gonartrose à direita", cid=None, medicamentos=[],
                       exames=["Radiografia de joelho direito"], urgencia="NAO",
-                      campos_ausentes=["cid_extraido"]),
+                      campos_ausentes=["cid"]),
            ass=["Diagnóstico presente mantém o fluxo automático",
                 "CID ausente fica null e NÃO força revisão (RF-21)",
                 "Status PROCESSADO"]))
@@ -456,7 +466,7 @@ c(id="Conflito_Cid_Diagnostico", titulo="LAUDO DE EXAME DE IMAGEM",
                       medico=dict(nome="Dr. André Luiz Barbosa", crm=dict(numero="165432", uf="SP")),
                       diagnostico="Lombalgia mecânica crônica", cid="I21.9", medicamentos=[],
                       exames=["Radiografia de tórax"], urgencia="NAO"),
-           conflitos=[dict(tipo="CID_DIAGNOSTICO", campos=["cid_extraido", "diagnostico_principal"],
+           conflitos=[dict(tipo="CID_DIAGNOSTICO", campos=["cid", "diagnostico"],
                            gravidade="ALTA", descricao="CID de infarto agudo incompatível com lombalgia")],
            ass=["Conflito explícito entre CID e diagnóstico", "Valores originais preservados (RF-16)",
                 "Revisão humana obrigatória por conflito impeditivo"],
@@ -476,7 +486,7 @@ c(id="Conflito_Dose", titulo="RECEITUÁRIO MÉDICO",
                       medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
                       diagnostico="Hipertensão arterial sistêmica", cid="I10",
                       medicamentos=["Losartana potássica 500 mg"], exames=[], urgencia="NAO"),
-           conflitos=[dict(tipo="DOSE_SUSPEITA", campos=["medicamentos[0].dose"],
+           conflitos=[dict(tipo="DOSE_SUSPEITA", campos=["medicamentos[0].dosagem"],
                            gravidade="ALTA", descricao="Losartana 500 mg excede a dose usual (50–100 mg)")],
            ass=["Dose suspeita sinalizada sem alterar o valor (RF-16)",
                 "Valor original 500 mg preservado", "Revisão humana obrigatória"],
@@ -558,7 +568,7 @@ c(id="Simultaneo_Urgencia_Ilegivel", titulo="RECEITUÁRIO MÉDICO",
                       medico=dict(nome="Dra. Camila Ferreira Lopes", crm=dict(numero="198765", uf="SP")),
                       diagnostico="Crise hipertensiva", cid="I16.9",
                       medicamentos=["Nitroprussiato de sódio"], exames=[], urgencia="SIM",
-                      campos_incertos=["medicamentos[0].dose"]),
+                      campos_incertos=["medicamentos[0].dosagem"]),
            ass=["Urgência e ilegibilidade simultâneas (§8.2)",
                 "Dois destinos no mesmo payload",
                 "Nunca reduzir a decisão a um destino único"],
@@ -597,7 +607,7 @@ c(id="Qualidade_Foto_Desfocada", titulo="RECEITUÁRIO MANUSCRITO",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["Imagem muito desfocada não permite extração", "Nenhuma lacuna é preenchida",
                 "Revisão humana indicada"],
            obs="JPG e PDF fortemente degradados; cabeçalho de identificação preservado."))
@@ -713,12 +723,10 @@ c(id="Qualidade_Pdf_ComSenha", titulo="RECEITUÁRIO MÉDICO",
         sec("Observação", "O contrato de erro deve definir se o documento é rejeitado (415/422) ou encaminhado para revisão humana.")],
   doc=("—", "—"),
   flags=dict(secure=True),
-  exp=dict(tipo="N/A", esp=[], prio="NAO_IDENTIFICADA",
-           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=None, notif=False,
-           dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
-                      diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO"),
+  exp=dict(erro=dict(codigo="PDF_PROTEGIDO",
+                     mensagem="PDF protegido por senha (AES-256): sem a credencial não há texto a extrair."),
            ass=["PDF protegido não pode ser lido", "Erro controlado, sem stack trace (RF-03/§12)",
-                "Contrato de erro ainda a definir"],
+                "Status ERRO_PROCESSAMENTO com código PDF_PROTEGIDO e sem dados extraídos"],
            obs="Senha de teste: mediflow123. O fixture existe para testar a rejeição, não o sucesso."))
 
 c(id="Qualidade_Pdf_Corrompido", titulo="LAUDO DE EXAME LABORATORIAL",
@@ -729,10 +737,8 @@ c(id="Qualidade_Pdf_Corrompido", titulo="LAUDO DE EXAME LABORATORIAL",
         sec("Observação", "Deve gerar erro controlado, com mensagem segura e possibilidade de reenvio.")],
   doc=("—", "—"),
   flags=dict(corrupt=True),
-  exp=dict(tipo="N/A", esp=[], prio="NAO_IDENTIFICADA",
-           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=None, notif=False,
-           dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
-                      diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO"),
+  exp=dict(erro=dict(codigo="PDF_CORROMPIDO",
+                     mensagem="PDF truncado em 40%: estrutura de objetos inválida, documento ilegível."),
            ass=["Arquivo corrompido gera ERRO_PROCESSAMENTO",
                 "Mensagem segura, sem stack trace", "Permitir reenvio"],
            obs="Arquivo truncado em 40% do tamanho original."))
@@ -842,7 +848,7 @@ c(id="Escaneado_Outro_PdfDigitalizado", titulo="TERMO DE CONSENTIMENTO",
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO",
                       campos_ausentes=["paciente.nome", "paciente.idade", "medico.nome", "medico.crm",
-                                       "diagnostico_principal"]),
+                                       "diagnostico"]),
            ass=["Termo administrativo escaneado fora da taxonomia",
                 "Classificação OUTRO", "Revisão humana obrigatória"]))
 
@@ -1312,61 +1318,6 @@ def make_handwritten(case, jpg_path, pdf_path):
     image_only_pdf(jpg_path, pdf_path)
 
 
-def expected_json(case, base="catalogo"):
-    e = case["exp"]
-    out = {
-        "fixture_id": case["id"],
-        "documento_ficticio": True,
-        "formatos_disponiveis": ["TXT", "PDF", "JPG"],
-        "renditions": {
-            "txt": f"{base}/{case['id']}/{case['id']}.txt",
-            "pdf": f"{base}/{case['id']}/{case['id']}.pdf",
-            "jpg": f"{base}/{case['id']}/{case['id']}.jpg",
-        },
-        "classificacao_esperada": {
-            "tipo_documento": e["tipo"],
-            "especialidade": e["esp"],
-            "nivel_prioridade": e["prio"],
-            "score_classificacao": (e.get("score") or {}).get("score_classificacao", ">= 0.85"),
-        },
-        "dados_esperados": e["dados"],
-        "decisao_esperada": {
-            "status": e["status"],
-            "destinos": e["dest"],
-            "requer_auditoria_humana": e["rev"],
-            "notificacao": e["notif"],
-        },
-        "assercoes": e["ass"],
-        "observacoes": e.get("obs", ""),
-    }
-    if e.get("conflitos"):
-        out["conflitos_esperados"] = e["conflitos"]
-    if e.get("score"):
-        out["score_forcado"] = e["score"]
-    return out
-
-
-def expected_error_json(case):
-    return {
-        "fixture_id": case["id"],
-        "documento_ficticio": True,
-        "tipo_de_teste": "negativo_tecnico",
-        "arquivo": case["arquivo"],
-        "requisicao": "POST /api/v1/triagens",
-        "erro_esperado": {
-            "http": case["http"],
-            "codigo_funcional": case["codigo"],
-            "mensagem": case["desc"],
-        },
-        "assercoes": [
-            case["aceita"],
-            "Nenhuma inferência é executada para entrada inválida",
-            "Mensagem de erro é segura, sem stack trace ou segredo",
-        ],
-        "observacoes": "O expected deste fixture é um envelope de erro, não um JSON de triagem.",
-    }
-
-
 def build_negative(case):
     d = os.path.join(OUT, case["id"])
     os.makedirs(d, exist_ok=True)
@@ -1460,17 +1411,44 @@ def build_negative(case):
         d2.rectangle([40, 40, 860, 120], fill=(180, 40, 32))
         d2.text((60, 62), "CONTEUDO REAL: PNG RENOMEADO PARA .PDF", fill=(255, 255, 255))
         img.save(path, "PNG")
+    escreve_expected_negativo(case)
 
+
+def escreve_expected(case):
+    e = case["exp"]
+    d = os.path.join(OUT, case["id"])
+    os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
-        json.dump(expected_error_json(case), f, ensure_ascii=False, indent=2)
-    print(f"ok {case['id']}: {case['arquivo']} (negativo técnico)")
+        json.dump(expected_json(case["id"], e, base="catalogo",
+                                assercoes=e["ass"], observacoes=e.get("obs", "")),
+                  f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+
+def escreve_expected_negativo(case):
+    """Envelope de rejeição de requisição (não é triagem)."""
+    d = os.path.join(OUT, case["id"])
+    os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
+        json.dump(expected_negativo(
+            case["id"], case["arquivo"], case["http"], case["codigo"], case["desc"],
+            assercoes=[case["aceita"],
+                       "Nenhuma inferência é executada para entrada inválida",
+                       "Mensagem de erro é segura, sem stack trace ou segredo"],
+            observacoes="O expected deste fixture é um envelope de erro, não um JSON de triagem.",
+        ), f, ensure_ascii=False, indent=2)
+        f.write("\n")
 
 
 def main():
-    os.makedirs(OUT, exist_ok=True)
+    somente_expected = "--somente-expected" in sys.argv
     total = 0
     for case in CASES:
         d = os.path.join(OUT, case["id"])
+        if somente_expected:
+            escreve_expected(case)
+            total += 4
+            continue
         os.makedirs(d, exist_ok=True)
         txt = os.path.join(d, f"{case['id']}.txt")
         pdf = os.path.join(d, f"{case['id']}.pdf")
@@ -1541,13 +1519,15 @@ def main():
             draw_case_paged(case, pdf)
             rasterize(pdf, jpg, quality=86)
 
-        with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
-            json.dump(expected_json(case), f, ensure_ascii=False, indent=2)
+        escreve_expected(case)
         total += 4
         print(f"ok {case['id']}: txt + pdf + jpg + expected.json")
 
     for vcase in V_CASES:
-        build_negative(vcase)
+        if somente_expected:
+            escreve_expected_negativo(vcase)
+        else:
+            build_negative(vcase)
         total += 2
 
     print(f"\n{len(CASES)} casos funcionais + {len(V_CASES)} negativos = {len(CASES) + len(V_CASES)} fixtures")
