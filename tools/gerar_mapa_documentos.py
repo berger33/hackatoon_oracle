@@ -131,7 +131,7 @@ def new_page(c, title, subtitle=None, cover=False):
     c.drawString(M, H - 34, "MEDIFLOW · MAPA DE DOCUMENTOS DE TESTE")
     c.setFont("DJ", 7)
     c.setFillColor(MUTED)
-    c.drawRightString(W - M, H - 34, "Hackathon ONE G10 · v1.0")
+    c.drawRightString(W - M, H - 34, "Hackathon ONE G10 · v1.1")
     c.setStrokeColor(LINE)
     c.line(M, H - 42, W - M, H - 42)
 
@@ -285,7 +285,7 @@ def main():
     y = H - 286
     for label, value in [
         ("Projeto", "MediFlow — triagem, extração e roteamento de documentos clínicos"),
-        ("Versão", "1.0 — 19/10/2026"),
+        ("Versão", "1.1 — 20/10/2026"),
         ("Base documental", "Projeto_oracle.pdf · Análise de Requisitos v1.1 · Especificação Funcional v1.0"),
         ("Escopo", "MVP do hackathon — somente dados fictícios, OCI Always Free"),
     ]:
