@@ -8,6 +8,7 @@ Esta pasta é o espaço de trabalho para os documentos gerados durante o hackath
 | --- | --- |
 | [Mapa de documentos de teste (PDF)](testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) | Mapa visual: cobertura, fluxo de decisão, kit pronto e catálogo dos 67 fixtures |
 | [Catálogo de documentos de teste](testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) | Quantos e quais fixtures o MediFlow precisa para testar tipos, formatos, regras e bordas |
+| [Revisão do modelo de contrato v2.0](testes/REVISAO_DO_MODELO_DE_CONTRATO_v2.md) | O `app/models.py` proposto bate com os 67 fixtures? Divergências, patch mínimo e versão corrigida (v3) |
 | [Modelo de documento](modelo-documento.md) | Estrutura base para novos documentos |
 
 ## Estrutura sugerida

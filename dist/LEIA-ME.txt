@@ -11,15 +11,22 @@ docs/
   testes/
     CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
     Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
+    REVISAO_DO_MODELO_DE_CONTRATO_v2.md   O modelo Pydantic da equipe contra os 67 fixtures
 tests/fixtures/
   manifest.csv                67 fixtures em formato de máquina
   README.md                   Regras, convenções e casos especiais
   demo/                       12 casos de pitch (TXT + PDF + JPG + expected.json)
   catalogo/                   55 casos restantes (inclui os 8 negativos técnicos)
+tests/contrato/
+  comparar_com_fixtures.py    Mede o modelo v2.0 contra os 67 fixtures
+  comparar_v3.py              Mede a versão corrigida (57/57 + 10/10)
+  verificar_regras_do_contrato.py  Especificação executável das regras
+  modelo_v3_sugerido.py       Referência para o app/models.py definitivo
 tools/
   gerar_fixtures_demo.py      Recria os 12 casos de demonstração
   gerar_fixtures_catalogo.py  Recria os 55 casos restantes
   gerar_mapa_documentos.py    Recria o PDF do mapa
+  verificar_consistencia.py   Audita estrutura, schema, manifesto e duplicidade
 
 PDFs de origem (base documental do hackathon)
   Projeto_oracle.pdf

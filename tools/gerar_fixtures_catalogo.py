@@ -978,7 +978,7 @@ V_CASES = [
          desc="Arquivo de 25 MB: acima do limite configurado (limite ainda pendente na spec).",
          aceita="Rejeitar pelo tamanho antes de qualquer inferência."),
     dict(id="Validacao_MimeInvalido", arquivo="Validacao_MimeInvalido.pdf", kind="fakemime",
-         http=415, codigo="MIME_INVALIDO (ou 422)",
+         http=415, codigo="MIME_INVALIDO",
          desc="Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.",
          aceita="Validar o conteúdo, não apenas a extensão."),
 ]

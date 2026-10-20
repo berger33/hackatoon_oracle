@@ -172,7 +172,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Validacao_SemConteudo` | N/A | MULTIPART | ERRO | N/A | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
 | `Validacao_ArquivoZip` | N/A | ZIP | ERRO | N/A | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
 | `Validacao_ArquivoGrande` | N/A | ARQUIVO_25MB | ERRO | N/A | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
-| `Validacao_MimeInvalido` | N/A | PDF_FALSO | ERRO | N/A | 415/422 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
+| `Validacao_MimeInvalido` | N/A | PDF_FALSO | ERRO | N/A | 415 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
 
 #### Bloco Escaneado — PDFs digitalizados dos 6 tipos restantes (6)
 

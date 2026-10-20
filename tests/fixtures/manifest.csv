@@ -55,7 +55,7 @@ Validacao_EnvelopeVazio,Validacao,N/A,JSON,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO
 Validacao_SemConteudo,Validacao,N/A,MULTIPART,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO,RF-01/RF-03,OBRIGATORIO,NAO,Requisição sem arquivo e sem documento_texto.
 Validacao_ArquivoZip,Validacao,N/A,ZIP,ERRO,N/A,415 FORMATO_NAO_SUPORTADO,NAO,NAO,RF-03,RECOMENDADO,NAO,Arquivo .zip: formato não suportado.
 Validacao_ArquivoGrande,Validacao,N/A,ARQUIVO_25MB,ERRO,N/A,413 ARQUIVO_MAIOR_QUE_LIMITE,NAO,NAO,RF-03,RECOMENDADO,NAO,Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes.
-Validacao_MimeInvalido,Validacao,N/A,PDF_FALSO,ERRO,N/A,415/422 MIME_INVALIDO,NAO,NAO,RF-03,RECOMENDADO,NAO,Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.
+Validacao_MimeInvalido,Validacao,N/A,PDF_FALSO,ERRO,N/A,415 MIME_INVALIDO,NAO,NAO,RF-03,RECOMENDADO,NAO,Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.
 Escaneado_Receituario_PdfDigitalizado,Escaneado,RECEITUARIO_MEDICO,PDF_DIGITALIZADO,ROTINA,FARMACIA_HOSPITALAR,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Receita impressa escaneada em PDF (com camada de imagem), rotina."
 Escaneado_LaudoLaboratorial_PdfDigitalizado,Escaneado,LAUDO_EXAME_LABORATORIAL,PDF_DIGITALIZADO,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Laudo laboratorial escaneado em PDF, rotina."
 Escaneado_Guia_PdfDigitalizado,Escaneado,GUIA_PROCEDIMENTO,PDF_DIGITALIZADO,ROTINA,AUDITORIA_AUTORIZACOES,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Guia de procedimento escaneada em PDF, rotina."

@@ -107,6 +107,7 @@ As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Ima
 
 - [Mapa de documentos de teste (PDF)](docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) — visão visual de cobertura, fluxo e catálogo completo.
 - [Catálogo de documentos de teste](docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) — 12 para demonstrar, 57 para testar de verdade, 67 para cobertura completa.
+- [Revisão do modelo de contrato](docs/testes/REVISAO_DO_MODELO_DE_CONTRATO_v2.md) — o modelo da equipe contra os 67 fixtures: 49 representáveis, 12 decisões divergentes e o patch que fecha 57/57.
 - [Como ler os fixtures](tests/fixtures/README.md) — convenção de nomes (Bloco_Assunto_Detalhe) e os 12 casos de pitch.
 - [Catálogo completo de fixtures](tests/fixtures/catalogo/README.md) — os 55 casos restantes, incluindo negativos técnicos.
 - [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.

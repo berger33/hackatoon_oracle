@@ -6,7 +6,7 @@
   "requisicao": "POST /api/v1/triagens",
   "erro_esperado": {
     "http": 415,
-    "codigo_funcional": "MIME_INVALIDO (ou 422)",
+    "codigo_funcional": "MIME_INVALIDO",
     "mensagem": "Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME."
   },
   "assercoes": [
