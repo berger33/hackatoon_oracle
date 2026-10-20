@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Ambiente e segredos (nunca comitar credenciais)
+.env
+.env.*
+keys/
+*.pem
+
+# Fixture pesada: regerada por tools/gerar_fixtures_catalogo.py
+# (25 MB; abaixo do limite de 100 MB do GitHub, mas não precisa engordar o histórico)
+tests/fixtures/catalogo/Validacao_ArquivoGrande/Validacao_ArquivoGrande.pdf
+
+# Sistema
+.DS_Store
+Thumbs.db

@@ -1,0 +1,7 @@
+# Contrato + verificação dos fixtures
+pydantic>=2.6,<3
+
+# Geração/regeneração dos documentos de teste
+reportlab>=4.0
+pymupdf>=1.23
+pillow>=10.0

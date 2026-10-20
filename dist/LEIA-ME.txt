@@ -1,0 +1,70 @@
+MEDIFLOW — PACOTE COMPLETO DE DOCUMENTOS E FIXTURES
+Hackathon ONE G10 · Oracle Next Education & Alura
+Gerado em 20/10/2026
+
+O QUE TEM NESTE ZIP
+-------------------
+README.md                     Visão do produto, arquitetura, regras e critérios de aceite
+app/
+  models.py                   CONTRATO v1.0 (Pydantic): payload, enums e regras de decisão
+docs/
+  README.md                   Índice da documentação
+  testes/
+    CONTRATO_DE_DADOS.md      O contrato em português, com o porquê de cada regra
+    CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
+    Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
+tests/fixtures/
+  manifest.csv                67 fixtures em formato de máquina
+  README.md                   Regras, convenções e casos especiais
+  demo/                       12 casos de pitch (TXT + PDF + JPG + expected.json)
+  catalogo/                   55 casos restantes (inclui os 8 negativos técnicos)
+tests/
+  testar_contrato.py          Valida os 67 expected.json no contrato
+tools/
+  contrato_fixtures.py        Monta os expected.json a partir do contrato
+  gerar_fixtures_demo.py      Recria os 12 casos de demonstração
+  gerar_fixtures_catalogo.py  Recria os 55 casos restantes
+  gerar_mapa_documentos.py    Recria o PDF do mapa
+  verificar_consistencia.py   Audita estrutura, schema, manifesto e duplicidade
+requirements.txt              pydantic, reportlab, pymupdf, pillow
+
+PDFs de origem (base documental do hackathon)
+  Projeto_oracle.pdf
+  MediFlow_-_Análise_de_Requisitos_v1.1.pdf
+  MediFlow_Especificacao_Funcional_v1.0.pdf
+
+COMO USAR
+---------
+1. Envie {ID}.txt, {ID}.pdf e {ID}.jpg como três triagens independentes.
+2. Compare a resposta com "resposta_esperada" no expected.json da mesma pasta:
+   o bloco é o payload completo, no formato do contrato (app/models.py).
+3. Compare por asserção, nunca por score exato do modelo.
+4. Nos casos Borda_Score_084, Borda_Score_085 e Simultaneo_Urgencia_Score, ative
+   o modo de fixture para forçar os scores de "modo_fixture.score_forcado".
+
+VERIFICAR (opcional, exige Python 3.11+)
+---------------------------------------
+  python3 -m pip install -r requirements.txt
+  python3 tests/testar_contrato.py          # 67/67 no contrato
+  python3 tools/verificar_consistencia.py   # estrutura, manifesto, duplicidade
+
+Os nomes das pastas não usam abreviações: Bloco_Assunto_Detalhe, por exemplo
+Matriz_Guia_Imagem (bloco Matriz, tipo guia, formato imagem). Os nove blocos são
+Matriz, Ausencia, Borda, Conflito, Simultaneo, Qualidade, Validacao, Escaneado e Diferencial.
+
+IMPORTANTE
+----------
+Todos os documentos são FICTÍCIOS. Nomes, CRMs, CID e resultados não correspondem
+a pessoa real. Nenhum dado de paciente real é usado. Nenhuma credencial está no pacote.
+
+Todas as fixtures acontecem no Hospital Aurora (São Paulo): todo CRM é SP e o
+mesmo médico tem sempre o mesmo CRM em todos os documentos.
+
+CASOS ESPECIAIS
+---------------
+Validacao_ArquivoGrande.pdf          25 MB, testa limite de tamanho
+Qualidade_Pdf_ComSenha.pdf           protegido por AES-256; senha de teste: mediflow123
+Qualidade_Pdf_Corrompido.pdf         truncado em 40% do tamanho original
+Qualidade_Pdf_Multipagina.pdf        7 páginas
+Qualidade_Foto_Rotacionada.jpg/.pdf  imagem e PDF girados 90 graus
+Matriz_NaoIdentificado_* e Qualidade_Foto_Desfocada  documentos ilegíveis de propósito
