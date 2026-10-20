@@ -28,7 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from gerar_fixtures_demo import (  # noqa: E402
     A4, CONTENT_W, FICTION, H, HOSPITAL, HOSPITAL_SUB, INK, LINE, MARGIN, MUTED, RED,
-    SOFT, W, canvas, fitz, pdfmetrics, wrap,
+    SOFT, W, canvas, fitz, pdfmetrics, ruido_deterministico, wrap,
 )
 from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps  # noqa: E402
 from reportlab.pdfbase.ttfonts import TTFont  # noqa: E402
@@ -1148,7 +1148,7 @@ def write_txt_case(case, path):
 
 
 def rasterize(pdf_path, jpg_path, rot=0.35, blur=0.0, contrast=1.0, brightness=1.0,
-              noise=0, rotate90=False, crop=None, shadow=False, quality=86):
+              noise=0, rotate90=False, crop=None, shadow=False, quality=86, seed=7):
     doc = fitz.open(pdf_path)
     page = doc[0]
     pix = page.get_pixmap(dpi=150)
@@ -1162,7 +1162,7 @@ def rasterize(pdf_path, jpg_path, rot=0.35, blur=0.0, contrast=1.0, brightness=1
     if brightness != 1.0:
         img = ImageEnhance.Brightness(img).enhance(brightness)
     if noise:
-        n = Image.effect_noise(img.size, noise).convert("L")
+        n = ruido_deterministico(img.size, noise, seed)
         img = Image.composite(img, Image.new("RGB", img.size, (236, 236, 234)),
                               n.point(lambda p: 22 if p > 140 else 0))
     if shadow:
@@ -1244,7 +1244,7 @@ def degrade_strong(pdf_path, jpg_path, mode="scan"):
     else:
         body = body.filter(ImageFilter.GaussianBlur(2.0))
         body = ImageEnhance.Contrast(body).enhance(0.72)
-        noise = Image.effect_noise(body.size, 34).convert("L")
+        noise = ruido_deterministico(body.size, 34, 11)
         body = Image.composite(body, Image.new("RGB", body.size, (232, 232, 230)),
                                noise.point(lambda px: 26 if px > 140 else 0))
         overlay = Image.new("L", body.size, 0)

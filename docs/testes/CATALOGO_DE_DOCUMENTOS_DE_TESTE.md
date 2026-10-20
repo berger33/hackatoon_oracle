@@ -307,8 +307,8 @@ tests/fixtures/
 │   └── ... (12 pastas)
 └── catalogo/                     # ✅ 55 casos restantes
     ├── README.md
-    ├── Ausencia_Paciente_Idade/ ...          # 47 casos funcionais com 4 arquivos cada
-    └── Validacao_ArquivoGrande/              # 8 negativos técnicos com 1 arquivo inválido cada
+    ├── Ausencia_Paciente_Idade/ ...          # 47 casos com 4 arquivos (45 funcionais + 2 de erro de leitura)
+    └── Validacao_ArquivoDocx/ ...            # 8 negativos técnicos, com 1 arquivo inválido cada
 ```
 
 **Nome da pasta e do arquivo:** o ID é a própria pasta e o prefixo dos arquivos — `Bloco_Assunto_Detalhe`, sem abreviações e sem acentos. O formato entra apenas como sufixo do arquivo: `Matriz_Receituario_Pdf.pdf`, `Matriz_Receituario_Imagem.jpg`, `Matriz_Receituario_Texto.txt`. O ID é único e casa com o `manifest.csv` e o `expected.json`.

@@ -187,7 +187,7 @@ Três grupos compartilham a mesma saída esperada sem serem redundantes:
 python3 -m pip install -r requirements.txt
 
 python3 tests/testar_contrato.py           # 67/67 expected.json válidos no contrato
-python3 tools/verificar_consistencia.py    # estrutura, manifesto, legibilidade e duplicidade
+python3 tools/verificar_consistencia.py    # estrutura, schema, manifesto, legibilidade, coerência clínica (CRM-SP) e duplicidade
 
 python3 tools/gerar_fixtures_demo.py       # 12 casos → 48 arquivos em tests/fixtures/demo/
 python3 tools/gerar_fixtures_catalogo.py   # 55 casos → 204 arquivos em tests/fixtures/catalogo/
@@ -196,4 +196,6 @@ python3 tools/gerar_mapa_documentos.py     # PDF do mapa em docs/testes/
 
 Se a mudança for **só no contrato** (nome de campo, enum, texto de justificativa), não é preciso redesenhar PDF/JPG: use `--somente-expected` nos dois geradores. Eles reescrevem apenas os `expected.json`, e abortam se a regra nova não reproduzir a intenção escrita em cada caso.
 
-> `Validacao_ArquivoGrande.pdf` (25 MB) é ignorado pelo Git por padrão. O script o recria quando necessário.
+> `Validacao_ArquivoGrande.pdf` (25 MB) é ignorado pelo Git por padrão. O script o recria quando necessário; sem ele, `verificar_consistencia.py` mostra um **aviso**, não um erro.
+>
+> **Reprodutibilidade:** rodar os geradores duas vezes produz os mesmos bytes em todos os arquivos, exceto `Qualidade_Pdf_ComSenha.pdf`. A criptografia AES-256 do PDF usa um salt aleatório do PyMuPDF; o conteúdo e a senha (`mediflow123`) não mudam.
