@@ -2,7 +2,8 @@
 """Verifica a consistência do catálogo de fixtures do MediFlow.
 
 Checa, para os 67 casos:
-  1. estrutura das pastas (4 arquivos nos funcionais, 2 nos negativos técnicos)
+  1. estrutura das pastas (4 arquivos funcionais; 2 nos negativos, exceto o PDF
+     de 25 MB do Validacao_ArquivoGrande, ignorado pelo Git até ser regerado)
   2. nome da pasta = nome dos arquivos = fixture_id do expected.json
   3. expected.json com o schema `mediflow.fixture/2` e os enums do domínio
      (importados de `app/models.py`, para não haver duas listas)
@@ -95,9 +96,14 @@ def verifica_estrutura(manifest, quiet):
         arquivos = sorted(os.listdir(d))
         negativo = fid.startswith("Validacao_")
         esperado = 2 if negativo else 4
+        # Este fixture inclui um PDF válido de 25 MB, explicitamente ignorado
+        # pelo Git; a pasta contém expected.json até o gerador ser executado.
+        # Quando o PDF existe localmente, continuam sendo esperados 2 arquivos.
+        if fid == "Validacao_ArquivoGrande" and f"{fid}.pdf" not in arquivos:
+            esperado = 1
         if len(arquivos) != esperado:
             add_erro(f"{kind}/{fid}: {len(arquivos)} arquivos (esperado {esperado}): {arquivos}")
-        total[esperado] = total.get(esperado, 0) + 1
+        total[2 if negativo else 4] = total.get(2 if negativo else 4, 0) + 1
 
         if not negativo:
             for suf in (".txt", ".pdf", ".jpg"):
@@ -121,7 +127,7 @@ def verifica_estrutura(manifest, quiet):
     info["negativos"] = total.get(2, 0)
     if not quiet:
         print(f"   {len(vistos)} pastas · {total.get(4,0)} funcionais (4 arquivos) · "
-              f"{total.get(2,0)} negativos (2 arquivos)")
+              f"{total.get(2,0)} negativos (expected.json + entrada; PDF grande opcional)")
 
 
 def verifica_expected(manifest, quiet):
