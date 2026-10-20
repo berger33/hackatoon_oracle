@@ -12,7 +12,7 @@
     "jpg": "catalogo/Escaneado_Receituario_PdfDigitalizado/Escaneado_Receituario_PdfDigitalizado.jpg"
   },
   "classificacao_esperada": {
-    "tipo_documento": "",
+    "tipo_documento": "RECEITUARIO_MEDICO",
     "especialidade": [
       "Cardiologia"
     ],

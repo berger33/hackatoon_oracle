@@ -37,7 +37,7 @@
     "destinos": [
       "N/A"
     ],
-    "requer_auditoria_humana": false,
+    "requer_auditoria_humana": null,
     "notificacao": false
   },
   "assercoes": [

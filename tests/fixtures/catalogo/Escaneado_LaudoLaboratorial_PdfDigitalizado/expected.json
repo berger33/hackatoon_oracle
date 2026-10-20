@@ -12,7 +12,7 @@
     "jpg": "catalogo/Escaneado_LaudoLaboratorial_PdfDigitalizado/Escaneado_LaudoLaboratorial_PdfDigitalizado.jpg"
   },
   "classificacao_esperada": {
-    "tipo_documento": "",
+    "tipo_documento": "LAUDO_EXAME_LABORATORIAL",
     "especialidade": [
       "Reumatologia",
       "Clínica Médica"

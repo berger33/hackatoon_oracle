@@ -95,7 +95,8 @@ As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Ima
 ├── tools/
 │   ├── gerar_fixtures_demo.py
 │   ├── gerar_fixtures_catalogo.py
-│   └── gerar_mapa_documentos.py
+│   ├── gerar_mapa_documentos.py
+│   └── verificar_consistencia.py                 # confere estrutura e duplicidade
 ├── README.md
 └── .env.example
 ```
@@ -109,6 +110,7 @@ As pastas de fixture usam nomes por extenso, sem abreviações: `Matriz_Guia_Ima
 - [Como ler os fixtures](tests/fixtures/README.md) — convenção de nomes (Bloco_Assunto_Detalhe) e os 12 casos de pitch.
 - [Catálogo completo de fixtures](tests/fixtures/catalogo/README.md) — os 55 casos restantes, incluindo negativos técnicos.
 - [Manifesto de fixtures](tests/fixtures/manifest.csv) — IDs, tipo, formato, cenário, destino e status esperados.
+- [Verificador de consistência](tools/verificar_consistencia.py) — `python3 tools/verificar_consistencia.py` confere estrutura, nomes, schema e duplicidade dos 67 casos.
 - [Índice de documentos](docs/README.md)
 - [Modelo de documento](docs/modelo-documento.md)
 

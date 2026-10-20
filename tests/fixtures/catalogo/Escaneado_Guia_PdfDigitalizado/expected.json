@@ -12,7 +12,7 @@
     "jpg": "catalogo/Escaneado_Guia_PdfDigitalizado/Escaneado_Guia_PdfDigitalizado.jpg"
   },
   "classificacao_esperada": {
-    "tipo_documento": "",
+    "tipo_documento": "GUIA_PROCEDIMENTO",
     "especialidade": [
       "Ortopedia"
     ],

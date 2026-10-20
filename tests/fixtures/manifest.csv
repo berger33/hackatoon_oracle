@@ -35,7 +35,7 @@ Borda_Score_084,Borda,RECEITUARIO_MEDICO,TEXTO,AMBIGUIDADE,FILA_REVISAO_HUMANA,E
 Borda_Score_085,Borda,RECEITUARIO_MEDICO,TEXTO,ROTINA,FARMACIA_HOSPITALAR,PROCESSADO,NAO,NAO,RF-18,RECOMENDADO,NAO,"Score combinado exatamente 0,85: NÃO revisa por esse critério isolado. Exige stub de score."
 Conflito_Cid_Diagnostico,Conflito,LAUDO_EXAME_IMAGEM,PDF,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-16,OBRIGATORIO,NAO,Diagnóstico de lombalgia com CID de infarto agudo (I21): conflito explícito CID × diagnóstico.
 Conflito_Dose,Conflito,RECEITUARIO_MEDICO,TEXTO,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-16,OBRIGATORIO,NAO,Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor.
-Conflito_Prioridade,Conflito,GUIA_PROCEDIMENTO,TEXTO,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-16/RF-07,RECOMENDADO,NAO,"Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos."
+Conflito_Prioridade,Conflito,GUIA_PROCEDIMENTO,TEXTO,AMBIGUIDADE,FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA,EM_REVISAO,SIM,SIM,RF-16/RF-07,RECOMENDADO,NAO,"Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos."
 Conflito_Dados,Conflito,RELATORIO_ALTA_INTERNACAO,PDF,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-16/RF-08,RECOMENDADO,NAO,Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna.
 Conflito_AltoRisco,Conflito,RECEITUARIO_MEDICO,IMAGEM,URGENCIA,FILA_URGENCIA_MEDICA,EM_REVISAO,SIM,SIM,RN-03/RF-07,OBRIGATORIO,NAO,Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente.
 Simultaneo_Urgencia_Ilegivel,Simultaneo,RECEITUARIO_MEDICO,IMAGEM,URGENCIA,FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA,EM_REVISAO,SIM,SIM,RF-21/8.2,RECOMENDADO,NAO,"Foto de receita urgente parcialmente ilegível: dois destinos, alerta e revisão simultâneos."
@@ -46,8 +46,8 @@ Qualidade_Foto_Cortada,Qualidade,GUIA_PROCEDIMENTO,IMAGEM,AMBIGUIDADE,FILA_REVIS
 Qualidade_Foto_BaixoContraste,Qualidade,ATESTADO_MEDICO,IMAGEM,AMBIGUIDADE,FILA_REVISAO_HUMANA,EM_REVISAO,SIM,NAO,RF-04/RF-21,RECOMENDADO,NAO,Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados.
 Qualidade_Pdf_SemTexto,Qualidade,LAUDO_EXAME_IMAGEM,PDF_DIGITALIZADO,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/RF-04,OBRIGATORIO,NAO,PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado.
 Qualidade_Pdf_Multipagina,Qualidade,RELATORIO_ALTA_INTERNACAO,PDF,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-03,RECOMENDADO,NAO,Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec.
-Qualidade_Pdf_ComSenha,Qualidade,RECEITUARIO_MEDICO,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-03/12,RECOMENDADO,NAO,PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar).
-Qualidade_Pdf_Corrompido,Qualidade,LAUDO_EXAME_LABORATORIAL,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-04/12,RECOMENDADO,NAO,"PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta."
+Qualidade_Pdf_ComSenha,Qualidade,N/A,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-03/12,RECOMENDADO,NAO,PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar).
+Qualidade_Pdf_Corrompido,Qualidade,N/A,PDF,ERRO,N/A,ERRO_PROCESSAMENTO,N/A,NAO,RF-04/12,RECOMENDADO,NAO,"PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta."
 Validacao_ArquivoDocx,Validacao,N/A,DOCX,ERRO,N/A,415 FORMATO_NAO_SUPORTADO,NAO,NAO,RF-03,OBRIGATORIO,NAO,Arquivo .docx válido: formato fora do allowlist do MVP.
 Validacao_ArquivoVazio,Validacao,N/A,ARQUIVO_0KB,ERRO,N/A,422 CAMPOS_INVALIDOS,NAO,NAO,RF-03,OBRIGATORIO,NAO,Arquivo de 0 bytes: rejeitar antes de chamar o modelo.
 Validacao_JsonMalformado,Validacao,N/A,JSON,ERRO,N/A,400 REQUISICAO_INVALIDA,NAO,NAO,RF-03,OBRIGATORIO,NAO,JSON com vírgula final/sintaxe inválida.

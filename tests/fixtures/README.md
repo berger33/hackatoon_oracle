@@ -118,6 +118,22 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 | Escaneado | 6 | PDF digitalizado dos tipos restantes |
 | Diferencial | 4 | Manuscrito, carimbo, hemograma de 20 analitos e guia TISS |
 
+## Consistência (verificação automática)
+
+```bash
+python3 tools/verificar_consistencia.py
+```
+
+O script confere, nos 67 casos: número de arquivos por pasta, nome da pasta = nome dos arquivos = `fixture_id`, schema do `expected.json`, aderência ao `manifest.csv`, legibilidade dos PDFs e JPGs, e **duplicidade** (arquivos byte-idênticos, textos clínicos iguais e saídas esperadas iguais). Sai com código 1 se encontrar erro.
+
+Três grupos compartilham a mesma saída esperada sem serem redundantes:
+
+| Grupo | O que muda entre eles |
+| --- | --- |
+| `Matriz_NaoIdentificado_Pdf`, `Matriz_NaoIdentificado_Imagem`, `Matriz_NaoIdentificado_Texto`, `Qualidade_Foto_Desfocada` | Os três primeiros são a matriz do tipo `NAO_IDENTIFICADO` nos 3 formatos. O último é **manuscrito fotografado** com desfoque severo — falha de captura, não de formato. |
+| `Matriz_Outro_Pdf`, `Matriz_Outro_Imagem`, `Matriz_Outro_Texto`, `Escaneado_Outro_PdfDigitalizado` | Documento fora da taxonomia nos 3 formatos + a versão digitalizada (prova que o caminho multimodal chega ao mesmo `OUTRO`). |
+| `Qualidade_Pdf_ComSenha`, `Qualidade_Pdf_Corrompido` | Ambos em `ERRO_PROCESSAMENTO`, por causas distintas: AES-256 versus arquivo truncado em 40%. |
+
 ## Casos especiais
 
 | Fixture | Particularidade |
@@ -130,7 +146,7 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 | `Qualidade_Pdf_Multipagina` | 7 páginas, rodapé "página N de 7" |
 | `Qualidade_Pdf_ComSenha` | Protegido por AES-256; senha de teste `mediflow123` |
 | `Qualidade_Pdf_Corrompido` | Truncado em 40% do tamanho original |
-| `Validacao_ArquivoGrande` | 25 MB, **não versionado** — regenere com o script |
+| `Validacao_ArquivoGrande` | 25 MB, PDF **válido** (1 página + preenchimento); **não versionado** — regenere com o script |
 | `Borda_Score_084`, `Borda_Score_085`, `Simultaneo_Urgencia_Score` | Exigem `FIXTURE_MODE` para forçar os scores |
 
 ## Regras

@@ -137,7 +137,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `Conflito_Cid_Diagnostico` | LAUDO_EXAME_IMAGEM | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Diagnóstico de lombalgia com CID de infarto agudo (I21): conflito explícito CID × diagnóstico. |
 | `Conflito_Dose` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor. |
-| `Conflito_Prioridade` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
+| `Conflito_Prioridade` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
 | `Conflito_Dados` | RELATORIO_ALTA_INTERNACAO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna. |
 | `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
 
@@ -158,8 +158,8 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Qualidade_Foto_BaixoContraste` | ATESTADO_MEDICO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados. |
 | `Qualidade_Pdf_SemTexto` | LAUDO_EXAME_IMAGEM | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado. |
 | `Qualidade_Pdf_Multipagina` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec. |
-| `Qualidade_Pdf_ComSenha` | RECEITUARIO_MEDICO | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar). |
-| `Qualidade_Pdf_Corrompido` | LAUDO_EXAME_LABORATORIAL | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta. |
+| `Qualidade_Pdf_ComSenha` | N/A (não é classificado) | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF protegido por senha: contrato de erro a definir (rejeitar ou revisar). |
+| `Qualidade_Pdf_Corrompido` | N/A (não é classificado) | PDF | ERRO | N/A | ERRO_PROCESSAMENTO | N/A | PDF truncado/arquivo corrompido: erro controlado, sem stack trace na resposta. |
 
 #### Bloco Validacao — negativos técnicos de entrada (8)
 

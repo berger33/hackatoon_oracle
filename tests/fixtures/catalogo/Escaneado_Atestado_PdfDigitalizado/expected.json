@@ -12,7 +12,7 @@
     "jpg": "catalogo/Escaneado_Atestado_PdfDigitalizado/Escaneado_Atestado_PdfDigitalizado.jpg"
   },
   "classificacao_esperada": {
-    "tipo_documento": "",
+    "tipo_documento": "ATESTADO_MEDICO",
     "especialidade": [
       "Neurologia"
     ],

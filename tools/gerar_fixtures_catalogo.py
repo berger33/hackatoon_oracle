@@ -591,7 +591,7 @@ c(id="Qualidade_Foto_Desfocada", titulo="RECEITUÁRIO MANUSCRITO",
   secs=[sec("Conteúdo", "Receita manuscrita fotografada com desfoque severo. Apenas o cabeçalho é legível; o corpo da prescrição não permite leitura segura."),
         sec("Orientação", "Reenviar imagem nítida ou o documento original para revisão humana.")],
   doc=("—", "—"),
-  flags=dict(degrade=True),
+  flags=dict(degrade_handwritten=True),
   exp=dict(tipo="NAO_IDENTIFICADO", esp=[], prio="NAO_IDENTIFICADA",
            status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
@@ -714,7 +714,7 @@ c(id="Qualidade_Pdf_ComSenha", titulo="RECEITUÁRIO MÉDICO",
   doc=("—", "—"),
   flags=dict(secure=True),
   exp=dict(tipo="N/A", esp=[], prio="NAO_IDENTIFICADA",
-           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=False, notif=False,
+           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=None, notif=False,
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO"),
            ass=["PDF protegido não pode ser lido", "Erro controlado, sem stack trace (RF-03/§12)",
@@ -730,7 +730,7 @@ c(id="Qualidade_Pdf_Corrompido", titulo="LAUDO DE EXAME LABORATORIAL",
   doc=("—", "—"),
   flags=dict(corrupt=True),
   exp=dict(tipo="N/A", esp=[], prio="NAO_IDENTIFICADA",
-           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=False, notif=False,
+           status="ERRO_PROCESSAMENTO", dest=["N/A"], rev=None, notif=False,
            dados=dict(paciente=dict(nome=None, idade=None), medico=dict(nome=None, crm=None),
                       diagnostico=None, cid=None, medicamentos=[], exames=[], urgencia="INDETERMINADO"),
            ass=["Arquivo corrompido gera ERRO_PROCESSAMENTO",
@@ -743,12 +743,23 @@ E_BASE = dict(
 )
 
 
+TIPO_POR_TITULO = {
+    "RECEITUÁRIO MÉDICO": "RECEITUARIO_MEDICO",
+    "LAUDO DE EXAME LABORATORIAL": "LAUDO_EXAME_LABORATORIAL",
+    "LAUDO DE EXAME DE IMAGEM": "LAUDO_EXAME_IMAGEM",
+    "GUIA DE SOLICITAÇÃO DE PROCEDIMENTO": "GUIA_PROCEDIMENTO",
+    "RELATÓRIO DE ALTA HOSPITALAR": "RELATORIO_ALTA_INTERNACAO",
+    "ATESTADO MÉDICO": "ATESTADO_MEDICO",
+    "TERMO DE CONSENTIMENTO": "OUTRO",
+}
+
+
 def ecase(id_, titulo, sub, paciente, idade, docnum, secs, doc, esp, dest, dados, ass):
     c(id=id_, titulo=titulo, sub=sub,
       meta=[("Paciente", paciente), ("Idade", idade), ("Documento", docnum),
             ("Data", "18/10/2026"), ("Origem", "Digitalização externa")],
       secs=secs, doc=doc, flags=dict(scan=True),
-      exp=dict(tipo="", esp=esp, prio="ROTINA", status="PROCESSADO", dest=[dest],
+      exp=dict(tipo=TIPO_POR_TITULO[titulo], esp=esp, prio="ROTINA", status="PROCESSADO", dest=[dest],
                rev=False, notif=False, dados=dados, ass=ass))
 
 
@@ -1185,14 +1196,65 @@ def image_only_pdf(jpg_path, pdf_path):
     doc.close()
 
 
-def degrade_strong(pdf_path, jpg_path):
-    """Degrada o miolo mantendo o cabeçalho de identificação legível."""
+def degrade_strong(pdf_path, jpg_path, mode="scan"):
+    """Degrada o miolo do documento mantendo o cabeçalho de identificação legível.
+
+    mode="scan"  -> digitalização ruim: inclinação, ruído e manchas no corpo
+    mode="photo" -> foto de manuscrito com desfoque severo no corpo
+    """
     tmp = tempfile.mktemp(suffix=".jpg")
-    rasterize(pdf_path, tmp, rot=2.0, blur=4.6, contrast=0.62, noise=30, quality=74)
+    rasterize(pdf_path, tmp, rot=1.8 if mode == "scan" else 2.6, quality=76)
     with Image.open(tmp) as im:
         img = im.convert("RGB")
     os.unlink(tmp)
-    img.save(jpg_path, "JPEG", quality=74, optimize=True)
+
+    w, h = img.size
+    top, bottom = int(h * 0.155), int(h * 0.905)      # preserva o cabeçalho
+    body = img.crop((0, top, w, bottom))
+    if mode == "photo":
+        body = body.filter(ImageFilter.GaussianBlur(7.5))
+        body = ImageEnhance.Contrast(body).enhance(0.68)
+        body = ImageEnhance.Brightness(body).enhance(1.03)
+    else:
+        body = body.filter(ImageFilter.GaussianBlur(2.0))
+        body = ImageEnhance.Contrast(body).enhance(0.72)
+        noise = Image.effect_noise(body.size, 34).convert("L")
+        body = Image.composite(body, Image.new("RGB", body.size, (232, 232, 230)),
+                               noise.point(lambda px: 26 if px > 140 else 0))
+        overlay = Image.new("L", body.size, 0)
+        d = ImageDraw.Draw(overlay)
+        rnd = random.Random(7)
+        bw, bh = body.size
+        for _ in range(14):
+            cx, cy = rnd.uniform(0.06, 0.94) * bw, rnd.uniform(0.04, 0.96) * bh
+            rx, ry = rnd.uniform(0.03, 0.10) * bw, rnd.uniform(0.02, 0.06) * bh
+            d.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=rnd.randint(45, 100))
+        overlay = overlay.filter(ImageFilter.GaussianBlur(24))
+        body = Image.composite(Image.new("RGB", body.size, (124, 124, 121)), body, overlay)
+
+    img.paste(body, (0, top))
+    img.save(jpg_path, "JPEG", quality=72, optimize=True)
+    image_only_pdf(jpg_path, pdf_path)
+
+
+def degrade_handwritten(case, jpg_path, pdf_path):
+    """Manuscrito (letra de médico) fotografado com desfoque severo."""
+    tmpjpg = tempfile.mktemp(suffix=".jpg")
+    tmppdf = tempfile.mktemp(suffix=".pdf")
+    make_handwritten(case, tmpjpg, tmppdf)
+    with Image.open(tmpjpg) as im:
+        img = im.convert("RGB")
+    os.unlink(tmpjpg)
+    os.unlink(tmppdf)
+    # perde definição de verdade: reduz a resolução, desfoca e devolve ao tamanho
+    w, h = img.size
+    img = img.resize((int(w * 0.35), int(h * 0.35)), Image.BILINEAR)
+    img = img.filter(ImageFilter.GaussianBlur(5.2))
+    img = img.resize((w, h), Image.BICUBIC)
+    img = ImageEnhance.Contrast(img).enhance(0.58)
+    img = img.rotate(1.6, resample=Image.BICUBIC, expand=True, fillcolor=(250, 249, 244))
+    img = ImageOps.expand(img, border=8, fill=(226, 226, 224))
+    img.save(jpg_path, "JPEG", quality=72, optimize=True)
     image_only_pdf(jpg_path, pdf_path)
 
 
@@ -1358,13 +1420,40 @@ def build_negative(case):
         with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
             z.writestr("laudo.txt", "Conteúdo dentro de um ZIP — formato não suportado.")
     elif kind == "big":
-        # 25 MB: cabeçalho PDF válido + preenchimento (comprime muito bem no git)
+        # 25 MB em PDF VÁLIDO: o conteúdo é uma página normal e o tamanho vem de um
+        # comentário de preenchimento antes do %%EOF. Assim o único defeito é o
+        # tamanho (413) e o arquivo ainda abre em qualquer leitor (e comprime no ZIP).
+        from gerar_fixtures_demo import footer, header, watermark
+        tmp = tempfile.mktemp(suffix=".pdf")
+        cv = canvas.Canvas(tmp, pagesize=A4)
+        cv.setTitle("Documento de teste de limite de tamanho (fictício)")
+        hdr = {"id": "Validacao_ArquivoGrande", "title": "DOCUMENTO DE TESTE DE LIMITE DE TAMANHO"}
+        watermark(cv)
+        header(cv, hdr)
+        footer(cv, hdr)
+        y = H - 130
+        cv.setFillColor(INK)
+        cv.setFont("DejaVu-Bold", 16)
+        cv.drawString(MARGIN, y, "Arquivo de 25 MB — teste de limite")
+        y -= 22
+        cv.setFont("DejaVu", 9.4)
+        for ln in wrap("Este PDF é válido e legível. O único defeito é o tamanho: "
+                       "25 MB, acima do limite configurado para o upload. O serviço deve "
+                       "recusar pelo tamanho (413 ARQUIVO_MAIOR_QUE_LIMITE) antes de "
+                       "qualquer inferência, sem baixar o conteúdo em memória.", "DejaVu", 9.4, CONTENT_W):
+            cv.drawString(MARGIN, y, ln)
+            y -= 13
+        cv.showPage()
+        cv.save()
+
+        base = open(tmp, "rb").read()
+        os.unlink(tmp)
+        cut = base.rfind(b"%%EOF")
+        pad = 25 * 1024 * 1024 - len(base)
+        blob = (base[:cut] + b"% preenchimento de teste de tamanho - MediFlow\n%"
+                + b"0" * max(pad, 0) + b"\n" + base[cut:])
         with open(path, "wb") as f:
-            f.write(b"%PDF-1.4\n% Arquivo de teste de limite de tamanho - MediFlow\n")
-            chunk = b"0" * (1024 * 1024)
-            for _ in range(25):
-                f.write(chunk)
-            f.write(b"\n%%EOF\n")
+            f.write(blob)
     elif kind == "fakemime":
         img = Image.new("RGB", (900, 1200), (250, 250, 248))
         d2 = ImageDraw.Draw(img)
@@ -1392,6 +1481,8 @@ def main():
 
         if flags.get("handwritten"):
             make_handwritten(case, jpg, pdf)
+        elif flags.get("degrade_handwritten"):
+            degrade_handwritten(case, jpg, pdf)
         elif flags.get("degrade"):
             draw_case_paged(case, pdf)
             degrade_strong(pdf, jpg)
