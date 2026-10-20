@@ -143,6 +143,8 @@ python3 tools/gerar_mapa_documentos.py
 
 Todos os documentos são **fictícios**: nomes, CRMs, CIDs e resultados não correspondem a pessoa real. Nenhuma credencial ou dado pessoal está no repositório.
 
+Todas as fixtures acontecem no **Hospital Aurora (São Paulo)** — por isso todo CRM é `SP`, e os documentos usam a mesma cidade fictícia. Um CRM de outra UF num hospital paulista seria erro de domínio, não variação de teste: o verificador reprova.
+
 ## Equipe
 
 | Nome | Papel |

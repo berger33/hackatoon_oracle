@@ -59,7 +59,7 @@ Decisões que fecham divergências antigas:
   },
   "dados_extraidos": {
     "paciente": {"nome": "Neusa Ferreira Lima", "idade": 73},
-    "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "RJ"}},
+    "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "SP"}},
     "diagnostico": "Hipertensão arterial sistêmica",
     "cid": "I10",
     "exames": [],
@@ -94,6 +94,7 @@ Notas de modelagem:
 | `especialidade`, `exames` | listas — um documento pode ter mais de uma especialidade e vários exames |
 | `medicamentos` | objeto `{nome, dosagem?, frequencia?}`; `dosagem` é opcional porque há prescrição sem dose |
 | `medico.crm` | **um** objeto `{numero, uf}`; não existe mais `crm` texto + `crm_detalhado` duplicado |
+| `medico.crm.uf` | sempre `SP`: todas as fixtures acontecem no Hospital Aurora, em São Paulo, e o CRM acompanha a UF de atuação |
 | `dados_extraidos.urgencia` | declara o que o documento diz (`SIM`/`NAO`/`INDETERMINADO`), em vez de inferir do texto |
 | `qualidade.campos_ausentes` / `campos_incertos` | vêm do extrator; o validador **não recalcula** (ver §5) |
 | `qualidade.score_combinado` | sempre `min(score_classificacao, score_extracao)` — recalculado pelo validador |
@@ -138,6 +139,20 @@ Um documento urgente sem nenhuma ambiguidade termina com `requer_auditoria_human
 `Matriz_LaudoLaboratorial_Texto` tem `diagnostico: null` e termina em `PROCESSADO` — um laudo laboratorial legitimamente não tem diagnóstico. `Ausencia_Diagnostico` também tem `diagnostico: null` e termina em `EM_REVISAO`. O dado é o mesmo; a diferença está na intenção registrada em `qualidade.campos_ausentes`, que é saída do extrator. Recalcular essa lista olhando para `null` erraria um dos dois lados.
 
 ---
+
+## 5.1 Coerência clínica dos fixtures
+
+Toda fixture conta **uma** história nos três formatos. O texto (`{ID}.txt`) é a
+referência do que se espera extrair:
+
+- campo preenchido no `expected.json` aparece no texto (`paciente.nome`, `medico.nome`, `medico.crm`, `diagnostico`, `cid`, idade);
+- campo ausente aparece como ausente (`—`, `não informado`, `CRM não visível`);
+- campo ilegível aparece ilegível (`4?_ anos — mancha sobre o campo`), e a mancha na imagem cobre exatamente esse campo;
+- **todo CRM é `SP`**, porque o hospital é paulista.
+
+O verificador checa os quatro pontos caso a caso (`== 6. Coerência clínica` em
+`tools/verificar_consistencia.py`), então uma edição futura que quebre a
+coerência falha o build em vez de virar um teste enganoso.
 
 ## 6. Formato de um `expected.json`
 

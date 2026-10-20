@@ -63,11 +63,11 @@ c(id="Matriz_LaudoLaboratorial_Imagem", titulo="LAUDO DE EXAME LABORATORIAL",
         sec("Material", "Soro, coleta em 16/10/2026 às 07h20, jejum de 12 horas."),
         sec("Resultados", "Colesterol total: 248 mg/dL (desejável < 190)\nLDL-colesterol: 168 mg/dL (desejável < 130)\nHDL-colesterol: 38 mg/dL (desejável > 40)\nTriglicerídeos: 210 mg/dL (desejável < 150)\nGlicemia de jejum: 98 mg/dL (referência 70–99)"),
         sec("Conclusão", "Dislipidemia mista. Orientada dieta e retorno ambulatorial.")],
-  doc=("Dr. Marcos Vinícius Tavares", "CRM 176543-MG"),
+  doc=("Dr. Marcos Vinícius Tavares", "CRM 176543-SP"),
   exp=dict(tipo="LAUDO_EXAME_LABORATORIAL", esp=["Hematologia", "Clínica Médica"], prio="ROTINA",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="Sônia Regina Duarte", idade=55),
-                      medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="MG")),
+                      medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="SP")),
                       diagnostico="Dislipidemia mista", cid="E78.2", medicamentos=[],
                       exames=["Perfil lipídico", "Glicemia de jejum"], urgencia="NAO"),
            ass=["Foto de laudo laboratorial aceita", "Cinco analitos extraídos com unidade e referência",
@@ -119,7 +119,7 @@ c(id="Matriz_LaudoDeImagem_Texto", titulo="LAUDO DE EXAME DE IMAGEM",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="Patrícia Nogueira Alves", idade=38),
                       medico=dict(nome="Dr. André Luiz Barbosa", crm=dict(numero="165432", uf="SP")),
-                      diagnostico="Exame dentro da normalidade", cid=None, medicamentos=[],
+                      diagnostico="Exame ultrassonográfico dentro da normalidade", cid=None, medicamentos=[],
                       exames=["Ultrassonografia de abdome total"], urgencia="NAO"),
            ass=["Texto de laudo de imagem de rotina", "Sem sinais de urgência",
                 "Destino PRONTUARIO_ELETRONICO"]))
@@ -132,11 +132,11 @@ c(id="Matriz_Guia_Imagem", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
         sec("Procedimento solicitado", "Endoscopia digestiva alta diagnóstica e terapêutica."),
         sec("Justificativa clínica", "Paciente com hematêmese e melena, instabilidade hemodinâmica. Procedimento com caráter de urgência nas próximas 6 horas."),
         sec("Autorização", "Solicitação URGENTE. Autorização em análise pela auditoria.")],
-  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   exp=dict(tipo="GUIA_PROCEDIMENTO", esp=["Gastroenterologia"], prio="URGENTE",
            status="EM_REVISAO", dest=["FILA_URGENCIA_MEDICA"], rev=True, notif=True,
            dados=dict(paciente=dict(nome="Márcia Helena dos Santos", idade=49),
-                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Hemorragia digestiva alta", cid="K92.2", medicamentos=[],
                       exames=["Endoscopia digestiva alta"], urgencia="SIM"),
            ass=["Foto de guia com pedido de urgência", "Sinal crítico detectado no texto",
@@ -169,11 +169,11 @@ c(id="Matriz_RelatorioDeAlta_Imagem", titulo="RELATÓRIO DE ALTA HOSPITALAR",
         sec("Resumo", "Paciente internado com dispneia progressiva, edema de membros inferiores e ortopneia. Tratado com diurético endovenoso e otimização de terapia oral, com melhora funcional."),
         sec("Medicações de alta", "Furosemida 40 mg — 1 comprimido por via oral pela manhã, uso contínuo.\nCarvedilol 6,25 mg — 1 comprimido por via oral a cada 12 horas, uso contínuo."),
         sec("Orientações", "Restrição hídrica de 1,5 L/dia, controle de peso diário e retorno em 7 dias.")],
-  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   exp=dict(tipo="RELATORIO_ALTA_INTERNACAO", esp=["Cardiologia"], prio="ROTINA",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="José Ricardo Almeida", idade=68),
-                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Insuficiência cardíaca congestiva descompensada", cid="I50.0",
                       medicamentos=["Furosemida 40 mg", "Carvedilol 6,25 mg"],
                       exames=[], urgencia="NAO"),
@@ -327,11 +327,11 @@ c(id="Ausencia_Medico_Nome", titulo="LAUDO DE EXAME LABORATORIAL",
   secs=[sec("Hipótese diagnóstica", "Hipotireoidismo primário — CID-10 E03.9."),
         sec("Resultados", "TSH: 8,9 mUI/L (referência 0,4–4,0)\nT4 livre: 0,72 ng/dL (referência 0,8–1,8)"),
         sec("Conclusão", "Perfil compatível com hipotireoidismo primário. Correlacionar clinicamente.")],
-  doc=("", "CRM 154321-PR"),
+  doc=("", "CRM 154321-SP"),
   exp=dict(tipo="LAUDO_EXAME_LABORATORIAL", esp=["Endocrinologia"], prio="ROTINA",
            status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
            dados=dict(paciente=dict(nome="Simone Aparecida Rocha", idade=47),
-                      medico=dict(nome=None, crm=dict(numero="154321", uf="PR")),
+                      medico=dict(nome=None, crm=dict(numero="154321", uf="SP")),
                       diagnostico="Hipotireoidismo primário", cid="E03.9", medicamentos=[],
                       exames=["TSH", "T4 livre"], urgencia="NAO", campos_ausentes=["medico.nome"]),
            ass=["Nome do médico ausente força revisão", "CRM preservado e normalizado em número/UF",
@@ -418,11 +418,11 @@ c(id="Ausencia_SomenteExames", titulo="ATESTADO MÉDICO",
   secs=[sec("Finalidade", "Atestado de comparecimento."),
         sec("Texto do atestado", "Atesto que o paciente compareceu a consulta médica nesta data, no período das 14h00 às 15h10."),
         sec("Diagnóstico / CID", "Dermatite de contato — CID-10 L23.9.")],
-  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   exp=dict(tipo="ATESTADO_MEDICO", esp=["Clínica Médica", "Dermatologia"], prio="ROTINA",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="Igor Nascimento Prado", idade=24),
-                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Dermatite de contato", cid="L23.9", medicamentos=[], exames=[],
                       urgencia="NAO"),
            ass=["Ausência de exames não força revisão (RF-21)",
@@ -479,11 +479,11 @@ c(id="Conflito_Dose", titulo="RECEITUÁRIO MÉDICO",
   secs=[sec("Hipótese diagnóstica", "Hipertensão arterial sistêmica — CID-10 I10."),
         sec("Prescrição", "Losartana potássica 500 mg — 1 comprimido por via oral uma vez ao dia, por 30 dias."),
         sec("Orientações", "Retorno em 30 dias para controle pressórico.")],
-  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   exp=dict(tipo="RECEITUARIO_MEDICO", esp=["Cardiologia"], prio="ROTINA",
            status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
            dados=dict(paciente=dict(nome="Neusa Ferreira Lima", idade=73),
-                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Hipertensão arterial sistêmica", cid="I10",
                       medicamentos=["Losartana potássica 500 mg"], exames=[], urgencia="NAO"),
            conflitos=[dict(tipo="DOSE_SUSPEITA", campos=["medicamentos[0].dosagem"],
@@ -619,12 +619,12 @@ c(id="Qualidade_Foto_Rotacionada", titulo="LAUDO DE EXAME DE IMAGEM",
   secs=[sec("Exame realizado", "Ultrassonografia de abdome total."),
         sec("Achados", "Fígado de dimensões normais. Vesícula biliar com cálculo único de 8 mm, sem sinais de colecistite. Vias biliares não dilatadas."),
         sec("Conclusão", "Colelitíase sem sinais inflamatórios agudos.")],
-  doc=("Dr. Marcos Vinícius Tavares", "CRM 176543-MG"),
+  doc=("Dr. Marcos Vinícius Tavares", "CRM 176543-SP"),
   flags=dict(rotate90=True),
   exp=dict(tipo="LAUDO_EXAME_IMAGEM", esp=["Radiologia", "Gastroenterologia"], prio="ROTINA",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="Cláudio Roberto Farias", idade=48),
-                      medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="MG")),
+                      medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="SP")),
                       diagnostico="Colelitíase sem sinais inflamatórios agudos", cid=None, medicamentos=[],
                       exames=["Ultrassonografia de abdome total"], urgencia="NAO"),
            ass=["Rotação de 90° deve ser tolerada pelo pipeline multimodal",
@@ -638,7 +638,7 @@ c(id="Qualidade_Foto_Cortada", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
   secs=[sec("Diagnóstico / CID", "Nódulo tireoidiano a esclarecer — CID-10 E04.1."),
         sec("Procedimento solicitado", "Punção aspirativa por agulha fina de tireoide."),
         sec("Justificativa clínica", "Nódulo de 1,8 cm em lobo direito, hipoecoico, com microcalcificações.")],
-  doc=("Dra. Helena Prado", "CRM 187432-SP"),
+  doc=("Dra. Helena Prado", "CRM não visível — recorte da imagem"),
   flags=dict(crop=True),
   exp=dict(tipo="GUIA_PROCEDIMENTO", esp=["Endocrinologia"], prio="ROTINA",
            status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
@@ -653,6 +653,8 @@ c(id="Qualidade_Foto_Cortada", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
 
 c(id="Qualidade_Foto_BaixoContraste", titulo="ATESTADO MÉDICO",
   sub="Atestado com sombra e baixo contraste",
+  ilegivel=("Idade",),
+  txt_meta={"Idade": "4?_ anos — mancha sobre o campo"},
   meta=[("Paciente", "Michele Andrade Pinto"), ("Idade", "40 anos"), ("Documento", "DOC-Q-2026-0045"),
         ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
   secs=[sec("Finalidade", "Atestado de afastamento de 2 dias."),
@@ -703,12 +705,12 @@ c(id="Qualidade_Pdf_Multipagina", titulo="RELATÓRIO DE ALTA HOSPITALAR",
               f"diurese preservada e balanço hídrico equilibrado nas últimas 24 horas.") for d in range(1, 21)] +
         [sec("Medicações de alta", "Amoxicilina + clavulanato 875/125 mg — 1 comprimido por via oral a cada 12 horas, por 7 dias."),
          sec("Orientações", "Retorno em 7 dias com radiografia de controle. Sinais de alarme: febre, dispneia ou dor torácica.")],
-  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   flags=dict(multipage=True, break_every=4),
   exp=dict(tipo="RELATORIO_ALTA_INTERNACAO", esp=["Infectologia", "Pneumologia"], prio="ROTINA",
            status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
            dados=dict(paciente=dict(nome="Iracema Barbosa Teixeira", idade=74),
-                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Sepse de foco pulmonar", cid="A41.9",
                       medicamentos=["Amoxicilina + clavulanato 875/125 mg"], exames=[],
                       urgencia="NAO"),
@@ -774,9 +776,9 @@ ecase("Escaneado_Receituario_PdfDigitalizado", "RECEITUÁRIO MÉDICO", "Receita 
       [sec("Hipótese diagnóstica", "Hipertensão arterial sistêmica — CID-10 I10."),
        sec("Prescrição", "Anlodipino 5 mg — 1 comprimido por via oral uma vez ao dia, por 30 dias."),
        sec("Orientações", "Retorno em 30 dias para controle pressórico.")],
-      ("Dr. Marcos Vinícius Tavares", "CRM 176543-MG"), ["Cardiologia"], "FARMACIA_HOSPITALAR",
+      ("Dr. Marcos Vinícius Tavares", "CRM 176543-SP"), ["Cardiologia"], "FARMACIA_HOSPITALAR",
       dict(paciente=dict(nome="Marli Aparecida Fonseca", idade=50),
-           medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="MG")),
+           medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="SP")),
            diagnostico="Hipertensão arterial sistêmica", cid="I10",
            medicamentos=["Anlodipino 5 mg"], exames=[], urgencia="NAO"),
       ["PDF escaneado com camada de imagem", "Extração correta pelo caminho multimodal",
@@ -814,9 +816,9 @@ ecase("Escaneado_RelatorioDeAlta_PdfDigitalizado", "RELATÓRIO DE ALTA HOSPITALA
        sec("Diagnóstico principal", "Doença pulmonar obstrutiva crônica exacerbada — CID-10 J44.1."),
        sec("Resumo", "Paciente internado com dispneia e tosse produtiva, tratado com broncodilatadores e corticoide sistêmico, com melhora."),
        sec("Medicações de alta", "Prednisona 20 mg — 1 comprimido por via oral pela manhã, por 5 dias.\nBudesonida + formoterol 6/200 mcg — 1 inalação a cada 12 horas, uso contínuo.")],
-      ("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"), ["Pneumologia"], "PRONTUARIO_ELETRONICO",
+      ("Dr. Paulo Mendes Rocha", "CRM 203114-SP"), ["Pneumologia"], "PRONTUARIO_ELETRONICO",
       dict(paciente=dict(nome="Sebastião Ferreira Gomes", idade=69),
-           medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="RJ")),
+           medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
            diagnostico="Doença pulmonar obstrutiva crônica exacerbada", cid="J44.1",
            medicamentos=["Prednisona 20 mg", "Budesonida + formoterol 6/200 mcg"],
            exames=[], urgencia="NAO"),
@@ -993,7 +995,7 @@ V_CASES = [
 # ============================================================ RENDERIZAÇÃO
 def draw_case(case, path, stamp=False, total_pages=None):
     """Desenha o PDF com paginação automática, seções mono e carimbo opcional."""
-    c = canvas.Canvas(path, pagesize=A4)
+    c = canvas.Canvas(path, pagesize=A4, invariant=1)
     c.setTitle(f"{case['titulo']} — {case['id']} (fictício)")
     c.setAuthor("MediFlow — Hackathon ONE G10")
     c.setSubject("Documento fictício para testes do agente de triagem")
@@ -1048,6 +1050,10 @@ def draw_case(case, path, stamp=False, total_pages=None):
         c.setFillColor(INK)
         c.setFont("DejaVu", 8.6)
         c.drawString(x + 78, ly, value)
+        # guarda onde o valor foi desenhado: a degradação precisa acertar este ponto
+        if label in case.get("ilegivel", ()):
+            case["_marca"] = (x + 78, ly,
+                              pdfmetrics.stringWidth(value, "DejaVu", 8.6))
     y -= box_h + 18
 
     break_every = case["flags"].get("break_every")
@@ -1129,7 +1135,7 @@ def write_txt_case(case, path):
         case["titulo"], case["sub"], "", f"Fixture: {case['id']}",
     ]
     for label, value in case["meta"]:
-        lines.append(f"{label}: {value}")
+        lines.append(f"{label}: {case.get('txt_meta', {}).get(label, value)}")
     lines.append("")
     for heading, body, mono in case["secs"]:
         lines.append(heading.upper())
@@ -1160,19 +1166,28 @@ def rasterize(pdf_path, jpg_path, rot=0.35, blur=0.0, contrast=1.0, brightness=1
         img = Image.composite(img, Image.new("RGB", img.size, (236, 236, 234)),
                               n.point(lambda p: 22 if p > 140 else 0))
     if shadow:
-        # mancha elíptica suave sobre a linha da IDADE (bloco de metadados, coluna direita)
+        # mancha elíptica suave sobre o campo que o fixture marca como ilegível.
+        # A posição vem do PDF (pontos), convertida para pixels na mesma escala do render.
         w, h = img.size
+        scale = w / W if abs(w / W - h / H) < 0.05 else h / H
+        if isinstance(shadow, tuple):
+            x_pt, y_pt, largura_pt = shadow
+            cx = int((x_pt + largura_pt / 2) * scale)
+            cy = int((H - y_pt + 2.6) * scale)
+            rx = int(max(largura_pt * scale * 1.5, w * 0.10))
+            ry = int(h * 0.026)
+        else:
+            cx, cy = int(w * 0.70), int(h * 0.198)
+            rx, ry = int(w * 0.185), int(h * 0.024)
         overlay = Image.new("L", (w, h), 0)
         d = ImageDraw.Draw(overlay)
-        cx, cy = int(w * 0.70), int(h * 0.198)
-        rx, ry = int(w * 0.185), int(h * 0.024)
         steps = 26
         for i in range(steps, 0, -1):
             f = i / steps
-            val = int(165 * (1 - f) ** 0.7)
+            val = int(255 * (1 - f) ** 0.45)
             d.ellipse([cx - rx * f, cy - ry * f, cx + rx * f, cy + ry * f], fill=val)
-        overlay = overlay.filter(ImageFilter.GaussianBlur(14))
-        img = Image.composite(Image.new("RGB", (w, h), (86, 86, 84)), img, overlay)
+        overlay = overlay.filter(ImageFilter.GaussianBlur(9))
+        img = Image.composite(Image.new("RGB", (w, h), (74, 74, 72)), img, overlay)
 
     if crop:
         w, h = img.size
@@ -1189,17 +1204,22 @@ def rasterize(pdf_path, jpg_path, rot=0.35, blur=0.0, contrast=1.0, brightness=1
 
 
 def image_only_pdf(jpg_path, pdf_path):
-    """PDF A4 retrato contendo apenas a imagem, preservando a proporção."""
-    doc = fitz.open()
-    page = doc.new_page(width=W, height=H)
+    """PDF A4 retrato contendo apenas a imagem, preservando a proporção.
+
+    Feito com reportlab (invariant=1) para que o arquivo seja byte-a-byte
+    reproduzível: o PyMuPDF grava data de criação e /ID aleatórios, o que
+    reescreveria o arquivo a cada geração sem nenhuma mudança de conteúdo.
+    """
+    from reportlab.lib.utils import ImageReader
     with Image.open(jpg_path) as im:
         iw, ih = im.size
     scale = min(W / iw, H / ih)
     w, h = iw * scale, ih * scale
     x, y = (W - w) / 2, (H - h) / 2
-    page.insert_image(fitz.Rect(x, y, x + w, y + h), filename=jpg_path)
-    doc.save(pdf_path, deflate=True)
-    doc.close()
+    c = canvas.Canvas(pdf_path, pagesize=(W, H), invariant=1)
+    c.drawImage(ImageReader(jpg_path), x, y, width=w, height=h)
+    c.showPage()
+    c.save()
 
 
 def degrade_strong(pdf_path, jpg_path, mode="scan"):
@@ -1318,6 +1338,20 @@ def make_handwritten(case, jpg_path, pdf_path):
     image_only_pdf(jpg_path, pdf_path)
 
 
+#: Data fixa nos ZIPs: sem isso cada geração produz bytes diferentes do mesmo conteúdo.
+ZIP_DATA = (2026, 10, 18, 9, 0, 0)
+
+
+def write_zip(path, entradas):
+    """Escreve um ZIP determinístico (ordem e data fixas)."""
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
+        for nome, conteudo in entradas:
+            info = zipfile.ZipInfo(nome, date_time=ZIP_DATA)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = 0o600 << 16
+            z.writestr(info, conteudo)
+
+
 def build_negative(case):
     d = os.path.join(OUT, case["id"])
     os.makedirs(d, exist_ok=True)
@@ -1325,24 +1359,25 @@ def build_negative(case):
     kind = case["kind"]
 
     if kind == "docx":
-        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-            z.writestr("[Content_Types].xml",
-                       '<?xml version="1.0" encoding="UTF-8"?>'
-                       '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-                       '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-                       '<Default Extension="xml" ContentType="application/xml"/>'
-                       '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
-                       '</Types>')
-            z.writestr("_rels/.rels",
-                       '<?xml version="1.0" encoding="UTF-8"?>'
-                       '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-                       '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
-                       '</Relationships>')
-            z.writestr("word/document.xml",
-                       '<?xml version="1.0" encoding="UTF-8"?>'
-                       '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-                       '<w:body><w:p><w:r><w:t>Receituário em DOCX — formato não suportado no MVP.</w:t></w:r></w:p></w:body>'
-                       '</w:document>')
+        write_zip(path, [
+            ("[Content_Types].xml",
+             '<?xml version="1.0" encoding="UTF-8"?>'
+             '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+             '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+             '<Default Extension="xml" ContentType="application/xml"/>'
+             '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+             '</Types>'),
+            ("_rels/.rels",
+             '<?xml version="1.0" encoding="UTF-8"?>'
+             '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+             '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+             '</Relationships>'),
+            ("word/document.xml",
+             '<?xml version="1.0" encoding="UTF-8"?>'
+             '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+             '<w:body><w:p><w:r><w:t>Receituário em DOCX — formato não suportado no MVP.</w:t></w:r></w:p></w:body>'
+             '</w:document>'),
+        ])
     elif kind == "empty":
         open(path, "wb").close()
     elif kind == "badjson":
@@ -1368,15 +1403,14 @@ def build_negative(case):
                 "# Esperado: 422 CAMPOS_INVALIDOS antes de qualquer chamada ao modelo.\n"
             )
     elif kind == "zip":
-        with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as z:
-            z.writestr("laudo.txt", "Conteúdo dentro de um ZIP — formato não suportado.")
+        write_zip(path, [("laudo.txt", "Conteúdo dentro de um ZIP — formato não suportado.")])
     elif kind == "big":
         # 25 MB em PDF VÁLIDO: o conteúdo é uma página normal e o tamanho vem de um
         # comentário de preenchimento antes do %%EOF. Assim o único defeito é o
         # tamanho (413) e o arquivo ainda abre em qualquer leitor (e comprime no ZIP).
         from gerar_fixtures_demo import footer, header, watermark
         tmp = tempfile.mktemp(suffix=".pdf")
-        cv = canvas.Canvas(tmp, pagesize=A4)
+        cv = canvas.Canvas(tmp, pagesize=A4, invariant=1)
         cv.setTitle("Documento de teste de limite de tamanho (fictício)")
         hdr = {"id": "Validacao_ArquivoGrande", "title": "DOCUMENTO DE TESTE DE LIMITE DE TAMANHO"}
         watermark(cv)
@@ -1513,7 +1547,8 @@ def main():
             image_only_pdf(jpg, pdf)
         elif flags.get("low_contrast"):
             draw_case_paged(case, pdf)
-            rasterize(pdf, jpg, rot=0.8, contrast=0.55, brightness=0.92, shadow=True, quality=76)
+            rasterize(pdf, jpg, rot=0.8, contrast=0.55, brightness=0.92,
+                      shadow=case.get("_marca", True), quality=76)
             image_only_pdf(jpg, pdf)
         else:
             draw_case_paged(case, pdf)

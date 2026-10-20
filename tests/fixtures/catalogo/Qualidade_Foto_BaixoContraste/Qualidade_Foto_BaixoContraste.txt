@@ -9,7 +9,7 @@ Atestado com sombra e baixo contraste
 
 Fixture: Qualidade_Foto_BaixoContraste
 Paciente: Michele Andrade Pinto
-Idade: 40 anos
+Idade: 4?_ anos — mancha sobre o campo
 Documento: DOC-Q-2026-0045
 Data: 18/10/2026
 Origem: Foto enviada por celular

@@ -129,7 +129,7 @@ def watermark(c):
 
 
 def draw_pdf(case, path):
-    c = canvas.Canvas(path, pagesize=A4)
+    c = canvas.Canvas(path, pagesize=A4, invariant=1)
     c.setTitle(f"{case['title']} — {case['id']} (fictício)")
     c.setAuthor("MediFlow — Hackathon ONE G10")
     c.setSubject("Documento fictício para testes do agente de triagem")
@@ -324,13 +324,13 @@ C(
         ("Prescrição", "1. Losartana potássica 50 mg — 1 comprimido por via oral uma vez ao dia, por 30 dias.\n2. Hidroclorotiazida 25 mg — 1 comprimido por via oral uma vez ao dia, por 30 dias."),
         ("Orientações", "Manter dieta hipossódica, atividade física regular e retorno em 30 dias para controle pressórico."),
     ],
-    doctor=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+    doctor=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
     expected={
         "tipo_documento": "RECEITUARIO_MEDICO", "especialidade": ["Cardiologia"],
         "prioridade": "ROTINA", "status": "PROCESSADO", "destinos": ["FARMACIA_HOSPITALAR"],
         "revisao": False, "notificacao": False,
         "dados": {"paciente": {"nome": "Rafael Nunes de Souza", "idade": 58},
-                  "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "RJ"}},
+                  "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "SP"}},
                   "diagnostico": "Hipertensão arterial sistêmica", "cid": "I10",
                   "medicamentos": ["Losartana potássica 50 mg", "Hidroclorotiazida 25 mg"],
                   "exames": [], "urgencia": "NAO"},
@@ -411,13 +411,13 @@ C(
         ("Resultados", "Hemoglobina: 10,2 g/dL (referência 12,0–16,0)\nHematócrito: 32,1% (referência 36–46)\nHemácias: 3,8 milhões/mm³ (referência 4,0–5,4)\nLeucócitos: 7.200/mm³ (referência 4.000–11.000)\nPlaquetas: 245.000/mm³ (referência 150.000–450.000)\nVCM: 84 fL (referência 80–100)\nHCM: 27 pg (referência 27–33)"),
         ("Conclusão", "Anemia microcítica leve. Correlacionar com ferritina e quadro clínico."),
     ],
-    doctor=("Dr. Marcos Vinícius Tavares", "CRM 176543-MG"),
+    doctor=("Dr. Marcos Vinícius Tavares", "CRM 176543-SP"),
     expected={
         "tipo_documento": "LAUDO_EXAME_LABORATORIAL", "especialidade": ["Hematologia", "Clínica Médica"],
         "prioridade": "ROTINA", "status": "PROCESSADO", "destinos": ["PRONTUARIO_ELETRONICO"],
         "revisao": False, "notificacao": False,
         "dados": {"paciente": {"nome": "Ana Paula Ribeiro", "idade": 41},
-                  "medico": {"nome": "Dr. Marcos Vinícius Tavares", "crm": {"numero": "176543", "uf": "MG"}},
+                  "medico": {"nome": "Dr. Marcos Vinícius Tavares", "crm": {"numero": "176543", "uf": "SP"}},
                   "diagnostico": "Anemia ferropriva", "cid": "D50.9",
                   "medicamentos": [], "exames": ["Hemograma completo"], "urgencia": "NAO"},
         "assercoes": ["Laudo laboratorial de rotina", "Valores numéricos preservados",
@@ -495,13 +495,13 @@ C(
         ("Diagnóstico / justificativa", "Infecção viral de vias aéreas superiores — CID-10 J06.9."),
         ("Período", "Comparecimento no dia 17/10/2026."),
     ],
-    doctor=("Dr. Paulo Mendes Rocha", "CRM 203114-RJ"),
+    doctor=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
     expected={
         "tipo_documento": "ATESTADO_MEDICO", "especialidade": ["Clínica Médica"],
         "prioridade": "ROTINA", "status": "PROCESSADO", "destinos": ["PRONTUARIO_ELETRONICO"],
         "revisao": False, "notificacao": False,
         "dados": {"paciente": {"nome": "Thiago Almeida Santos", "idade": 29},
-                  "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "RJ"}},
+                  "medico": {"nome": "Dr. Paulo Mendes Rocha", "crm": {"numero": "203114", "uf": "SP"}},
                   "diagnostico": "Infecção viral de vias aéreas superiores", "cid": "J06.9",
                   "medicamentos": [], "exames": [], "urgencia": "NAO"},
         "assercoes": ["Ausência de medicamentos e exames NÃO força revisão",

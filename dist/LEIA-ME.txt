@@ -57,6 +57,9 @@ IMPORTANTE
 Todos os documentos são FICTÍCIOS. Nomes, CRMs, CID e resultados não correspondem
 a pessoa real. Nenhum dado de paciente real é usado. Nenhuma credencial está no pacote.
 
+Todas as fixtures acontecem no Hospital Aurora (São Paulo): todo CRM é SP e o
+mesmo médico tem sempre o mesmo CRM em todos os documentos.
+
 CASOS ESPECIAIS
 ---------------
 Validacao_ArquivoGrande.pdf          25 MB, testa limite de tamanho

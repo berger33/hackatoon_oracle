@@ -178,6 +178,8 @@ Três grupos compartilham a mesma saída esperada sem serem redundantes:
 3. Toda fixture tem `expected.json` no schema `mediflow.fixture/2`; o bloco **Validacao** usa `ErroResposta` e os dois PDFs ilegíveis usam `TriagemMediFlow` com `status=ERRO_PROCESSAMENTO`.
 4. Não comparar scores exatos do LLM: use faixas e, nas bordas 0,84 / 0,85 / 0,70, o modo `FIXTURE_MODE`.
 5. Nenhum segredo, chave OCI ou dado pessoal real neste diretório.
+6. **Um só hospital, uma só UF.** Todas as fixtures acontecem no Hospital Aurora (São Paulo); por isso **todo CRM é `SP`** — o CRM acompanha a UF de atuação do médico. Um CRM de outra unidade federativa num hospital paulista seria erro de domínio, não variação de teste.
+7. **O TXT é a fonte do que se espera extrair.** Todo campo preenchido no `expected.json` (paciente, médico, CRM, diagnóstico, CID, idade) aparece no texto da própria fixture; o que está ausente ou ilegível também aparece assim no texto (`—`, `não informado`, `4?_ anos`). O verificador confere isso caso a caso.
 
 ## Verificar e regerar
 

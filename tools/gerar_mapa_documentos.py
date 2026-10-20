@@ -254,7 +254,7 @@ def box(c, x, y, w, h, title, lines, bg=SOFT, border=LINE, title_color=INK):
 
 
 def main():
-    c = canvas.Canvas(OUT, pagesize=A4)
+    c = canvas.Canvas(OUT, pagesize=A4, invariant=1)
     c.setTitle("Mapa de Documentos de Teste — MediFlow")
     c.setAuthor("MediFlow — Hackathon ONE G10")
     c.setSubject("Catálogo completo de fixtures, status de produção e critérios de aceite")

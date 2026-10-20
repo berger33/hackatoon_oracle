@@ -26,6 +26,6 @@ Perfil compatível com hipotireoidismo primário. Correlacionar clinicamente.
 
 ------------------------------------------------------------------------------
 
-CRM 154321-PR
+CRM 154321-SP
 ------------------------------------------------------------------------------
 MediFlow · fixture Ausencia_Medico_Nome · dados sintéticos · página 1 de 1

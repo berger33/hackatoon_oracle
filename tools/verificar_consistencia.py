@@ -8,7 +8,9 @@ Checa, para os 67 casos:
      (importados de `app/models.py`, para não haver duas listas)
   4. manifest.csv x expected.json (tipo, status, revisão, notificação, destinos)
   5. arquivos realmente legíveis (PDF abre, JPG abre, TXT tem marca de fictício)
-  6. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
+  6. coerência clínica: o que o expected diz ter sido extraído existe mesmo no TXT
+     (paciente, médico, CRM, diagnóstico, CID, idade) e todo CRM é da UF do hospital
+  7. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
 
 A validação profunda do payload (ponto fixo das regras) fica em
 `tests/testar_contrato.py`.
@@ -39,6 +41,9 @@ DESTINOS = {x.value for x in Destino}
 SCHEMA = "mediflow.fixture/2"
 #: Nas 10 fixtures de erro não há tipo, destino nem revisão a comparar.
 NA = "-"
+#: O Hospital Aurora fica em São Paulo: todo médico que assina tem CRM-SP.
+#: (Um CRM de outra UF num hospital paulista é erro de domínio, não variação.)
+UF_DO_HOSPITAL = "SP"
 
 erros = []
 avisos = []
@@ -283,8 +288,87 @@ def verifica_arquivos(quiet):
               f"Escaneado, Qualidade e Matriz_NaoIdentificado)")
 
 
+def normaliza(s):
+    """Compara texto sem acento, sem caixa e sem espaços repetidos."""
+    import unicodedata
+    s = unicodedata.normalize("NFKD", s or "")
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    return re.sub(r"\s+", " ", s).strip().lower()
+
+
+def verifica_coerencia_clinica(quiet):
+    """O TXT é a fonte dos dados extraídos: o que o expected afirma tem de estar lá."""
+    print("\n== 6. Coerência clínica (expected x TXT)")
+    conferidos = 0
+    for kind, fid, d in pastas():
+        e = json.load(open(os.path.join(d, "expected.json"), encoding="utf-8"))
+        if e["tipo_de_teste"] != "funcional":
+            continue
+        txt_path = os.path.join(d, f"{fid}.txt")
+        if not os.path.exists(txt_path):
+            continue
+        bruto = open(txt_path, encoding="utf-8").read()
+        txt = normaliza(bruto)
+        resp = e["resposta_esperada"]
+        dados = resp["dados_extraidos"]
+        medico = dados.get("medico") or {}
+        crm = medico.get("crm") or {}
+        ausentes = set(resp["qualidade"]["campos_ausentes"])
+        incertos = set(resp["qualidade"]["campos_incertos"])
+        conferidos += 1
+
+        def contem(valor, campo):
+            if valor and normaliza(str(valor)) not in txt:
+                add_erro(f"{fid}: {campo} esperado ({valor!r}) não aparece no TXT")
+
+        contem((dados.get("paciente") or {}).get("nome"), "paciente.nome")
+        contem(medico.get("nome"), "medico.nome")
+        contem(dados.get("diagnostico"), "diagnostico")
+        contem(dados.get("cid"), "cid")
+        if (dados.get("paciente") or {}).get("idade") is not None:
+            idade = str(dados["paciente"]["idade"])
+            if not re.search(rf"\bidade:\s*{idade}\b", txt):
+                add_erro(f"{fid}: idade esperada ({idade}) não aparece no TXT")
+
+        # CRM: número, UF e presença coerentes com o que se espera extrair
+        numeros = re.findall(r"crm\s+(\d{4,6})-([a-z]{2})", txt)
+        for numero, uf in numeros:
+            if not crm.get("numero"):
+                if "medico.crm" in ausentes:
+                    add_erro(f"{fid}: TXT exibe CRM {numero}-{uf.upper()} mas o expected "
+                             f"declara medico.crm ausente")
+            elif (numero, uf.upper()) != (str(crm.get("numero")), crm.get("uf")):
+                add_erro(f"{fid}: TXT traz CRM {numero}-{uf.upper()}, "
+                         f"expected traz {crm.get('numero')}-{crm.get('uf')}")
+            if uf.upper() != UF_DO_HOSPITAL:
+                add_erro(f"{fid}: CRM {numero}-{uf.upper()} fora da UF do hospital "
+                         f"({UF_DO_HOSPITAL})")
+        if crm.get("numero") and not any(n == str(crm["numero"]) for n, _ in numeros):
+            add_erro(f"{fid}: expected tem CRM {crm.get('numero')}-{crm.get('uf')} "
+                     f"que não aparece no TXT")
+        if crm.get("uf") and crm.get("uf") != UF_DO_HOSPITAL:
+            add_erro(f"{fid}: CRM com UF {crm.get('uf')} (esperado {UF_DO_HOSPITAL})")
+
+        # Idade declarada incerta não pode estar legível no texto
+        if "paciente.idade" in incertos:
+            m = re.search(r"^idade:\s*(.+)$", bruto, re.M | re.I)
+            if m and re.fullmatch(r"\s*\d{1,3}\s*(anos)?\s*", m.group(1)):
+                add_erro(f"{fid}: paciente.idade é incerto, mas o TXT mostra "
+                         f"{m.group(1).strip()!r} legível")
+
+        # Campo declarado incerto não pode estar legível no texto
+        for campo in incertos:
+            if campo == "medicamentos[0].dosagem":
+                dose = re.search(r"\d[\d.,]*\s*(mg|mcg|g|ml)\b", txt)
+                if dose and "mancha" not in txt and "ilegivel" not in txt and "ilegível" not in bruto.lower():
+                    add_aviso(f"{fid}: {campo} é incerto, mas o TXT mostra dose legível "
+                              f"({dose.group(0)})")
+    if not quiet:
+        print(f"   {conferidos} casos funcionais conferidos contra o próprio texto")
+
+
 def verifica_duplicidade(quiet):
-    print("\n== 5. Duplicidade e redundância")
+    print("\n== 7. Duplicidade e redundância")
     arquivos = sorted(p for p in glob.glob(os.path.join(BASE, "*/*/*")) if os.path.isfile(p))
     hashes = {}
     for p in arquivos:
@@ -345,6 +429,7 @@ def main():
     verifica_expected(manifest, quiet)
     verifica_manifest(manifest, quiet)
     verifica_arquivos(quiet)
+    verifica_coerencia_clinica(quiet)
     verifica_duplicidade(quiet)
 
     print("\n== Resumo")
