@@ -87,6 +87,7 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   └── models.py                                # CONTRATO v1.0 (Pydantic): payload, enums, regras
 ├── docs/
 │   ├── README.md
+│   ├── epts/                                # EPTs: um procedimento por caso da especificação funcional
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
 │       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 67 casos, bloco por bloco
@@ -100,6 +101,8 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
 │       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
 ├── tools/
+│   ├── gerar_epts_pdf.py                        # PDF consolidado das EPTs
+│   ├── verificar_epts.py                        # estrutura, IDs, fixtures citadas e cobertura das EPTs
 │   ├── contrato_fixtures.py                     # monta os expected.json a partir do contrato
 │   ├── gerar_fixtures_demo.py                   # recria os 12 casos
 │   ├── gerar_fixtures_catalogo.py               # recria os 55 casos
@@ -118,6 +121,8 @@ python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pil
 
 python3 tests/testar_contrato.py             # 67/67 expected.json válidos e estáveis
 python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
+python3 tools/verificar_epts.py              # EPTs: seções, IDs, fixtures citadas, cobertura das seções
+python3 tools/gerar_epts_pdf.py              # docs/epts/EPTs_MediFlow.pdf
 ```
 
 Para regerar os documentos (só necessário se mudar um caso):
