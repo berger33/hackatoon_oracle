@@ -383,8 +383,8 @@ C(
     doctor=("Dra. Camila Ferreira Lopes", "CRM 198765-SP"),
     expected={
         "tipo_documento": "RECEITUARIO_MEDICO", "especialidade": ["Clínica Médica"],
-        "prioridade": "URGENTE", "status": "EM_REVISAO", "destinos": ["FILA_URGENCIA_MEDICA"],
-        "revisao": True, "notificacao": True,
+        "prioridade": "URGENTE", "status": "PROCESSADO", "destinos": ["FILA_URGENCIA_MEDICA"],
+        "revisao": False, "notificacao": True,
         "dados": {"paciente": {"nome": "João Batista Nogueira", "idade": 67},
                   "medico": {"nome": "Dra. Camila Ferreira Lopes", "crm": {"numero": "198765", "uf": "SP"}},
                   "diagnostico": "Dor pós-operatória aguda intensa", "cid": "R52.1",
@@ -413,8 +413,8 @@ C(
     doctor=("Dra. Renata Silveira", "CRM 145892-SP"),
     expected={
         "tipo_documento": "LAUDO_EXAME_IMAGEM", "especialidade": ["Radiologia", "Pneumologia"],
-        "prioridade": "URGENTE", "status": "EM_REVISAO", "destinos": ["FILA_URGENCIA_MEDICA"],
-        "revisao": True, "notificacao": True,
+        "prioridade": "URGENTE", "status": "PROCESSADO", "destinos": ["FILA_URGENCIA_MEDICA"],
+        "revisao": False, "notificacao": True,
         "dados": {"paciente": {"nome": "Carlos Eduardo Mendes", "idade": 52},
                   "medico": {"nome": "Dra. Renata Silveira", "crm": {"numero": "145892", "uf": "SP"}},
                   "diagnostico": "Tromboembolismo pulmonar agudo", "cid": None,
@@ -423,7 +423,7 @@ C(
                       "Achado crítico detectado e prioridade URGENTE",
                       "Destino FILA_URGENCIA_MEDICA com alerta",
                       "CID ausente permanece null e não exige revisão por si só"],
-        "obs": "Espelha o exemplo do Projeto_oracle.pdf. A spec v1.0 prevê EM_REVISAO para urgência, embora o exemplo do brief mostre 'processado'.",
+        "obs": "Espelha o exemplo do Projeto_oracle.pdf: urgência sem ambiguidade termina em PROCESSADO, com requer_auditoria_humana false e alerta registrado.",
     },
 )
 

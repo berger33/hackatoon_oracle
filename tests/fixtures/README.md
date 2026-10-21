@@ -115,7 +115,7 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 | ---: | --- | --- | --- | --- |
 | 1 | `Matriz_Receituario_Texto` | Receituário — rotina | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
 | 2 | `Matriz_Receituario_Pdf` | Receituário — 2 medicamentos | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
-| 3 | `Matriz_Receituario_Imagem` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
+| 3 | `Matriz_Receituario_Imagem` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `PROCESSADO` |
 | 4 | `Matriz_LaudoDeImagem_Pdf` | TC de tórax — TEP agudo | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
 | 5 | `Matriz_LaudoLaboratorial_Pdf` | Hemograma — rotina | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
 | 6 | `Matriz_Guia_Pdf` | Guia de ressonância — eletiva | `AUDITORIA_AUTORIZACOES` | `PROCESSADO` |

@@ -42,6 +42,7 @@ Decisões que fecham divergências antigas:
 - **`POUCO_URGENTE` não existe.** A especificação define três níveis; o valor foi removido em vez de ficar sem fixture.
 - **`OUTRO` e `NAO_IDENTIFICADO` são resultados**, não erros: continuam sendo `TipoDocumento`, com revisão obrigatória.
 - **`NAO_IDENTIFICADA` é prioridade**; `N/A` deixou de existir em qualquer campo.
+- **Urgência isolada não gera revisão humana** (`PROCESSADO` + `requer_auditoria_humana=False`). Decisão tomada a partir do `Projeto_oracle.pdf`, cujo exemplo devolve `"status": "processado"` e `"requer_auditoria_humana": false` para um caso urgente, e guarda o objeto em `processados/urgentes/`. Revisão é consequência de **ambiguidade**, nunca de urgência sozinha.
 
 ---
 
@@ -118,21 +119,23 @@ Os dois casos de leitura antes usavam o schema de triagem preenchido com `"N/A"`
 
 | # | Regra | Efeito |
 | --- | --- | --- |
-| R1 | `nivel_prioridade == URGENTE` | `FILA_URGENCIA_MEDICA` + `notificacao` + `requer_auditoria_humana=True` + `EM_REVISAO` |
+| R1 | `nivel_prioridade == URGENTE` | `FILA_URGENCIA_MEDICA` + `notificacao` + `PROCESSADO`. **Urgência isolada não gera revisão humana** (`requer_auditoria_humana=False`) — é o comportamento do exemplo do `Projeto_oracle.pdf` |
 | R2 | Ambiguidade: campo obrigatório ausente **ou** campo incerto **ou** conflito **ou** `score_combinado < limiar` **ou** `OUTRO`/`NAO_IDENTIFICADO` | revisão humana |
 | R3 | Ambiguidade **sem** urgência | destino **substituído** por `FILA_REVISAO_HUMANA` |
-| R4 | Ambiguidade **com** urgência | `FILA_URGENCIA_MEDICA` **+** `FILA_REVISAO_HUMANA` |
+| R4 | Ambiguidade **com** urgência | `FILA_URGENCIA_MEDICA` **+** `FILA_REVISAO_HUMANA` + `requer_auditoria_humana=True` + `EM_REVISAO` |
 | R5 | `score_combinado = min(...)`, limiar **estrito** | 0,85 passa; 0,84 revisa |
 | R6 | `campos_ausentes` é do extrator | só os 5 obrigatórios disparam revisão; CID/medicamentos/exames ausentes são registrados e não bloqueiam |
 | R7 | Erro de leitura | `ERRO_PROCESSAMENTO` + `erro.codigo`, sem dados |
 
 **Campos obrigatórios (RF-21):** `paciente.nome`, `paciente.idade`, `medico.nome`, `medico.crm`, `diagnostico`.
 
-### A exceção da urgência, explicada
+### A urgência, explicada
 
-Um documento urgente sem nenhuma ambiguidade termina com `requer_auditoria_humana = true` e **sem** `FILA_REVISAO_HUMANA`. Não é contradição: a auditoria da urgência acontece **na própria fila de urgência** (alerta no plantão + conferência humana). A `FILA_REVISAO_HUMANA` só é acrescentada quando existe ambiguidade adicional (R4).
+**Urgência isolada não é ambiguidade, e por isso não gera revisão humana.** Um documento urgente sem nenhuma ambiguidade termina em `PROCESSADO`, com `requer_auditoria_humana = false`, um único destino (`FILA_URGENCIA_MEDICA`) e o alerta registrado. É o comportamento do exemplo do `Projeto_oracle.pdf`, que devolve `"status": "processado"`, `"requer_auditoria_humana": false` e guarda o objeto em `processados/urgentes/`.
 
-É o que acontece em `Matriz_Guia_Imagem`, `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem` e `Conflito_AltoRisco` — cinco casos, um destino.
+A `FILA_REVISAO_HUMANA` só entra quando existe, além da urgência, uma ambiguidade (R4) — campo obrigatório ausente, campo incerto, conflito, score abaixo do limiar ou tipo fora da taxonomia. Nesse caso a urgência **acrescenta** o destino em vez de substituí-lo, e o status passa a `EM_REVISAO`.
+
+É o que acontece em `Matriz_Guia_Imagem`, `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem` e `Conflito_AltoRisco` — cinco casos, um destino, status `PROCESSADO`, com alerta. Os três casos de duas filas (`Conflito_Prioridade`, `Simultaneo_Urgencia_Ilegivel`, `Simultaneo_Urgencia_Score`) mantêm `EM_REVISAO` porque há ambiguidade junto.
 
 ### Por que o validador não deduz "campo ausente"
 
@@ -217,7 +220,7 @@ O modelo anterior (v2.0) foi descartado. Resumo do que ele não cobria e que ago
 | `status: str` com default `PROCESSADO` | `StatusTriagem` com os 6 estados, sem default |
 | sem contrato de erro; `dados_extraidos` obrigatório | `ErroResposta` (HTTP) e `TriagemMediFlow.erro` (leitura) |
 | validador apagava `campos_incertos`/`conflitos` recebidos | evidência preservada e cobrada nas regras |
-| urgência não gerava `EM_REVISAO`; diagnóstico "ou exame" | R1 e R6 acima |
+| urgência não gerava `EM_REVISAO`; diagnóstico "ou exame" | urgência isolada volta a terminar em `PROCESSADO`, agora **por decisão** (R1: exemplo do `Projeto_oracle.pdf`), e não por omissão de regra; diagnóstico obrigatório segue R6 |
 | `especialidade: str`, `exame_ou_procedimento: str`, `crm` duplicado | listas e objeto CRM único |
 | limiar 0,85 fixo no corpo do validador | `qualidade.limiar_aplicado` (default 0,85, por payload) |
 

@@ -28,7 +28,7 @@ O **MediFlow** recebe documentos clínicos e administrativos em **PDF, imagem ou
 
 | Situação | Destino | Revisão humana | Alerta |
 | --- | --- | --- | --- |
-| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Sim (auditoria na própria fila) | Sim |
+| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Não — só se houver ambiguidade junto | Sim |
 | Score combinado < 0,85 | `FILA_REVISAO_HUMANA` | Sim | Não, salvo urgência |
 | Urgência + ambiguidade/ilegibilidade | `FILA_URGENCIA_MEDICA` + `FILA_REVISAO_HUMANA` | Sim | Sim |
 | Receita de rotina | `FARMACIA_HOSPITALAR` | Não | Não |

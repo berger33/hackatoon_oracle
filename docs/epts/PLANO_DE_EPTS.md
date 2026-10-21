@@ -52,7 +52,7 @@ Cada caso da especificação vira **uma EPT**, numerada por família. Ao todo: *
 
 | EPT | Sinal (linha da §8.2) | Destino | Revisão | Alerta | Fixtures de referência |
 | --- | --- | --- | --- | --- | --- |
-| `EPT-D01` | Urgência / achado crítico | `FILA_URGENCIA_MEDICA` | Sim, obrigatória | Sim, obrigatório | `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem`, `Matriz_Guia_Imagem`, `Conflito_AltoRisco` |
+| `EPT-D01` | Urgência / achado crítico | `FILA_URGENCIA_MEDICA` | Não — só com ambiguidade | Sim, obrigatório | `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem`, `Matriz_Guia_Imagem`, `Conflito_AltoRisco` |
 | `EPT-D02` | Score combinado < 0,85 | `FILA_REVISAO_HUMANA` | Sim | Não, salvo urgência | `Borda_Score_084` (contraprova: `Borda_Score_085`) |
 | `EPT-D03` | Urgência + ambiguidade/ilegibilidade/conflito | `FILA_URGENCIA_MEDICA` **e** `FILA_REVISAO_HUMANA` | Sim | Sim | `Simultaneo_Urgencia_Ilegivel`, `Simultaneo_Urgencia_Score` |
 | `EPT-D04` | Receita de rotina, sem impedimento | `FARMACIA_HOSPITALAR` | Não | Não | `Matriz_Receituario_Pdf`, `Matriz_Receituario_Texto` |
@@ -202,6 +202,6 @@ Saída esperada no fim: `0 erros, 0 avisos`, como os demais verificadores.
 | Limites de tamanho, MIME, timeout, retry | `EPT-E01`, `EPT-E03`, `EPT-R03` | Escrever com o valor **configurável em destaque** e campo "limite aplicado" a preencher |
 | Contrato final do upload (multipart × JSON) | `EPT-E01` | Escrever as duas variantes, marcando a escolha pendente |
 | Dicionário clínico (achado crítico, alto risco, conflitos) | `EPT-D01`, `EPT-E05` | Referenciar `rules/*.csv` como dado de referência; EPT fica `BLOQUEADO` até o dicionário existir |
-| Urgência isolada exige revisão? | `EPT-D01` × `EPT-D03` | Seguir a spec v1.0 (`EM_REVISAO`), registrando a divergência com o exemplo do brief |
+| Urgência isolada exige revisão? | `EPT-D01` × `EPT-D03` | **Resolvido em 21/10/2026: seguir o `Projeto_oracle.pdf`.** Urgência isolada → `PROCESSADO` + `requer_auditoria_humana = false` + alerta; `EM_REVISAO` só com ambiguidade. Contrato e fixtures já atualizados |
 | Autenticação/autorização | `EPT-A11`, `EPT-A13` | Fora do MVP; EPT marcada como não aplicável até decisão |
 | Meta de latência e precisão | `EPT-R01`, `EPT-R07` | EPT mede e registra; a meta entra quando definida |

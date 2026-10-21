@@ -87,16 +87,16 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `Matriz_Receituario_Pdf` | RECEITUARIO_MEDICO | PDF | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita médica de rotina, 2 medicamentos, paciente e CRM completos, legível. |
-| `Matriz_Receituario_Imagem` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
+| `Matriz_Receituario_Imagem` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
 | `Matriz_Receituario_Texto` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Texto de receita de rotina com medicamento, dose, via e frequência explícitos. |
 | `Matriz_LaudoLaboratorial_Pdf` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Hemograma de rotina com resultados nominais, sem medicamentos. |
 | `Matriz_LaudoLaboratorial_Imagem` | LAUDO_EXAME_LABORATORIAL | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de laudo laboratorial impresso, boa qualidade, rotina. |
 | `Matriz_LaudoLaboratorial_Texto` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo laboratorial com exames realizados e ausência de CID (não exige revisão). |
-| `Matriz_LaudoDeImagem_Pdf` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
-| `Matriz_LaudoDeImagem_Imagem` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
+| `Matriz_LaudoDeImagem_Pdf` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
+| `Matriz_LaudoDeImagem_Imagem` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
 | `Matriz_LaudoDeImagem_Texto` | LAUDO_EXAME_IMAGEM | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo de ultrassom de rotina, sem sinais de urgência. |
 | `Matriz_Guia_Pdf` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de solicitação de ressonância eletiva, diagnóstico e CID explícitos. |
-| `Matriz_Guia_Imagem` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de guia com pedido de urgência e justificativa clínica crítica. |
+| `Matriz_Guia_Imagem` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de guia com pedido de urgência e justificativa clínica crítica. |
 | `Matriz_Guia_Texto` | GUIA_PROCEDIMENTO | TEXTO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Texto de guia de procedimento eletivo, sem sinais de risco. |
 | `Matriz_RelatorioDeAlta_Pdf` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta completo: diagnóstico, CID, medicações de alta e orientações. |
 | `Matriz_RelatorioDeAlta_Imagem` | RELATORIO_ALTA_INTERNACAO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de relatório de internação impresso, rotina e legível. |
@@ -139,7 +139,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Conflito_Dose` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor. |
 | `Conflito_Prioridade` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
 | `Conflito_Dados` | RELATORIO_ALTA_INTERNACAO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna. |
-| `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
+| `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
 
 #### Bloco Simultaneo — urgência + ambiguidade (2)
 
@@ -222,7 +222,7 @@ Se o tempo apertar, produza **estes 12** primeiro. Eles cobrem os 15 critérios 
 | 1 | `Matriz_Receituario_Texto` | Texto é aceito e uma receita de rotina vai para `FARMACIA_HOSPITALAR` |
 | 2 | `Matriz_Receituario_Pdf` | PDF digital é aceito e classificado |
 | 3 | `Matriz_Receituario_Imagem` | Imagem é aceita e um sinal de urgência nunca vira rotina |
-| 4 | `Matriz_LaudoDeImagem_Pdf` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta |
+| 4 | `Matriz_LaudoDeImagem_Pdf` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta, sem revisão humana |
 | 5 | `Matriz_LaudoLaboratorial_Pdf` | Laudo laboratorial de rotina vai para `PRONTUARIO_ELETRONICO` |
 | 6 | `Matriz_Guia_Pdf` | Guia de procedimento vai para `AUDITORIA_AUTORIZACOES` |
 | 7 | `Matriz_RelatorioDeAlta_Pdf` | Relatório de alta é classificado e extraído |
@@ -283,7 +283,7 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 | Limite de tamanho, páginas, MIME, timeout e retry | `Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
 | Contrato final do upload (multipart × JSON) | `Validacao_SemConteudo`, `Validacao_EnvelopeVazio`, `Validacao_MimeInvalido` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
 | Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_AltoRisco` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
-| **Urgência isolada exige revisão?** | A tabela §8.2 diz "Sim, obrigatória" para urgência; o parágrafo seguinte diz que a revisão é obrigatória **quando coexiste** com ambiguidade/dado ausente/score baixo. A §5.3 inclui "encontrou urgência" em `EM_REVISAO`. O exemplo do `Projeto_oracle.pdf` mostra um caso urgente com `requer_auditoria_humana: false` e status `processado`, o que conflita com a spec. | Padronizar: urgência → `EM_REVISAO` + `FILA_URGENCIA_MEDICA` + alerta; `FILA_REVISAO_HUMANA` só entra quando houver ambiguidade/dado ausente/score baixo. Este catálogo segue a **especificação v1.0** (documento mais recente e normativo), não o exemplo do brief. Registrar a decisão antes de codificar. |
+| **Urgência isolada exige revisão?** | **Resolvido em 21/10/2026.** A §8.2 da EF dizia "revisão obrigatória" para urgência; o exemplo do `Projeto_oracle.pdf` mostra `status: processado` e `requer_auditoria_humana: false`. | **Decisão: seguir o brief.** Urgência isolada → `PROCESSADO`, sem revisão humana, com alerta e um único destino (`FILA_URGENCIA_MEDICA`). `FILA_REVISAO_HUMANA` só entra com ambiguidade — inclusive quando ela coexiste com a urgência (nesse caso, os dois destinos). Contrato e os 67 fixtures já refletem essa decisão; a EF e a Análise de Requisitos serão atualizadas pela equipe. |
 | Autenticação e autorização | `403` e consulta por terceiros não têm contrato | Fora do MVP; se entrar, criar fixtures de acesso negado |
 | Política de retenção | Não afeta o conteúdo, mas afeta o teste de persistência | Definir antes de qualquer dado real (que não deve existir no MVP) |
 | Meta de latência e precisão | depende do primeiro pipeline | Medir e então fixar a meta |

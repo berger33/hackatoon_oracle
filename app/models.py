@@ -7,17 +7,21 @@ chamar de "JSON de triagem" tem de validar aqui — inclusive os 67
 
 Regras de negócio implementadas (RF-16, RF-18, RF-21, §5.3, §5.4, §8.2):
 
-  R1. Prioridade `URGENTE` → destino `FILA_URGENCIA_MEDICA`, notificação
-      registrada e `requer_auditoria_humana = True`. A auditoria da urgência
-      acontece **na própria fila de urgência**; `FILA_REVISAO_HUMANA` só é
-      acrescentada quando há ambiguidade além da urgência (R4).
+  R1. Prioridade `URGENTE` → destino `FILA_URGENCIA_MEDICA` e notificação
+      registrada. **Urgência isolada não gera revisão humana**: o caso termina
+      em `PROCESSADO`, com `requer_auditoria_humana = False` — é o
+      comportamento do exemplo do `Projeto_oracle.pdf` (`status: processado`,
+      `requer_auditoria_humana: false`, objeto em `processados/urgentes/`).
+      A `FILA_REVISAO_HUMANA` só entra quando há ambiguidade além da urgência
+      (R4).
   R2. Ambiguidade → revisão humana. Conta como ambiguidade: campo obrigatório
       ausente (RF-21), campo incerto, conflito detectado, score combinado
       abaixo do limiar, ou tipo fora da taxonomia (`OUTRO`/`NAO_IDENTIFICADO`).
   R3. Sem urgência, a revisão **substitui** o destino primário: o documento vai
       para `FILA_REVISAO_HUMANA` e não para a fila do seu tipo.
-  R4. Com urgência, a revisão **acrescenta** destino: mantém
-      `FILA_URGENCIA_MEDICA` e soma `FILA_REVISAO_HUMANA`.
+  R4. Urgência **com** ambiguidade → os dois destinos: mantém
+      `FILA_URGENCIA_MEDICA`, soma `FILA_REVISAO_HUMANA` e termina em
+      `EM_REVISAO`. A urgência, sozinha, não revisa; a ambiguidade, sim.
   R5. `score_combinado = min(score_classificacao, score_extracao)`.
       Limiar é **estrito**: 0,85 passa, 0,84 revisa.
   R6. `campos_ausentes` é saída do extrator, não inferência do validador:
@@ -299,8 +303,8 @@ class TriagemMediFlow(BaseModel):
             justificativa = ("Urgência com ambiguidade: mantém FILA_URGENCIA_MEDICA e acrescenta "
                              "FILA_REVISAO_HUMANA. " + "; ".join(motivos) + ".")
         elif urgente:
-            justificativa = ("Urgência clínica: FILA_URGENCIA_MEDICA com notificação e auditoria "
-                             "humana na própria fila de urgência.")
+            justificativa = ("Urgência clínica: FILA_URGENCIA_MEDICA com alerta registrado. "
+                             "Sem ambiguidade, segue sem revisão humana.")
         elif ambiguidade:
             justificativa = "Revisão humana obrigatória: " + "; ".join(motivos) + "."
         else:
@@ -310,7 +314,7 @@ class TriagemMediFlow(BaseModel):
         decisao = self.decisao_roteamento or DecisaoRoteamento()
         decisao.destinos = destinos
         decisao.destino_principal = destinos[0]
-        decisao.requer_auditoria_humana = urgente or ambiguidade
+        decisao.requer_auditoria_humana = ambiguidade
         decisao.justificativa_roteamento = justificativa
         decisao.notificacao = (
             Notificacao(mensagem=f"ALERTA URGENTE [{self.documento_id}]: "
