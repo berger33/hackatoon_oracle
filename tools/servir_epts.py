@@ -319,7 +319,7 @@ def indice() -> bytes:
              f"<h2>Documentos de apoio</h2><ul>"
              + "".join(f"<li><a href='/doc/{a}'>{a}</a></li>" for a in outros)
              + "<li><a href='/doc/README.md'>README.md — índice e matriz</a></li>"
-             + "<li><a href='/raw/tests/fixtures/manifest.csv'>manifest.csv — 77 fixtures</a></li>"
+             + "<li><a href='/raw/tests/fixtures/manifest.csv'>manifest.csv — 79 fixtures</a></li>"
                "<li><a href='/raw/docs/testes/CONTRATO_DE_DADOS.md'>Contrato de dados</a></li>"
                "<li><a href='/raw/app/models.py'>app/models.py — regras executáveis</a></li>"
                "</ul>")

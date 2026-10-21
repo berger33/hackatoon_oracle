@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Verifica a consistência do catálogo de fixtures do MediFlow.
 
-Checa, para os 77 casos:
+Checa, para os 79 casos:
   1. estrutura das pastas: o conjunto de arquivos esperado vem do próprio
      `expected.json` — `entrada.renditions` nos funcionais (que pode trazer um
      formato extra, como o PNG do `Limite_Formato_Png`) e `entrada.arquivo` nos
@@ -52,6 +52,7 @@ NAO_VERSIONADOS = {
     "Validacao_ArquivoGrande": ["Validacao_ArquivoGrande.pdf"],
     "Limite_Tamanho_10MB": ["Limite_Tamanho_10MB.pdf"],
     "Limite_Tamanho_Acima10MB": ["Limite_Tamanho_Acima10MB.pdf"],
+    "Limite_Texto_Acima10MB": ["Limite_Texto_Acima10MB.txt"],
 }
 GERADOR_CATALOGO = "tools/gerar_fixtures_catalogo.py"
 #: O Hospital Aurora fica em São Paulo: todo médico que assina tem CRM-SP.

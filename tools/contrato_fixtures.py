@@ -9,7 +9,7 @@ Quem decide status, destinos, revisão e notificação é o contrato. Este módu
    (se não bater, aborta a geração — é assim que uma regra nova quebra o teste);
 3. serializa o `expected.json` no formato `mediflow.fixture/2`.
 
-Assim os 77 arquivos são, por construção, instâncias válidas do contrato.
+Assim os 79 arquivos são, por construção, instâncias válidas do contrato.
 """
 import hashlib
 import re

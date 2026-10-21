@@ -3,7 +3,7 @@
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
 **Código:** [`app/models.py`](../../app/models.py) (Pydantic 2)
 **Data:** 20/10/2026
-**Escopo:** o contrato que os 77 `expected.json` documentam e validam.
+**Escopo:** o contrato que os 79 `expected.json` documentam e validam.
 
 ---
 
@@ -15,10 +15,10 @@ O contrato responde a três perguntas, e só a estas:
 2. **Quais valores são válidos** em cada campo controlado — sem texto livre, sem acento, sem espaço.
 3. **Como a decisão é tomada** a partir dos fatos extraídos (score, campos ausentes, incertos, conflitos, prioridade).
 
-Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 77 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
+Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 79 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
 
 ```bash
-python3 tests/testar_contrato.py        # 77/77 no contrato
+python3 tests/testar_contrato.py        # 79/79 no contrato
 python3 tools/verificar_consistencia.py # estrutura, manifesto, duplicidade
 ```
 
@@ -98,7 +98,7 @@ Notas de modelagem:
 | `medico.crm.uf` | sempre `SP`: todas as fixtures acontecem no Hospital Aurora, em São Paulo, e o CRM acompanha a UF de atuação |
 | `dados_extraidos.urgencia` | declara o que o documento diz (`SIM`/`NAO`/`INDETERMINADO`), em vez de inferir do texto |
 | `qualidade.campos_ausentes` / `campos_incertos` | vêm do extrator; o validador **não recalcula** (ver §5) |
-| `qualidade.score_extracao` | produzido pelo extrator com a fórmula do §5 (`calcular_score_extracao`); o validador não o recalcula, porque os 77 casos aprovados trazem scores ilustrativos |
+| `qualidade.score_extracao` | produzido pelo extrator com a fórmula do §5 (`calcular_score_extracao`); o validador não o recalcula, porque os 79 casos aprovados trazem scores ilustrativos |
 | `qualidade.score_combinado` | sempre `min(score_classificacao, score_extracao)` — recalculado pelo validador |
 | `decisao_roteamento.destino_principal` | derivado: é sempre `destinos[0]` |
 | `armazenamento_oci` | opcional: persistência é etapa posterior e pode falhar (`ERRO_PERSISTENCIA`) |
@@ -227,8 +227,8 @@ python3 tools/gerar_fixtures_catalogo.py --somente-expected
 Resultado atual:
 
 ```text
-tests/testar_contrato.py        → 77 fixtures: 65 funcionais + 2 erros de leitura + 10 negativos, 0 falhas
-tools/verificar_consistencia.py → 77 pastas (65 com 4 arquivos + 10 com 2), 0 erros, 0 avisos
+tests/testar_contrato.py        → 79 fixtures: 65 funcionais + 2 erros de leitura + 12 negativos, 0 falhas
+tools/verificar_consistencia.py → 79 pastas (65 com 4 arquivos + 12 com 2), 0 erros, 0 avisos
 ```
 
 ---

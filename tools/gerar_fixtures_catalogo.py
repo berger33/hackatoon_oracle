@@ -1206,6 +1206,19 @@ V_CASES = [
          desc="PDF válido de 10,5 MB: 0,5 MB acima do limite de 10 MB fixado para o MVP (A6).",
          aceita="Rejeitar pelo tamanho antes de qualquer inferência.",
          mb=10.5),
+    dict(id="Limite_Texto_Acima10MB", arquivo="Limite_Texto_Acima10MB.txt", kind="big_txt",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="Texto de 10,5 MB no envelope JSON: o limite de 10 MB (A6) vale para "
+              "documento_texto, não só para upload de arquivo.",
+         aceita="Rejeitar pelo tamanho antes de qualquer inferência.",
+         mb=10.5),
+    dict(id="Limite_Paginas_21_Digitalizado", arquivo="Limite_Paginas_21_Digitalizado.pdf",
+         kind="paginas_scan",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="PDF digitalizado (só imagem) de 21 páginas: a contagem de páginas não pode "
+              "depender da camada de texto, senão o arquivo passaria por 1 página e iria para OCR.",
+         aceita="Rejeitar pela contagem de páginas antes de rasterizar ou chamar o modelo.",
+         paginas=21),
     dict(id="Limite_Paginas_21", arquivo="Limite_Paginas_21.pdf", kind="paginas",
          http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
          desc="PDF válido de 21 páginas: uma acima do limite de 20 páginas fixado para o MVP (A6).",
@@ -1456,6 +1469,65 @@ def image_only_pdf(jpg_path, pdf_path):
     c.save()
 
 
+def imagem_apenas_multipagina(pdf_path, out_path, dpi=110, qualidade=78):
+    """PDF com uma imagem por página e nenhuma camada de texto (várias páginas).
+
+    Serve ao caso `Limite_Paginas_21_Digitalizado`: um laudo digitalizado com
+    mais páginas do que o limite. A contagem de páginas não pode depender da
+    camada de texto — se depender, este arquivo passaria por "1 página" e
+    seguiria para o OCR.
+    """
+    from reportlab.lib.utils import ImageReader
+    doc = fitz.open(pdf_path)
+    tmp = tempfile.mktemp(suffix=".jpg")
+    c = canvas.Canvas(out_path, pagesize=(W, H), invariant=1)
+    for page in doc:
+        pix = page.get_pixmap(dpi=dpi)
+        img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+        img.save(tmp, "JPEG", quality=qualidade)
+        escala = min(W / img.size[0], H / img.size[1])
+        w, h = img.size[0] * escala, img.size[1] * escala
+        c.drawImage(ImageReader(tmp), (W - w) / 2, (H - h) / 2, width=w, height=h)
+        c.showPage()
+    c.save()
+    doc.close()
+    os.unlink(tmp)
+
+
+def preencher_texto_ate(path, mb):
+    """Escreve um TXT com exatamente `mb` MiB, em registros de evolução.
+
+    É o mesmo corte dos 10 MB, mas pelo caminho `documento_texto` do envelope
+    JSON — que nenhum caso testava.
+    """
+    alvo = int(mb * 1024 * 1024)
+    fid = os.path.splitext(os.path.basename(path))[0]
+    # a linha de separador fica em variável: escrever `f"...\n" "=" * 78`
+    # concatenaria os literais ANTES de multiplicar, repetindo o cabeçalho 78×
+    separador = "=" * 78
+    cabecalho = (
+        f"MediFlow · DOCUMENTO FICTÍCIO de teste de limite de tamanho\n"
+        f"Fixture: {fid}\n"
+        f"{separador}\n"
+        "Histórico clínico exportado do sistema — dados sintéticos, sem paciente real.\n"
+        "Este arquivo existe para provar que o limite de 10 MB (decisão A6) vale\n"
+        "também para o texto enviado no envelope JSON, não só para o upload.\n"
+        f"{separador}\n\n"
+    ).encode("utf-8")
+    registro = ("Registro {n:07d} · Evolução: paciente em acompanhamento ambulatorial, "
+                "sem sinais de alerta neste registro.\n").encode("utf-8")
+    with open(path, "wb") as f:
+        f.write(cabecalho)
+        n = 0
+        while True:
+            n += 1
+            bloco = registro.replace(b"{n:07d}", f"{n:07d}".encode())
+            if f.tell() + len(bloco) >= alvo:
+                f.write(b" " * (alvo - f.tell() - 1) + b"\n")
+                break
+            f.write(bloco)
+
+
 def degrade_strong(pdf_path, jpg_path, mode="scan"):
     """Degrada o miolo do documento mantendo o cabeçalho de identificação legível.
 
@@ -1593,11 +1665,11 @@ def preencher_ate(path, mb):
         f.write(base[:corte] + prefixo + b"0" * zeros + sufixo + base[corte:])
 
 
-def case_paginado(n_paginas):
+def case_paginado(n_paginas, fid=None):
     """Relatório de alta sintético com `n_paginas` páginas (uma seção por página)."""
     paciente = "Joana Ribeiro Vasconcelos" if n_paginas > 20 else "Ademir Vilanova Prado"
     return dict(
-        id=f"Limite_Paginas_{n_paginas}",
+        id=fid or f"Limite_Paginas_{n_paginas}",
         titulo="RELATÓRIO DE ALTA HOSPITALAR",
         sub=f"Relatório de internação com {n_paginas} páginas",
         meta=[("Paciente", paciente), ("Idade", "68 anos"),
@@ -1747,6 +1819,15 @@ def build_negative(case):
     elif kind == "paginas":
         # PDF válido com uma página a mais do que o limite (20 páginas, decisão A6).
         draw_case_paged(case_paginado(case.get("paginas", 21)), path)
+    elif kind == "big_txt":
+        preencher_texto_ate(path, case.get("mb", 10.5))
+    elif kind == "paginas_scan":
+        # relatório de 21 páginas convertido em PDF só de imagens: sem camada de
+        # texto, a contagem de páginas tem de vir do PDF, não da extração.
+        tmp = tempfile.mktemp(suffix=".pdf")
+        draw_case_paged(case_paginado(case.get("paginas", 21), fid=case["id"]), tmp)
+        imagem_apenas_multipagina(tmp, path)
+        os.unlink(tmp)
     elif kind == "fakemime":
         img = Image.new("RGB", (900, 1200), (250, 250, 248))
         d2 = ImageDraw.Draw(img)

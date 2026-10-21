@@ -66,6 +66,8 @@ Limite_Paginas_20,Limite,RELATORIO_ALTA_INTERNACAO,PDF_20PAGINAS,ROTINA,PRONTUAR
 Limite_Paginas_21,Limite,-,PDF_21PAGINAS,ERRO,-,413 ARQUIVO_MAIOR_QUE_LIMITE,-,NAO,RF-03/A6,OBRIGATORIO,NAO,Documento de 21 páginas: uma acima do limite de 20 páginas (A6).
 Limite_Formato_Png,Limite,RECEITUARIO_MEDICO,PNG,ROTINA,FARMACIA_HOSPITALAR,PROCESSADO,NAO,NAO,RF-02/A6,RECOMENDADO,NAO,Imagem PNG: formato da lista aceita no MVP (A6).
 Limite_Formato_Webp,Limite,LAUDO_EXAME_IMAGEM,WEBP,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/A6,RECOMENDADO,NAO,Imagem WEBP: formato da lista aceita no MVP (A6).
+Limite_Texto_Acima10MB,Limite,-,TEXTO_10_5MB,ERRO,-,413 ARQUIVO_MAIOR_QUE_LIMITE,-,NAO,RF-03/A6,OBRIGATORIO,NAO,"Texto de 10,5 MB no envelope JSON: o limite de 10 MB (A6) vale para documento_texto, não só para o upload de arquivo."
+Limite_Paginas_21_Digitalizado,Limite,-,PDF_21PAGINAS_DIGITALIZADO,ERRO,-,413 ARQUIVO_MAIOR_QUE_LIMITE,-,NAO,RF-03/A6,OBRIGATORIO,NAO,"PDF digitalizado de 21 páginas: a contagem de páginas não pode depender da camada de texto."
 Escaneado_Receituario_PdfDigitalizado,Escaneado,RECEITUARIO_MEDICO,PDF_DIGITALIZADO,ROTINA,FARMACIA_HOSPITALAR,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Receita impressa escaneada em PDF (com camada de imagem), rotina."
 Escaneado_LaudoLaboratorial_PdfDigitalizado,Escaneado,LAUDO_EXAME_LABORATORIAL,PDF_DIGITALIZADO,ROTINA,PRONTUARIO_ELETRONICO,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Laudo laboratorial escaneado em PDF, rotina."
 Escaneado_Guia_PdfDigitalizado,Escaneado,GUIA_PROCEDIMENTO,PDF_DIGITALIZADO,ROTINA,AUDITORIA_AUTORIZACOES,PROCESSADO,NAO,NAO,RF-02/RF-04,RECOMENDADO,NAO,"Guia de procedimento escaneada em PDF, rotina."

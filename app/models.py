@@ -2,7 +2,7 @@
 
 Este é o **único** contrato do projeto: o payload que o agente devolve, os
 enums aceitos, as regras de decisão e o formato de erro. Tudo o que a equipe
-chamar de "JSON de triagem" tem de validar aqui — inclusive os 77
+chamar de "JSON de triagem" tem de validar aqui — inclusive os 79
 `expected.json` de `tests/fixtures/`.
 
 Regras de negócio implementadas (RF-16, RF-18, RF-21, §5.3, §5.4, §8.2):
@@ -141,7 +141,7 @@ def calcular_score_extracao(campos_ausentes, campos_incertos, conflitos) -> floa
     incerto e 0,3/0,2/0,1 por conflito ALTA/MEDIA/BAIXA; piso 0.
 
     É a regra que o extrator tem de usar para produzir `score_extracao`. O
-    validador não recalcula o valor recebido: os 77 casos aprovados trazem
+    validador não recalcula o valor recebido: os 79 casos aprovados trazem
     scores ilustrativos, e sobrescrevê-los aqui mudaria o aceite do MVP.
     """
     peso = sum(PESO_CONFLITO.get(getattr(c, "gravidade", "ALTA"), 0.3) for c in conflitos)

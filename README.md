@@ -90,14 +90,14 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   ├── epts/                                # EPTs: um procedimento por caso da especificação funcional
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
-│       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 77 casos, bloco por bloco
+│       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 79 casos, bloco por bloco
 │       ├── Mapa_de_Documentos_de_Teste_MediFlow.pdf
 │       └── AUDITORIA_2026-10-20.md              # auditoria de consistência: CRM-SP, datas, pacote, verificadores
 ├── tests/
-│   ├── testar_contrato.py                       # valida os 77 expected.json no contrato
+│   ├── testar_contrato.py                       # valida os 79 expected.json no contrato
 │   └── fixtures/
 │       ├── README.md                            # como ler os nomes e os blocos
-│       ├── manifest.csv                         # 77 linhas: uma por documento
+│       ├── manifest.csv                         # 79 linhas: uma por documento
 │       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
 │       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
 ├── tools/
@@ -119,7 +119,7 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 ```bash
 python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pillow
 
-python3 tests/testar_contrato.py             # 77/77 expected.json válidos e estáveis
+python3 tests/testar_contrato.py             # 79/79 expected.json válidos e estáveis
 python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
 python3 tools/verificar_epts.py              # EPTs: seções, IDs, fixtures citadas, cobertura das seções
 python3 tools/gerar_epts_pdf.py              # docs/epts/EPTs_MediFlow.pdf

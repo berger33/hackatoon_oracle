@@ -88,15 +88,23 @@ com alerta, e termina em `PROCESSADO`. Revisão é consequência de **ambiguidad
 Verificação: `tests/testar_contrato.py` 67/67 e `tools/verificar_consistencia.py`
 com 0 erros.
 
-> **21/10/2026, mais tarde — a suíte saiu de 67 para 77 fixtures.** As três
+> **21/10/2026, mais tarde — a suíte saiu de 67 para 79 fixtures.** As três
 > regras acima ficaram explícitas no contrato, mas nenhum caso as exercitava em
 > isolamento, e não havia **nenhum** teste de tamanho acima do limite nem de
-> documento com mais páginas do que o permitido. Entraram 10 casos:
+> documento com mais páginas do que o permitido. Entraram 12 casos:
 > `Conflito_Gravidade_Media`, `Conflito_Gravidade_Baixa` (A1),
 > `Borda_Prioridade_NaoIdentificada` (A4), `Borda_Urgencia_Indeterminada` (A5) e
 > o bloco **Limite** — `Limite_Tamanho_10MB`, `Limite_Tamanho_Acima10MB`,
-> `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Formato_Png` e
-> `Limite_Formato_Webp` (A6). Detalhe no catálogo.
+> `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Paginas_21_Digitalizado`,
+> `Limite_Formato_Png`, `Limite_Formato_Webp` e `Limite_Texto_Acima10MB` (A6).
+> Os dois últimos fecham as bordas que faltavam: o limite de 10 MB também vale
+> para o `documento_texto` do envelope JSON, e a contagem de páginas não pode
+> depender da camada de texto do PDF. Detalhe no catálogo.
+>
+> Ao regerar os fixtures, o `justificativa_roteamento` de **11 casos existentes**
+> mudou de texto (passa a dizer "conflitos impeditivos" e a citar prioridade não
+> identificada e urgência indeterminada). Nenhum status, destino ou revisão
+> mudou: continua 0 falha nos dois verificadores.
 
 Os PDFs originais da raiz do repositório continuam na versão enviada pela
 equipe; as cópias atualizadas estão nesta pasta e no ZIP. As EPTs

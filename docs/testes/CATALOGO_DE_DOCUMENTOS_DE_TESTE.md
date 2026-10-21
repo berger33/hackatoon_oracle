@@ -2,7 +2,7 @@
 
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
 **Versão:** 1.2 — 21/10/2026  
-**Atualização desta versão:** +10 fixtures (67 → 77) cobrindo as decisões A1, A3, A4, A5 e A6 — gravidade do conflito, prioridade e urgência indefinidas e os limites operacionais (10 MB, 20 páginas, PNG e WEBP).
+**Atualização desta versão:** +12 fixtures (67 → 79) cobrindo as decisões A1, A3, A4, A5 e A6 — gravidade do conflito, prioridade e urgência indefinidas e os limites operacionais (10 MB, 20 páginas, PNG, WEBP e texto).
 **Base documental:** `Projeto_oracle.pdf`, `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` e `MediFlow_Especificacao_Funcional_v1.0.pdf`
 **Manifesto executável:** [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv)
 
@@ -16,16 +16,16 @@ Você não precisa de um documento por especialidade médica. Precisa de **um do
 | --- | ---: | --- |
 | **Kit de demonstração** | **12 arquivos** ✅ | Cobre os 3 cenários obrigatórios, os 5 destinos, os 3 formatos e as 8 classes de tipo. É o mínimo defensável para o pitch. |
 | **Kit recomendado** | **57 arquivos** ✅ | Cobre tipos × formatos, ausência de campos, limiar, conflitos, urgência simultânea, qualidade de imagem e negativos técnicos. É o conjunto que eu levaria para a banca. |
-| **Kit completo** | **77 arquivos** ✅ | Acrescenta PDF digitalizado para todos os tipos, os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS) e o bloco Limite (tamanho, páginas e formato). |
+| **Kit completo** | **79 arquivos** ✅ | Acrescenta PDF digitalizado para todos os tipos, os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS) e o bloco Limite (tamanho, páginas, formato e texto). |
 | **Simulações operacionais** | **8 cenários, 0 documentos novos** | Falhas de Gemini e de OCI, testadas por stub/flag reutilizando os documentos acima. Timeout de 60 s e 2 retries (A6). |
 
 > **Mínimo literal dos critérios de aceite (seção 16 da especificação): 8 arquivos.** Três rendições do mesmo conteúdo (texto, PDF e imagem) + cinco variações de campo ausente. Esse número passa na leitura literal, mas não prova os 5 destinos nem os 8 tipos — por isso não recomendo usá-lo como meta.
 
-**Distribuição do kit completo (77):** PDF digital, PDF digitalizado, imagem (JPG/PNG/WEBP) e texto, mais os arquivos inválidos. Por cenário: rotina, urgência, ambiguidade e erro — a contagem exata está no manifesto e no mapa em PDF, ambos gerados a partir dele.
+**Distribuição do kit completo (79):** PDF digital, PDF digitalizado, imagem (JPG/PNG/WEBP) e texto, mais os arquivos inválidos. Por cenário: rotina, urgência, ambiguidade e erro — a contagem exata está no manifesto e no mapa em PDF, ambos gerados a partir dele.
 
-> **Status: 77 de 77 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`). O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 65 casos × 4 arquivos + 10 negativos técnicos × 2. O mapa visual dos 77 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+> **Status: 79 de 79 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`). O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 65 casos × 4 arquivos + 12 negativos técnicos × 2. O mapa visual dos 79 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
 >
-> **Três arquivos grandes ficam fora do git** (`.gitignore`) e são recriados por `tools/gerar_fixtures_catalogo.py`: `Validacao_ArquivoGrande.pdf` (25 MB), `Limite_Tamanho_10MB.pdf` (10 MB) e `Limite_Tamanho_Acima10MB.pdf` (10,5 MB). Sem o gerador, o verificador avisa — não erra.
+> **Quatro arquivos grandes ficam fora do git** (`.gitignore`) e são recriados por `tools/gerar_fixtures_catalogo.py`: `Validacao_ArquivoGrande.pdf` (25 MB), `Limite_Tamanho_10MB.pdf` (10 MB), `Limite_Tamanho_Acima10MB.pdf` (10,5 MB) e `Limite_Texto_Acima10MB.txt` (10,5 MB). Sem o gerador, o verificador avisa — não erra.
 
 ---
 
@@ -74,9 +74,9 @@ Um mesmo arquivo pode servir a vários **casos de teste** (submissão 202, polli
 | **Simultaneo** | Urgência + ambiguidade simultâneas | 2 | 45 |
 | **Qualidade** | Ilegibilidade e PDFs especiais | 8 | 53 |
 | **Validacao** | Negativos técnicos de entrada | 8 | 61 |
-| **Limite** | Limites operacionais: tamanho, páginas e formato (A6) | 6 | 67 |
-| **Escaneado** | PDF digitalizado para os 6 tipos restantes | 6 | 73 |
-| **Diferencial** | Itens opcionais | 4 | **77** |
+| **Limite** | Limites operacionais: tamanho, páginas, formato e texto (A6) | 8 | 69 |
+| **Escaneado** | PDF digitalizado para os 6 tipos restantes | 6 | 75 |
+| **Diferencial** | Itens opcionais | 4 | **79** |
 
 ---
 
@@ -202,7 +202,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Diferencial_HemogramaCompleto` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Tabela de hemograma com 20 analitos, unidades e valores de referência. |
 | `Diferencial_GuiaTiss` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia no formato TISS com códigos de procedimento e autorização. |
 
-#### Bloco Limite — limites operacionais (6) · decisão A6 de 21/10/2026
+#### Bloco Limite — limites operacionais (8) · decisão A6 de 21/10/2026
 
 Até aqui o catálogo não tinha **nenhum** caso de tamanho acima do limite nem de documento com mais páginas do que o permitido — os dois únicos casos que chegavam perto (`Validacao_ArquivoGrande` e `Qualidade_Pdf_Multipagina`) diziam "limite pendente na spec". Com o limite fixado em **10 MB e 20 páginas**, o bloco abaixo prova o corte dos dois lados, inclusive na fronteira.
 
@@ -214,6 +214,8 @@ Até aqui o catálogo não tinha **nenhum** caso de tamanho acima do limite nem 
 | `Limite_Paginas_21` | — | PDF_21PAGINAS | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Relatório de **21 páginas**: uma acima do limite. Rejeitar antes de qualquer inferência. |
 | `Limite_Formato_Png` | RECEITUARIO_MEDICO | PNG | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Imagem **PNG**: formato da lista aceita. A pasta tem os 3 arquivos padrão + o `.png` sob teste, declarado em `entrada.renditions`. |
 | `Limite_Formato_Webp` | LAUDO_EXAME_IMAGEM | WEBP | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Imagem **WEBP**: formato da lista aceita. Mesma convenção do caso PNG. |
+| `Limite_Texto_Acima10MB` | — | TEXTO_10_5MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Texto de **10,5 MB** no envelope JSON: o limite de 10 MB vale para `documento_texto`, não só para o upload de arquivo. Fora do git; o gerador recria. |
+| `Limite_Paginas_21_Digitalizado` | — | PDF_21PAGINAS_DIGITALIZADO | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | PDF **digitalizado** (só imagem) de **21 páginas**: a contagem de páginas não pode depender da camada de texto, senão o arquivo passaria por 1 página e seguiria para OCR. |
 
 **Convenção dos casos de formato:** a pasta continua com `{ID}.txt`, `{ID}.pdf`, `{ID}.jpg` e `expected.json`, e ganha o arquivo no formato sob teste. O verificador lê a lista de arquivos esperados de `entrada.renditions`, não do nome da pasta — por isso não há exceção à regra dos 4 arquivos.
 
@@ -268,8 +270,8 @@ O documento sozinho não é um teste. Para cada fixture funcional, produza tamb�
 
 | Artefato | Quantidade | Formato |
 | --- | ---: | --- |
-| Documento de entrada | 77 | TXT / PDF / JPG (+ PNG e WEBP nos casos de formato) — mais os 10 arquivos inválidos dos blocos Validacao e Limite |
-| **Saída esperada** (`expected.json`) | 77 | `resposta_esperada` no formato do contrato: tipo, prioridade, destinos, revisão, qualidade e status |
+| Documento de entrada | 79 | TXT / PDF / JPG (+ PNG e WEBP nos casos de formato) — mais os 12 arquivos inválidos dos blocos Validacao e Limite |
+| **Saída esperada** (`expected.json`) | 79 | `resposta_esperada` no formato do contrato: tipo, prioridade, destinos, revisão, qualidade e status |
 | **Manifesto** | 1 | `tests/fixtures/manifest.csv` (este catálogo, em formato de máquina) |
 
 O `expected.json` segue o schema `mediflow.fixture/2`:
@@ -278,7 +280,7 @@ O `expected.json` segue o schema `mediflow.fixture/2`:
 | --- | ---: | --- |
 | `funcional` | 65 | `TriagemMediFlow` completa |
 | `erro_processamento` | 2 | `TriagemMediFlow` com `status=ERRO_PROCESSAMENTO` e `erro.codigo` |
-| `negativo_tecnico` | 10 | `ErroResposta` (HTTP + código funcional) |
+| `negativo_tecnico` | 12 | `ErroResposta` (HTTP + código funcional) |
 
 O contrato executável é [`app/models.py`](../../app/models.py); a explicação em português é [`CONTRATO_DE_DADOS.md`](CONTRATO_DE_DADOS.md).
 
@@ -309,7 +311,7 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 | Limite de tamanho, páginas, MIME, timeout e retry | ~~`Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina` não têm limite para validar~~ | **Resolvido em 21/10/2026 (decisão A6, Anexo A.5 da EF).** 10 MB por arquivo, até 20 páginas, `PDF/JPG/PNG/WEBP/TXT`, timeout de 60 s no Gemini, 2 retentativas com backoff. O limite é inclusivo: 10 MB e 20 páginas passam; 10,5 MB e 21 páginas não. Os casos `Limite_*` cobrem as quatro bordas. |
 | Contrato final do upload (multipart × JSON) | `Validacao_SemConteudo`, `Validacao_EnvelopeVazio`, `Validacao_MimeInvalido` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
 | Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_AltoRisco` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
-| **Urgência isolada exige revisão?** | **Resolvido em 21/10/2026.** A §8.2 da EF dizia "revisão obrigatória" para urgência; o exemplo do `Projeto_oracle.pdf` mostra `status: processado` e `requer_auditoria_humana: false`. | **Decisão: seguir o brief.** Urgência isolada → `PROCESSADO`, sem revisão humana, com alerta e um único destino (`FILA_URGENCIA_MEDICA`). `FILA_REVISAO_HUMANA` só entra com ambiguidade — inclusive quando ela coexiste com a urgência (nesse caso, os dois destinos). Contrato e os 77 fixtures já refletem essa decisão; a EF e a Análise de Requisitos serão atualizadas pela equipe. |
+| **Urgência isolada exige revisão?** | **Resolvido em 21/10/2026.** A §8.2 da EF dizia "revisão obrigatória" para urgência; o exemplo do `Projeto_oracle.pdf` mostra `status: processado` e `requer_auditoria_humana: false`. | **Decisão: seguir o brief.** Urgência isolada → `PROCESSADO`, sem revisão humana, com alerta e um único destino (`FILA_URGENCIA_MEDICA`). `FILA_REVISAO_HUMANA` só entra com ambiguidade — inclusive quando ela coexiste com a urgência (nesse caso, os dois destinos). Contrato e os 79 fixtures já refletem essa decisão; a EF e a Análise de Requisitos serão atualizadas pela equipe. |
 | Autenticação e autorização | `403` e consulta por terceiros não têm contrato | Fora do MVP; se entrar, criar fixtures de acesso negado |
 | Política de retenção | Não afeta o conteúdo, mas afeta o teste de persistência | Definir antes de qualquer dado real (que não deve existir no MVP) |
 | Meta de latência e precisão | depende do primeiro pipeline | Medir e então fixar a meta |
@@ -357,7 +359,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 
 ## 12. Como produzir (fluxo de 6 passos)
 
-> **Os 77 fixtures já estão produzidos.** Para recriar: `python3 tools/gerar_fixtures_demo.py` (12 casos), `python3 tools/gerar_fixtures_catalogo.py` (65 casos: 55 funcionais + 10 negativos técnicos) e `python3 tools/gerar_mapa_documentos.py` (este catálogo em PDF). Depois, `python3 tools/verificar_consistencia.py` e `python3 tests/testar_contrato.py`.
+> **Os 79 fixtures já estão produzidos.** Para recriar: `python3 tools/gerar_fixtures_demo.py` (12 casos), `python3 tools/gerar_fixtures_catalogo.py` (67 casos: 55 funcionais + 12 negativos técnicos) e `python3 tools/gerar_mapa_documentos.py` (este catálogo em PDF). Depois, `python3 tools/verificar_consistencia.py` e `python3 tests/testar_contrato.py`.
 
 1. **Escolha a fonte**: escreva o conteúdo clínico em `source/{ID}.md`, com dados fictícios e marca d'água.
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.
@@ -382,7 +384,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 | 8. Score < 0,85 revisa; == 0,85 não revisa | `Borda_Score_084`, `Borda_Score_085` |
 | 8a. Prioridade/urgência indefinidas revisam | `Borda_Prioridade_NaoIdentificada`, `Borda_Urgencia_Indeterminada` (A4, A5) |
 | 8b. Conflito: MÉDIA revisa, BAIXA só registra | `Conflito_Gravidade_Media`, `Conflito_Gravidade_Baixa` (A1) |
-| 8c. Limites de tamanho, páginas e formato | `Limite_Tamanho_10MB`, `Limite_Tamanho_Acima10MB`, `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Formato_Png`, `Limite_Formato_Webp` (A6) |
+| 8c. Limites de tamanho, páginas, formato e texto | `Limite_Tamanho_10MB`, `Limite_Tamanho_Acima10MB`, `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Paginas_21_Digitalizado`, `Limite_Formato_Png`, `Limite_Formato_Webp`, `Limite_Texto_Acima10MB` (A6) |
 | 9. Campos ausentes não inferidos | `Ausencia_*`, `Matriz_NaoIdentificado_*` |
 | 10. Persistência no OCI informada | qualquer fixture + simulação de falha do OCI |
 | 11. Histórico ordenado e JSON validado | Qualquer fixture funcional + `GET /historico` |
@@ -400,7 +402,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 - **Um caso urgente para cada um dos 8 tipos.** Dois ou três já provam a regra; o resto é custo sem cobertura nova.
 - **Integrações reais** com prontuário, farmácia, operadora, TISS/TUSS, Slack ou e-mail. Os destinos são lógicos/simulados no MVP (§3.2).
 - **Documentos com dados reais ou "anonimizados".** O MVP inteiro usa dados fictícios.
-- **77 arquivos antes de codificar.** Comece pelos 12 do kit de demonstração; o restante entra em paralelo ao desenvolvimento.
+- **79 arquivos antes de codificar.** Comece pelos 12 do kit de demonstração; o restante entra em paralelo ao desenvolvimento.
 
 ---
 
@@ -409,4 +411,4 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 - `Projeto_oracle.pdf` — brief do hackathon, formatos, entregáveis e checklist de avaliação.
 - `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` — visão geral, requisitos RF/RNF/RN e decisões do time.
 - `MediFlow_Especificacao_Funcional_v1.0.pdf` — §5 (vocabulário), §6 (fluxo), §7 (RF-01 a RF-30), §8 (regras e tabela de decisão), §9 (modelo de dados), §10 (API), §12 (erros), §16 (critérios de aceite) e §15 (pendências).
-- [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv) — os 77 fixtures em formato de máquina.
+- [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv) — os 79 fixtures em formato de máquina.
