@@ -216,8 +216,10 @@ def verifica_expected(manifest, quiet):
             if c or resp.get("dados_extraidos"):
                 add_erro(f"{fid}: erro de processamento não pode ter dados extraídos")
 
+        # arquivos do .gitignore (os três PDFs grandes) já viram aviso acima
+        nao_versionados_rel = {f"{kind}/{fid}/{n}" for n in NAO_VERSIONADOS.get(fid, ())}
         for k, rel in (e.get("entrada", {}).get("renditions") or {}).items():
-            if not os.path.exists(os.path.join(BASE, rel)):
+            if not os.path.exists(os.path.join(BASE, rel)) and rel not in nao_versionados_rel:
                 add_erro(f"{fid}: rendition {k} aponta para arquivo inexistente ({rel})")
     if not quiet:
         print(f"   {info['pastas']} expected.json lidos · {com_erro} inválidos")
