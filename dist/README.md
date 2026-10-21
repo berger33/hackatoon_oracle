@@ -1,8 +1,8 @@
 # Pacote para download
 
-Arquivo: `hackatoon_oracle-mediflow-completo.zip` (14 MB · 276 arquivos)
+Arquivo: `hackatoon_oracle-mediflow-completo.zip` (15 MB · 318 arquivos)
 
-Conteúdo: README, documentação, os 67 fixtures (TXT + PDF + JPG + `expected.json`, em pastas com nome por extenso como `Matriz_Guia_Imagem`),
+Conteúdo: README, documentação, os 77 fixtures (TXT + PDF + JPG + `expected.json`, em pastas com nome por extenso como `Matriz_Guia_Imagem`),
 os 3 PDFs de origem do hackathon, os geradores em `tools/` e o `LEIA-ME.txt`.
 
 **Download direto:**

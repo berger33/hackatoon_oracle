@@ -72,9 +72,9 @@
     "erro": null
   },
   "assercoes": [
-    "PDF com 6+ páginas é aceito",
+    "PDF com 7 páginas é aceito: está dentro do limite de 20 páginas (A6)",
     "Conteúdo completo é considerado na extração",
-    "Limite de páginas ainda pendente na spec (§15)"
+    "Destino PRONTUARIO_ELETRONICO, sem revisão"
   ],
   "observacoes": ""
 }

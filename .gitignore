@@ -11,9 +11,12 @@ venv/
 keys/
 *.pem
 
-# Fixture pesada: regerada por tools/gerar_fixtures_catalogo.py
-# (25 MB; abaixo do limite de 100 MB do GitHub, mas não precisa engordar o histórico)
+# Fixtures pesadas (testes de limite de tamanho): regeradas por
+# tools/gerar_fixtures_catalogo.py. Somam ~46 MB; abaixo do limite de 100 MB do
+# GitHub, mas não precisam engordar o histórico.
 tests/fixtures/catalogo/Validacao_ArquivoGrande/Validacao_ArquivoGrande.pdf
+tests/fixtures/catalogo/Limite_Tamanho_10MB/Limite_Tamanho_10MB.pdf
+tests/fixtures/catalogo/Limite_Tamanho_Acima10MB/Limite_Tamanho_Acima10MB.pdf
 
 # Sistema
 .DS_Store

@@ -3,7 +3,7 @@
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
 **Código:** [`app/models.py`](../../app/models.py) (Pydantic 2)
 **Data:** 20/10/2026
-**Escopo:** o contrato que os 67 `expected.json` documentam e validam.
+**Escopo:** o contrato que os 77 `expected.json` documentam e validam.
 
 ---
 
@@ -15,10 +15,10 @@ O contrato responde a três perguntas, e só a estas:
 2. **Quais valores são válidos** em cada campo controlado — sem texto livre, sem acento, sem espaço.
 3. **Como a decisão é tomada** a partir dos fatos extraídos (score, campos ausentes, incertos, conflitos, prioridade).
 
-Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 67 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
+Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 77 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
 
 ```bash
-python3 tests/testar_contrato.py        # 67/67 no contrato
+python3 tests/testar_contrato.py        # 77/77 no contrato
 python3 tools/verificar_consistencia.py # estrutura, manifesto, duplicidade
 ```
 
@@ -98,7 +98,7 @@ Notas de modelagem:
 | `medico.crm.uf` | sempre `SP`: todas as fixtures acontecem no Hospital Aurora, em São Paulo, e o CRM acompanha a UF de atuação |
 | `dados_extraidos.urgencia` | declara o que o documento diz (`SIM`/`NAO`/`INDETERMINADO`), em vez de inferir do texto |
 | `qualidade.campos_ausentes` / `campos_incertos` | vêm do extrator; o validador **não recalcula** (ver §5) |
-| `qualidade.score_extracao` | produzido pelo extrator com a fórmula do §5 (`calcular_score_extracao`); o validador não o recalcula, porque os 67 casos aprovados trazem scores ilustrativos |
+| `qualidade.score_extracao` | produzido pelo extrator com a fórmula do §5 (`calcular_score_extracao`); o validador não o recalcula, porque os 77 casos aprovados trazem scores ilustrativos |
 | `qualidade.score_combinado` | sempre `min(score_classificacao, score_extracao)` — recalculado pelo validador |
 | `decisao_roteamento.destino_principal` | derivado: é sempre `destinos[0]` |
 | `armazenamento_oci` | opcional: persistência é etapa posterior e pode falhar (`ERRO_PERSISTENCIA`) |
@@ -154,7 +154,15 @@ A `FILA_REVISAO_HUMANA` só entra quando existe, além da urgência, uma ambigui
 
 A `GRAVIDADES_IMPEDITIVAS` e o `calcular_score_extracao` ficam em `app/models.py`; a regra também está registrada no Anexo A da Especificação Funcional v1.0 (A.1 a A.7).
 
-**Nenhuma das três primeiras muda o resultado dos 67 casos aprovados**, e isso foi medido: os 4 conflitos das fixtures são todos `ALTA`, e os 8 casos `NAO_IDENTIFICADA` e os 8 `INDETERMINADO` já chegavam a `EM_REVISAO` por outros gatilhos. O contrato fica mais explícito sem reabrir o aceite.
+**As duas primeiras eram invisíveis nos 67 casos originais** — e é por isso que o catálogo ganhou 3 fixtures:
+
+| Regra | Situação nos 67 casos | Caso criado para prová-la |
+| --- | --- | --- |
+| A1 (gravidade) | todos os conflitos existentes eram `ALTA`; nada distinguia `MEDIA` de `BAIXA` | `Conflito_Gravidade_Media` (revisa) e `Conflito_Gravidade_Baixa` (não revisa) |
+| A4 (`NAO_IDENTIFICADA`) | os 8 casos `NAO_IDENTIFICADA` já revisavam por outros gatilhos | `Borda_Prioridade_NaoIdentificada` — prioridade indefinida como único gatilho |
+| A5 (`INDETERMINADO`) | os 8 casos `INDETERMINADO` já revisavam por outros gatilhos | `Borda_Urgencia_Indeterminada` — urgência indeterminada como único gatilho |
+
+Medição: com `GRAVIDADES_IMPEDITIVAS = {ALTA, MEDIA, BAIXA}` o caso `Conflito_Gravidade_Baixa` passaria a `EM_REVISAO`; com `{ALTA}` o caso `Conflito_Gravidade_Media` passaria a `PROCESSADO`; sem A4 e A5 os dois casos de borda passariam a `PROCESSADO`. Os três novos casos pegam a mudança — antes deles, a suíte não detectaria nenhuma regressão em A1, A4 ou A5.
 
 ---
 
@@ -213,14 +221,14 @@ python3 tools/gerar_fixtures_catalogo.py --somente-expected
 | Comando | O que garante |
 | --- | --- |
 | `python3 tests/testar_contrato.py` | cada `expected.json` valida no modelo certo e é **ponto fixo**: rodar as regras de novo devolve o mesmo JSON |
-| `python3 tools/verificar_consistencia.py` | estrutura (4/2 arquivos por pasta), `manifest.csv` × expected, legibilidade de PDF/JPG/TXT, duplicidade |
+| `python3 tools/verificar_consistencia.py` | estrutura (arquivos esperados lidos de `entrada.renditions`), `manifest.csv` × expected, legibilidade de PDF/JPG/PNG/WEBP/TXT, duplicidade |
 | `python3 tools/gerar_mapa_documentos.py` | regera o mapa em PDF a partir do manifesto |
 
 Resultado atual:
 
 ```text
-tests/testar_contrato.py        → 67 fixtures: 57 funcionais + 2 erros de leitura + 8 negativos, 0 falhas
-tools/verificar_consistencia.py → 67 pastas (59 com 4 arquivos + 8 com 2), 0 erros, 0 avisos
+tests/testar_contrato.py        → 77 fixtures: 65 funcionais + 2 erros de leitura + 10 negativos, 0 falhas
+tools/verificar_consistencia.py → 77 pastas (65 com 4 arquivos + 10 com 2), 0 erros, 0 avisos
 ```
 
 ---

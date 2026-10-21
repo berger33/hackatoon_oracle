@@ -80,12 +80,23 @@ com alerta, e termina em `PROCESSADO`. Revisão é consequência de **ambiguidad
   21/10/2026
 * `tools/atualizar_pdfs.py` — gerador dos dois PDFs (substitui
   `tools/atualizar_pdfs_urgencia.py`)
-* `tests/fixtures/` — **inalterados**: A1, A4 e A5 não mudam nenhum dos 67 casos
-  aprovados (os 4 conflitos das fixtures são `ALTA`; os 8 `NAO_IDENTIFICADA` e
-  os 8 `INDETERMINADO` já chegavam a `EM_REVISAO` por outros gatilhos)
+* `tests/fixtures/` — inalterados **neste pacote**: A1, A4 e A5 não mudam nenhum
+  dos 67 casos existentes (os 4 conflitos das fixtures são `ALTA`; os 8
+  `NAO_IDENTIFICADA` e os 8 `INDETERMINADO` já chegavam a `EM_REVISAO` por outros
+  gatilhos)
 
 Verificação: `tests/testar_contrato.py` 67/67 e `tools/verificar_consistencia.py`
 com 0 erros.
+
+> **21/10/2026, mais tarde — a suíte saiu de 67 para 77 fixtures.** As três
+> regras acima ficaram explícitas no contrato, mas nenhum caso as exercitava em
+> isolamento, e não havia **nenhum** teste de tamanho acima do limite nem de
+> documento com mais páginas do que o permitido. Entraram 10 casos:
+> `Conflito_Gravidade_Media`, `Conflito_Gravidade_Baixa` (A1),
+> `Borda_Prioridade_NaoIdentificada` (A4), `Borda_Urgencia_Indeterminada` (A5) e
+> o bloco **Limite** — `Limite_Tamanho_10MB`, `Limite_Tamanho_Acima10MB`,
+> `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Formato_Png` e
+> `Limite_Formato_Webp` (A6). Detalhe no catálogo.
 
 Os PDFs originais da raiz do repositório continuam na versão enviada pela
 equipe; as cópias atualizadas estão nesta pasta e no ZIP. As EPTs

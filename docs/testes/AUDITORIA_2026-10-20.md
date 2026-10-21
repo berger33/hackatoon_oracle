@@ -1,5 +1,13 @@
 # Auditoria de consistência — 2026-10-20
 
+> **Retrato de 20/10/2026.** Os números abaixo (67 fixtures, 59 pastas com 4
+> arquivos, 8 negativos) eram os daquela data e não devem ser lidos como estado
+> atual. Em 21/10/2026 a suíte passou a **77 fixtures** (65 funcionais + 2 erros
+> de leitura + 10 negativos técnicos), com o bloco **Limite** e os casos de
+> gravidade, prioridade e urgência indefinidas. Vale hoje o que está no
+> [`manifest.csv`](../../tests/fixtures/manifest.csv) e no
+> [catálogo](CATALOGO_DE_DOCUMENTOS_DE_TESTE.md).
+
 **Escopo:** todo o repositório `berger33/hackatoon_oracle` e todas as suas branches, com foco na regra **CRM de São Paulo** (um hospital, uma UF) em todos os formatos: texto, PDF, imagem, `expected.json`, manifesto, documentação, PDFs de origem e pacote ZIP.
 
 ---

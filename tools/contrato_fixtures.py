@@ -9,7 +9,7 @@ Quem decide status, destinos, revisão e notificação é o contrato. Este módu
    (se não bater, aborta a geração — é assim que uma regra nova quebra o teste);
 3. serializa o `expected.json` no formato `mediflow.fixture/2`.
 
-Assim os 67 arquivos são, por construção, instâncias válidas do contrato.
+Assim os 77 arquivos são, por construção, instâncias válidas do contrato.
 """
 import hashlib
 import re
@@ -133,11 +133,27 @@ def conferir(t, exp, fixture_id):  # noqa: PLR0912 - mensagens explícitas valem
         )
 
 
-def expected_json(fixture_id, exp, base, assercoes, observacoes="", rendicoes=True):
-    """Objeto completo do `expected.json` (payload já calculado pelo contrato)."""
+def expected_json(fixture_id, exp, base, assercoes, observacoes="", rendicoes=True,
+                  rendicoes_extra=None):
+    """Objeto completo do `expected.json` (payload já calculado pelo contrato).
+
+    `rendicoes_extra` declara arquivos além de txt/pdf/jpg — é assim que os
+    casos de formato (PNG, WEBP) documentam qual arquivo está sob teste. A
+    lista é a fonte da verdade para o verificador de consistência.
+    """
     t = payload(fixture_id, exp)
     conferir(t, exp, fixture_id)
     corpo = t.model_dump(mode="json", exclude_none=False)
+
+    renditions = {
+        "txt": f"{base}/{fixture_id}/{fixture_id}.txt",
+        "pdf": f"{base}/{fixture_id}/{fixture_id}.pdf",
+        "jpg": f"{base}/{fixture_id}/{fixture_id}.jpg",
+    }
+    formatos = ["TXT", "PDF", "JPG"]
+    for chave, sufixo in (rendicoes_extra or {}).items():
+        renditions[chave] = f"{base}/{fixture_id}/{fixture_id}.{sufixo}"
+        formatos.append(sufixo.upper())
 
     out = {
         "schema": SCHEMA,
@@ -145,12 +161,8 @@ def expected_json(fixture_id, exp, base, assercoes, observacoes="", rendicoes=Tr
         "documento_ficticio": True,
         "tipo_de_teste": "erro_processamento" if exp.get("erro") else "funcional",
         "entrada": {
-            "formatos_disponiveis": ["TXT", "PDF", "JPG"],
-            "renditions": {
-                "txt": f"{base}/{fixture_id}/{fixture_id}.txt",
-                "pdf": f"{base}/{fixture_id}/{fixture_id}.pdf",
-                "jpg": f"{base}/{fixture_id}/{fixture_id}.jpg",
-            },
+            "formatos_disponiveis": formatos,
+            "renditions": renditions,
         } if rendicoes else {},
         "resposta_esperada": corpo,
     }
