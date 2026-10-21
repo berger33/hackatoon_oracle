@@ -1,88 +1,121 @@
 # MediFlow — PDFs atualizados em 21/10/2026
 
-## Por que
+Pacote: `MediFlow_PDFs_atualizados_2026-10-21.zip`, com os dois documentos
+atualizados.
 
-O `Projeto_oracle.pdf` (brief do solicitante) prevalece sobre a Especificação
-Funcional v1.0 onde as duas divergem. Pelo brief, **urgência isolada não gera
-revisão humana**: o caso é encaminhado à fila urgente, com alerta, e termina
-como `PROCESSADO`. Revisão humana é consequência de **ambiguidade**, nunca de
-urgência por si só.
+| Documento | Antes | Depois |
+| --- | --- | --- |
+| `MediFlow_Especificacao_Funcional_v1.0.pdf` | 15 páginas | 16 páginas (nova página de anexo) |
+| `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` | 7 páginas | 8 páginas (nova página de anexo) |
 
-Estes dois PDFs foram editados **só** nos trechos que contrariavam essa regra.
-Nenhum outro texto, numeração, seção ou formatação foi alterado.
+Cada edição foi feita **no lugar**: o trecho antigo é apagado e o novo é
+reescrito na mesma posição, com o mesmo corpo, cor e entrelinha. O que não cabia
+no corpo do texto foi para um anexo, referenciado no próprio trecho. Nenhuma
+outra numeração, seção ou formatação foi alterada.
 
-## O que mudou — Especificação Funcional v1.0 (6 edições)
+---
 
-| # | Seção (pág.) | Antes | Depois |
-|---|---|---|---|
-| 1 | §5.3 `EM_REVISAO` (p. 5) | “A análise terminou, mas encontrou **urgência**, ambiguidade, conflito,” | “A análise terminou, mas encontrou ambiguidade, conflito,” |
-| 2 | §8.1 RN-01 (p. 9) | “• RN-01: **sem urgência**, ambiguidade/conflito impeditivo ou score abaixo do limiar, encaminhar automaticamente ao destino de rotina.” | “• RN-01: sem ambiguidade/conflito impeditivo ou score abaixo do limiar, encaminhar automaticamente ao destino de rotina do tipo; com urgência, à fila urgente e com alerta.” |
-| 3 | §8.2 tabela de decisão, linha “Urgência/achado crítico”, coluna **Revisão** (p. 9) | “Sim, obrigatória” | “Não” |
-| 4 | §15 decisão 1 (p. 13) | “1. Urgência com ambiguidade/revisão: encaminhar à fila urgente, registrar alerta simulado e também incluir na fila lógica de revisão.” | “1. Urgência: encaminhar à fila urgente e registrar alerta simulado; com ambiguidade, incluir também na fila lógica de revisão. Urgência isolada termina como processada, sem revisão humana.” |
+## Rodada 2 — decisões A1 a A9 e consistência entre os documentos
 
-(As edições 2 e 4 ocupam duas linhas cada uma no documento, por isso a contagem
-de 6 edições para 4 trechos.)
+### Bloco A — as 9 decisões
 
-## O que mudou — Análise de Requisitos v1.1 (3 edições)
+| # | Decisão | Onde entrou |
+| --- | --- | --- |
+| A1 | Conflito **impeditivo** é o de gravidade `ALTA` ou `MÉDIA`; `BAIXA` é registrado e não bloqueia | RF-16 (p. 7), §5.3 (p. 5), Anexo A.2 |
+| A2 | Dicionário clínico fechado: conflitos, achados críticos e medicamentos de alto risco | Anexo A.2 (p. 15) |
+| A3 | `score_extracao` determinístico: `1 − 0,2×obrigatório ausente − 0,1×incerto − 0,3/0,2/0,1 por conflito ALTA/MÉDIA/BAIXA`, piso 0 | RF-18 (p. 7), Anexo A.4 |
+| A4 | `nivel_prioridade = NAO_IDENTIFICADA` gera revisão | §5.2, §5.3, RN-02 da Análise, Anexo A.6 |
+| A5 | `urgencia = INDETERMINADO` conta como campo incerto e gera revisão | RF-13 (p. 7), Anexo A.6 |
+| A6 | Limites: 10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT, timeout de 60 s no Gemini, 2 retentativas com backoff | §12 (p. 12), §15 (p. 14), Anexo A.5 |
+| A7 | Metas numéricas fora do MVP; aceite pelos casos aprovados; latência por etapa, sem meta; retenção até o fim do hackathon | §14 (p. 13), §13 (p. 13), §15 (p. 14), Anexo A.7 |
+| A8 | Autenticação/autorização fora do MVP (demo local), com a ressalva de que exposição pública exige auth antes | §4 (p. 4), §10.1 (p. 11), §15 (p. 14), Anexo A.7 |
+| A9 | RF-11 **mantém** a comparação com a farmacopeia, agora com **lista própria da equipe** (PDF de consulta do modelo); sem o arquivo, vale a regra de dose suspeita de RF-16 | RF-11 (p. 7), Anexo A.2 |
 
-| # | Seção (pág.) | Antes | Depois |
-|---|---|---|---|
-| 5 | §7 RN-01 (p. 5) | “Casos padrão (sem ambiguidade, **sem urgência** e com nota combinada ≥ 0.85) seguem direto ao destino,” | “Casos padrão (sem ambiguidade e com nota combinada de 0.85 ou mais) seguem direto ao destino,” |
-| 6 | §12 Pendências, linha “Urgência e ambiguidade simultâneas”, coluna Situação (p. 7) | “A definir” | “Decidido” |
-| 7 | §12 Pendências, linha “Urgência e ambiguidade simultâneas”, coluna Detalhamento (p. 7) | “Sugestão inicial: urgência prevalece e o caso alerta E pede revisão.” | “Urgência prevalece: alerta sempre; revisão só com ambiguidade.” |
+### Bloco B — consistência entre os dois documentos
 
-## O que **não** mudou (e por que)
+| # | Ajuste | Onde |
+| --- | --- | --- |
+| 1 | As quatro linhas “A definir” da §12 da Análise viraram “Decidido”: fórmula da nota, níveis de prioridade e tempo-alvo (este, sem meta numérica) | Análise §12 (p. 7) |
+| 2 | Linha do caso das duas filas na tabela de roteamento da Análise | Análise §7 (p. 5) |
+| 3 | Caminho `processados/urgentes/{documento_id}.json` para casos urgentes, como no exemplo do brief | EF §13 (p. 12) |
+| 4 | Ponteiro para o exemplo do caso urgente que termina `PROCESSADO` | EF §9.2 (p. 10), Anexo A.3 |
+| 5 | `EM_REVISAO` em §5.3 passa a citar ilegibilidade e “conflito impeditivo” | EF §5.3 (p. 5) |
+| 6 | Vocabulário: status em maiúsculas na Análise; JSON como envelope da requisição, não como formato de documento | Análise §8 (p. 6), RF-02 (p. 3) |
+| 7 | Anexo com o detalhamento de todas as decisões nos dois documentos | EF Anexo A (p. 15-16), Análise Anexo (p. 8) |
 
-* **RN-02 e RN-03 da Análise v1.1 já estavam corretas** — “ambíguo, ilegível,
-  inconsistente ou nota < 0,85 → Revisão Humana” e “achado crítico ou prescrição
-  de alto risco → Fila de Urgência Médica **com alerta**”. A divergência estava
-  na Especificação Funcional, não na Análise. Não “corrigir” essas duas regras.
-* **O caso das duas filas não muda**: urgência + ambiguidade continua indo para
-  `FILA_URGENCIA_MEDICA` **e** `FILA_REVISÃO_HUMANA`, com `EM_REVISAO`, alerta e
-  `requer_auditoria_humana = true`.
-* **EF §15 decisões 2 a 6, §13 (armazenamento) e todo o restante** seguem
-  intocados — a revisão da decisão de urgência não os afeta.
-* Os PDFs originais da raiz do repositório continuam na versão enviada pela
-  equipe; as cópias atualizadas estão nesta pasta e no ZIP.
+### O que a rodada 2 **não** mexeu
+
+Bloco C, conferido e considerado conforme: regra de urgência (já corrigida na
+rodada 1), RN-02/RN-03 da Análise, caso das duas filas, 5 destinos, 8 tipos de
+documento, limiar 0,85, `min()` dos scores, dados fictícios, API 202, fila
+lógica sem decisão humana, alerta simulado, 3 cenários, OCI Always Free,
+segregação recebidos/processados/auditoria e `cid_extraido` (divergência
+consciente com `cid_sugerido`, registrada em EF §9.2).
+
+---
+
+## Rodada 1 — a regra de urgência
+
+O `Projeto_oracle.pdf` (brief) prevalece sobre a EF v1.0 onde as duas divergem:
+**urgência isolada não gera revisão humana**. O caso vai para a fila urgente,
+com alerta, e termina em `PROCESSADO`. Revisão é consequência de **ambiguidade**.
+
+| # | Documento, seção (pág.) | Antes | Depois |
+| --- | --- | --- | --- |
+| 1 | EF §5.3 `EM_REVISAO` (p. 5) | “encontrou **urgência**, ambiguidade, conflito,” | “encontrou ambiguidade, conflito,” |
+| 2 | EF §8.1 RN-01 (p. 9) | “**sem urgência**, ambiguidade/conflito impeditivo ou score abaixo do limiar…” | “sem ambiguidade/conflito impeditivo ou score abaixo do limiar…; com urgência, à fila urgente e com alerta.” |
+| 3 | EF §8.2 tabela, coluna **Revisão** (p. 9) | “Sim, obrigatória” | “Não” |
+| 4 | EF §15 decisão 1 (p. 13) | “1. Urgência com ambiguidade/revisão: …” | “1. Urgência: … Urgência isolada termina como processada, sem revisão humana.” |
+| 5 | Análise §7 RN-01 (p. 5) | “(sem ambiguidade, **sem urgência** e com nota combinada ≥ 0,85)” | “(sem ambiguidade e com nota combinada de 0.85 ou mais)” |
+| 6 | Análise §12, coluna Situação (p. 7) | “A definir” | “Decidido” |
+| 7 | Análise §12, coluna Detalhamento (p. 7) | “Sugestão inicial: urgência prevalece e o caso alerta E pede revisão.” | “Urgência prevalece: alerta sempre; revisão só com ambiguidade.” |
+
+---
+
+## Propagação no repositório
+
+* `app/models.py` — R2 reescrita com os gatilhos novos; `GRAVIDADES_IMPEDITIVAS`
+  (A1), `PESO_CONFLITO` e `calcular_score_extracao` (A3)
+* `docs/testes/CONTRATO_DE_DADOS.md` — R2, nova R8, tabela de decisões de
+  21/10/2026
+* `tools/atualizar_pdfs.py` — gerador dos dois PDFs (substitui
+  `tools/atualizar_pdfs_urgencia.py`)
+* `tests/fixtures/` — **inalterados**: A1, A4 e A5 não mudam nenhum dos 67 casos
+  aprovados (os 4 conflitos das fixtures são `ALTA`; os 8 `NAO_IDENTIFICADA` e
+  os 8 `INDETERMINADO` já chegavam a `EM_REVISAO` por outros gatilhos)
+
+Verificação: `tests/testar_contrato.py` 67/67 e `tools/verificar_consistencia.py`
+com 0 erros.
+
+Os PDFs originais da raiz do repositório continuam na versão enviada pela
+equipe; as cópias atualizadas estão nesta pasta e no ZIP. As EPTs
+(`docs/epts/`) seguem **congeladas**, porque ainda não foram aprovadas — nada
+nelas foi alterado e elas não fazem parte deste pacote.
+
+---
 
 ## Observação técnica sobre as fontes
 
 As fontes embutidas nos PDFs (Arial e Liberation Sans) são subconjuntos sem mapa
 Unicode e não aceitam texto novo. O texto reescrito usa Helvetica, que tem
-exatamente as mesmas métricas das fontes originais — por isso **nada se
-desloca**: posição, corpo, cor e entrelinhas são os do original.
+exatamente as mesmas métricas — por isso **nada se desloca**. Helvetica só cobre
+Latin-1, o que traz três consequências, todas contornadas:
 
-Duas consequências menores:
-
-* O símbolo “≥” não existe em Helvetica; na edição 5 ele foi reescrito como
-  “de 0.85 ou mais”, com o mesmo significado da regra (“abaixo de 0.85 exige
-  revisão”).
-* O marcador “•” da RN-01 (edição 2) foi preservado do original: só o texto
-  depois dele é reescrito.
+* “•” (marcador de lista) é preservado do original: o rect de edição começa
+  depois dele e só o texto é reescrito.
+* “≥” foi reescrito como “de 0.85 ou mais”, com o mesmo significado da regra.
+* Nas páginas novas do anexo, o cabeçalho e o rodapé não são reescritos: são
+  replicados do original como objeto vetorial, mantendo a fonte e os símbolos.
 
 ## Como reproduzir
 
 ```bash
 pip install pymupdf
-python3 tools/atualizar_pdfs_urgencia.py               # gera em dist/
-python3 tools/atualizar_pdfs_urgencia.py --verificar   # confere o resultado
+python3 tools/atualizar_pdfs.py               # gera em dist/
+python3 tools/atualizar_pdfs.py --simular     # mostra o plano, sem alterar nada
+python3 tools/atualizar_pdfs.py --verificar   # confere o resultado
 ```
 
-O script parte sempre dos originais (é idempotente), confere a largura de cada
-linha antes de escrever e valida o resultado reabrindo o PDF.
-
-## O que já estava atualizado no repositório
-
-A mesma decisão (R1) já tinha sido propagada no branch
-`arena/b33f82cc-hackatoon-oracle`:
-
-* `app/models.py` — R1 e R4 reescritas; `requer_auditoria_humana = ambiguidade`
-* `tests/fixtures/` — 5 fixtures viraram `PROCESSADO` / `revisao = NAO`
-  (`Matriz_LaudoDeImagem_Pdf`, `Matriz_Receituario_Imagem`,
-  `Matriz_LaudoDeImagem_Imagem`, `Matriz_Guia_Imagem`, `Conflito_AltoRisco`)
-* `docs/testes/CONTRATO_DE_DADOS.md`, `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` e
-  `AUDITORIA_2026-10-20.md` — regras e exemplos alinhados
-* `tools/gerar_fixtures_demo.py` e `tools/gerar_fixtures_catalogo.py`
-
-As EPTs (`docs/epts/`) seguem **congeladas**, porque ainda não foram aprovadas —
-nada nelas foi alterado e elas não fazem parte deste pacote.
+O script parte sempre dos originais (é idempotente), recusa caracteres fora do
+Latin-1, confere a largura de cada linha antes de escrever e valida o resultado
+reabrindo os PDFs.
