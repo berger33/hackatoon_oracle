@@ -14,6 +14,7 @@ expõe. Nenhuma regra de negócio precisa ser reescrita.
 
 | Arquivo | Para que serve |
 | --- | --- |
+| [`Alinhamento_de_Contrato_MediFlow_G10.pdf`](Alinhamento_de_Contrato_MediFlow_G10.pdf) | **Versão para envio:** relatório de 7 páginas endereçado à equipe do G10 — o que está certo, os ajustes e o checklist |
 | [`MAPEAMENTO_DE_CONTRATO.md`](MAPEAMENTO_DE_CONTRATO.md) | Tabela completa nome-delas → nome-canônico, campo a campo, com a citação da regra |
 | [`ISSUES_PARA_O_G10.md`](ISSUES_PARA_O_G10.md) | 10 issues prontas para colar no repositório delas, em ordem de prioridade |
 | [`cenarios/`](cenarios/) | Os 3 cenários de demonstração delas traduzidos para o nosso contrato |
@@ -24,6 +25,7 @@ expõe. Nenhuma regra de negócio precisa ser reescrita.
 ```bash
 python3 tools/validar_cenarios_g10.py      # 3 cenários válidos e estáveis
 python3 tools/validar_cenarios_g10.py -v   # mostra as asserções de cada um
+python3 tools/gerar_pdf_integracao_g10.py  # regenera o PDF de alinhamento
 ```
 
 ## As três prioridades
