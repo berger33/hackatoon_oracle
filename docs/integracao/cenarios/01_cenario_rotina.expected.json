@@ -1,0 +1,75 @@
+{
+  "schema": "mediflow.fixture/2",
+  "fixture_id": "G10_Cenario1_Rotina",
+  "documento_ficticio": true,
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT"
+    ],
+    "documento_texto": "LABORATÓRIO SÃO MARCOS - HEMOGRAMA COMPLETO. Paciente: Maria Fernanda Lima, 34 anos. Solicitante: Dr. Roberto Alencar CRM-SP 98214. Exame: Hemograma de rotina preventiva. Hemácias: 4.5 milhões/mm3 (Normal). Hemoglobina: 13.5 g/dL (Normal). Leucócitos: 6.200/mm3 (Normal). Plaquetas: 240.000/mm3 (Normal). CONCLUSÃO: Hemograma sem alterações significativas. Paciente assintomática."
+  },
+  "resposta_esperada": {
+    "status": "PROCESSADO",
+    "documento_id": "DOC-CLIN-2026-1011",
+    "classificacao": {
+      "tipo_documento": "LAUDO_EXAME_LABORATORIAL",
+      "especialidade": [
+        "Hematologia",
+        "Clínica Geral"
+      ],
+      "nivel_prioridade": "ROTINA",
+      "score_classificacao": 0.96
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Maria Fernanda Lima",
+        "idade": 34
+      },
+      "medico": {
+        "nome": "Dr. Roberto Alencar",
+        "crm": {
+          "numero": "98214",
+          "uf": "SP"
+        }
+      },
+      "diagnostico": "Hemograma sem alterações significativas",
+      "cid": null,
+      "exames": [
+        "Hemograma completo"
+      ],
+      "medicamentos": [],
+      "urgencia": "NAO"
+    },
+    "qualidade": {
+      "score_extracao": 0.94,
+      "score_combinado": 0.94,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "PRONTUARIO_ELETRONICO",
+      "destinos": [
+        "PRONTUARIO_ELETRONICO"
+      ],
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Classificação de rotina: LAUDO_EXAME_LABORATORIAL encaminhado para PRONTUARIO_ELETRONICO.",
+      "notificacao": null
+    },
+    "armazenamento_oci": {
+      "bucket": "mediflow-documentos-clinicos",
+      "caminho_objeto": "processados/2026/10/DOC-CLIN-2026-1011.json",
+      "status_backup": "sucesso"
+    },
+    "erro": null
+  },
+  "modo_fixture": {},
+  "assercoes": [
+    "Laudo laboratorial de rotina vai para PRONTUARIO_ELETRONICO (§8.2)",
+    "Sem urgência, sem ambiguidade e com score >= 0,85: PROCESSADO, sem revisão (RN-01)",
+    "Nenhuma notificação: alerta só existe em urgência (§8.2)"
+  ],
+  "observacoes": "Tradução de data/samples/01_cenario_rotina.json (repositório g10-brasil-equipe-15_mediflow) para o contrato MediFlow v1.0. Equivalente ao nosso caso Matriz_LaudoLaboratorial_Texto."
+}

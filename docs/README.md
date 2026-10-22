@@ -10,6 +10,7 @@ Esta pasta reúne a documentação da **massa de dados de teste** do MediFlow.
 | [Catálogo de documentos de teste](testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) | Os 79 casos, bloco por bloco: o que cada um testa e qual desfecho esperar |
 | [Mapa de documentos de teste (PDF)](testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf) | Visão visual: cobertura, fluxo de decisão, kit de demonstração e catálogo completo |
 | [Auditoria de consistência (2026-10-20)](testes/AUDITORIA_2026-10-20.md) | O que foi conferido em todos os formatos (CRM-SP, contagens, pacote ZIP), o que estava errado e o que foi corrigido |
+| [Integração com o G10](integracao/) | Análise do repositório da equipe: mapeamento de contrato, 10 issues prontas e os 3 cenários delas traduzidos para o nosso contrato |
 | [EPTs — Procedimentos de teste](epts/) | Um procedimento por caso da Especificação Funcional v1.0: 41 planejados, com plano, modelo, índice e PDF consolidado |
 
 ## Ordem de leitura

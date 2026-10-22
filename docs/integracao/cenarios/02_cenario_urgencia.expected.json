@@ -1,0 +1,80 @@
+{
+  "schema": "mediflow.fixture/2",
+  "fixture_id": "G10_Cenario2_Urgencia",
+  "documento_ficticio": true,
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT"
+    ],
+    "documento_texto": "HOSPITAL SANTA LUCIA - LAUDO DE EXAME RADIOLOGICO. Paciente: Carlos Eduardo Mendes, 52 anos. Solicitante: Dra. Renata Silveira CRM-SP 145892. Exame: Tomografia de Torax com contraste. Indicacao: Suspeita de embolia pulmonar aguda, dispneia subita. Achados: Falha de enchimento em arteria pulmonar principal direita compativel com TEP agudo. CONCLUSÃO: Quadro compativel com Tromboembolismo Pulmonar Agudo. Sugere-se correlacao clinica urgente."
+  },
+  "resposta_esperada": {
+    "status": "PROCESSADO",
+    "documento_id": "DOC-CLIN-2026-8942",
+    "classificacao": {
+      "tipo_documento": "LAUDO_EXAME_IMAGEM",
+      "especialidade": [
+        "Radiologia",
+        "Pneumologia"
+      ],
+      "nivel_prioridade": "URGENTE",
+      "score_classificacao": 0.98
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "Carlos Eduardo Mendes",
+        "idade": 52
+      },
+      "medico": {
+        "nome": "Dra. Renata Silveira",
+        "crm": {
+          "numero": "145892",
+          "uf": "SP"
+        }
+      },
+      "diagnostico": "Tromboembolismo pulmonar agudo",
+      "cid": "I26.9",
+      "exames": [
+        "Tomografia de tórax com contraste"
+      ],
+      "medicamentos": [],
+      "urgencia": "SIM"
+    },
+    "qualidade": {
+      "score_extracao": 0.98,
+      "score_combinado": 0.98,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [],
+      "campos_incertos": [],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "FILA_URGENCIA_MEDICA",
+      "destinos": [
+        "FILA_URGENCIA_MEDICA"
+      ],
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com alerta registrado. Sem ambiguidade, segue sem revisão humana.",
+      "notificacao": {
+        "gerada": true,
+        "canal": "SIMULADO_SLACK_PLANTAO",
+        "status": "REGISTRADA",
+        "mensagem": "ALERTA URGENTE [DOC-CLIN-2026-8942]: Tromboembolismo pulmonar agudo (CID I26.9) — paciente Carlos Eduardo Mendes, Pronto-Socorro."
+      }
+    },
+    "armazenamento_oci": {
+      "bucket": "mediflow-documentos-clinicos",
+      "caminho_objeto": "processados/urgentes/2026/10/DOC-CLIN-2026-8942.json",
+      "status_backup": "sucesso"
+    },
+    "erro": null
+  },
+  "modo_fixture": {},
+  "assercoes": [
+    "Urgência encaminha para FILA_URGENCIA_MEDICA e gera evento de alerta (RN-03, §8.2)",
+    "Urgência isolada NÃO gera revisão: requer_auditoria_humana = false (decisão R1 — o brief prevalece sobre a §8.2 original)",
+    "Um destino só, porque não há ambiguidade junto"
+  ],
+  "observacoes": "Tradução de data/samples/02_cenario_urgencia.json. É o mesmo conteúdo do nosso caso Matriz_LaudoDeImagem_Pdf (kit de demonstração). Atenção: a §8.2 da EF v1.0 original pede 'revisão obrigatória' para urgência; a decisão R1 segue o brief e mantém PROCESSADO sem revisão."
+}
