@@ -2,10 +2,7 @@
 """Gera a EPT (Especificação de Procedimento de Teste) do MediFlow em CSV.
 
 Fonte de verdade:
-  • Especificação Funcional v1.0 — **edição de 21/10/2026** (16 páginas, decisões
-    A1–A9), em `dist/MediFlow_Especificacao_Funcional_v1.0.pdf`. A cópia da raiz
-    do repositório é a edição anterior (18/10/2026, 15 páginas) e não deve ser
-    usada como base;
+  • Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9);
   • contrato executável `app/models.py` (regras R1–R8, `PESO_CONFLITO`,
     `GRAVIDADES_IMPEDITIVAS`, `calcular_score_extracao`);
   • massa `tests/fixtures/manifest.csv` — 79 fixtures;
@@ -13,7 +10,7 @@ Fonte de verdade:
     o qual cada caso desta EPT consolidada aponta.
 
 Saídas:
-  docs/testes/EPT_MediFlow_v1.1.csv   → EPT executável (uma linha por caso)
+  docs/testes/EPT_MediFlow.csv        → EPT executável (uma linha por caso)
   docs/testes/EPT_MediFlow_GUIA_E_COBERTURA.md
                                       → dicionário de dados + cobertura
                                         requisito × caso × massa
@@ -38,7 +35,7 @@ import sys
 from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SAIDA_CSV = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.csv")
+SAIDA_CSV = os.path.join(ROOT, "docs/testes/EPT_MediFlow.csv")
 SAIDA_GUIA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_GUIA_E_COBERTURA.md")
 MANIFEST = os.path.join(ROOT, "tests/fixtures/manifest.csv")
 
@@ -103,7 +100,7 @@ PRE_API = ("API FastAPI no ar em ambiente de homologação; OCI Object Storage e
 CASOS: list[dict] = []
 
 # =====================================================================
-# SUITE 10 — Decisões A1 a A9 e limites de entrada (edição de 21/10/2026)
+# SUITE 10 — Decisões A1 a A9 e limites de entrada
 # =====================================================================
 S = "Confiança e limiar"
 CASOS += [
@@ -116,7 +113,7 @@ CASOS += [
        "conflitos com gravidade=MEDIA; score_combinado=0,95 (acima do limiar); status EM_REVISAO; "
        "destino FILA_REVISAO_HUMANA; justificativa cita conflito impeditivo.",
        "Resultado em auditoria/.", "§16 item 12",
-       obs="A1: impeditivo = ALTA ou MÉDIA. Sem o score alto, o caso não isola a regra."),
+       obs="A1: impeditivo = ALTA ou MÉDIA. O score alto isola a regra de conflito."),
 
     ct("CT-102", S, "RF-16; RF-18", "RN-01", "Rotina", "Funcional negativo",
        "Valor limite", "Alta",
@@ -130,7 +127,7 @@ CASOS += [
         "(1 − 0,1 pelo conflito BAIXA); score_combinado ≥ 0,85; status PROCESSADO; destino "
         "PRONTUARIO_ELETRONICO; nenhuma revisão.",
        "Resultado em processados/.", "§16 itens 2 e 12",
-       obs="Contraprova de CT-101: a gravidade muda a decisão, o conflito não desaparece."),
+       obs="Par de CT-101: a gravidade muda a decisão; o conflito permanece visível na resposta."),
 
     ct("CT-103", S, "RF-18", "", "Transversal", "Funcional", "Contrato", "Alta",
        "score_extracao segue a fórmula determinística de A3",
@@ -143,8 +140,8 @@ CASOS += [
        "Os quatro resultados batem com a fórmula, com duas casas decimais; piso 0 respeitado; "
        "score_combinado = min(classificação, extração); nenhum score é autorrelatado pelo modelo.",
        "Evidência anexada.", "§16 item 8",
-       obs="Achado: os expected.json declaram scores ilustrativos (0,91/0,95) que não seguem A3 — o "
-           "caso valida o motor, não o valor declarado na massa."),
+       obs="A massa traz scores ilustrativos; o que este caso verifica é o motor de cálculo contra a "
+           "fórmula de A3, não o valor declarado no expected.json."),
 
     ct("CT-104", "Classificação", "RF-07; RF-21", "RN-02", "Ambiguidade", "Funcional",
        "Tabela de decisão", "Alta",
@@ -187,7 +184,7 @@ CASOS += [
        "ARQUIVO_MAIOR_QUE_LIMITE; texto de 10,5 MB → HTTP 413 com a mesma regra; nenhum dos dois "
        "acima do limite chega ao adaptador Gemini; mensagem informa o limite de 10 MB.",
        "Somente o caso no limite é persistido.", "§16 item 1",
-       obs="A6: o limite vale para o conteúdo do documento, não só para upload de arquivo."),
+       obs="A6: o limite de 10 MB vale para o conteúdo do documento, não apenas para upload de arquivo."),
 
     ct("CT-107", S, "RF-03", "", "Rotina", "Borda", "Valor limite", "Alta",
        "Limite de 20 páginas aceita 20 e rejeita 21, inclusive em digitalizado",
@@ -202,7 +199,7 @@ CASOS += [
        "páginas → o mesmo 413, provando que a contagem não depende de texto extraível; nenhum envio "
        "acima do limite chega ao modelo.",
        "Somente o caso no limite é persistido.", "§16 item 1",
-       obs="A6: 20 páginas. O digitalizado existe para impedir atalho por contagem de texto."),
+       obs="A6: 20 páginas. O caso digitalizado garante que a contagem não dependa de texto extraível."),
 
     ct("CT-108", S, "RF-02", "", "Rotina", "Funcional", "Partição de equivalência", "Média",
        "PNG e WEBP são aceitos como imagem do MVP",
@@ -213,7 +210,7 @@ CASOS += [
        "Ambos com HTTP 202 e estado terminal PROCESSADO; PNG → FARMACIA_HOSPITALAR; WEBP → "
        "PRONTUARIO_ELETRONICO; nenhum 415 para formatos da lista.",
        "Resultados em processados/.", "§16 item 1",
-       obs="A6: PDF, JPG, PNG, WEBP e TXT. Formatos fora da lista continuam em CT-009."),
+       obs="A6: PDF, JPG, PNG, WEBP e TXT. Formatos fora da lista são rejeitados em CT-009."),
 
     ct("CT-109", S, "RF-04; RF-24", "", "Erro", "Funcional negativo", "Análise de risco", "Alta",
        "Timeout de 60 s e 2 retentativas com backoff antes de falhar (A6)",
@@ -248,7 +245,7 @@ CASOS += [
        "reportado — prova de que a regra está no dicionário, não no modelo; nenhuma gravidade ALTA "
        "aparece sem respaldo no dicionário.",
        "Dicionário restaurado.", "§16 item 12",
-       obs="A2: dicionário clínico fechado em anexo à EF; o modelo não define risco livremente."),
+       obs="A2: dicionário clínico fechado (Anexo A.2 da EF); o modelo não define risco livremente."),
 
     ct("CT-111", S, "RF-11", "", "Ambiguidade", "Funcional negativo", "Análise de risco", "Média",
        "Dose é comparada com a farmacopeia própria da equipe (A9)",
@@ -263,7 +260,7 @@ CASOS += [
        "DOSE_SUSPEITA é inventado e vale apenas a regra de conflito de RF-16; a dose original nunca é "
        "alterada na saída.",
        "Resultado em auditoria/.", "§16 item 9",
-       obs="A9: a comparação mantida, com lista própria; ausência do arquivo não pode gerar chute."),
+       obs="A9: comparação com a lista própria da equipe; a ausência do arquivo não pode gerar chute."),
 ]
 
 
@@ -351,7 +348,8 @@ CASOS += [
        "requer_auditoria_humana=false; notificação registrada com status SIMULADO; dados extraídos "
        "compatíveis com o expected.json.",
        "Objeto em processados/urgentes/ conforme §13.", "§16 itens 1 e 3",
-       obs="Correção de 21/10/2026: urgência isolada não revisa — o caso termina PROCESSADO."),
+       obs="Urgência isolada não gera revisão humana: o caso termina PROCESSADO, com alerta e objeto "
+           "em processados/urgentes/."),
 
     ct("CT-004", S, "RF-02; RF-04", "", "Rotina", "Integração",
        "Partição de equivalência", "Alta",
@@ -438,7 +436,8 @@ CASOS += [
        "HTTP 422 CAMPOS_INVALIDOS nos dois envios; mensagem indica arquivo vazio; nenhuma chamada ao "
        "adaptador Gemini.",
        "Nenhum objeto gravado.", "§16 item 1",
-       obs="Limite de tamanho (10 MB) e de páginas (20) decididos em A6 — cobertos em CT-106 e CT-107."),
+       obs="Tamanho (10 MB) e páginas (20) são limites de A6; a verificação de borda está em CT-106 e "
+           "CT-107."),
 
     ct("CT-011", S, "RF-03", "", "Erro", "Funcional negativo",
        "Análise de risco", "Média",
@@ -526,7 +525,7 @@ CASOS += [
        "status PROCESSADO; requer_auditoria_humana=false; notificação gerada com canal "
        "SIMULADO_SLACK_PLANTAO e status REGISTRADA.",
        "Evento de alerta no histórico; objeto em processados/urgentes/.", "§16 item 3",
-       obs="Urgência isolada não revisa (R1 do contrato, correção de 21/10/2026)."),
+       obs="Urgência isolada não gera revisão humana (R1 do contrato): termina PROCESSADO, com alerta."),
 
     ct("CT-018", S, "RF-07", "RN-01", "Rotina", "Funcional", "Tabela de decisão", "Alta",
        "Documento sem sinal de urgência mantém prioridade ROTINA",
@@ -1167,8 +1166,8 @@ CASOS += [
        "dado clínico.",
        "Acesso negado registrado.", "§16 item 13",
        auto="Não",
-       obs="A8: autenticação fora do MVP (demo local). NAO APLICAVEL no MVP; BLOQUEADO se a aplicação "
-           "for exposta publicamente sem auth."),
+       obs="A8: autenticação fora do MVP (demonstração local). NAO APLICAVEL no MVP; BLOQUEADO se a "
+           "aplicação for exposta publicamente sem autenticação."),
 
     ct("CT-076", S, "RF-27", "", "Transversal", "Funcional", "Contrato", "Média",
        "Health check responde sem expor segredo nem dado clínico",
@@ -1378,7 +1377,7 @@ CASOS += [
        "Tempos por etapa registrados e recuperáveis; resultado reprodutível entre execuções; valor "
        "medido documentado para definição da meta.",
        "Relatório de latência anexado.", "§16 item 12",
-       obs="A7: metas numéricas ficaram fora do MVP; o caso mede e registra por etapa, sem aprovar."),
+       obs="A7: sem meta numérica no MVP; o caso mede e registra por etapa, sem aprovar."),
 
     ct("CT-094", S, "RNF-08", "", "Transversal", "Não funcional", "Análise de risco", "Alta",
        "Somente dados fictícios e nenhum segredo em repositório, logs ou respostas",
@@ -1592,43 +1591,15 @@ def gerar_guia(fixtures: list[str]) -> None:
     a = linhas.append
     a("# EPT — MediFlow · guia de uso e cobertura\n")
     a("**Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10  ")
-    a("**Artefato principal:** [`EPT_MediFlow_v1.1.csv`](EPT_MediFlow_v1.1.csv)  ")
-    a("**Base:** Especificação Funcional v1.0 — **edição de 21/10/2026** (16 páginas, decisões "
-      "A1–A9), em `dist/MediFlow_Especificacao_Funcional_v1.0.pdf`; contrato `app/models.py` "
-      "(R1–R8); e os "
+    a("**Artefato principal:** [`EPT_MediFlow.csv`](EPT_MediFlow.csv)  ")
+    a("**Base:** Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9); contrato "
+      "`app/models.py` (R1–R8); e os "
       f"{len(fixtures)} fixtures de [`manifest.csv`](../../tests/fixtures/manifest.csv)  ")
     a("**Plano oficial de EPTs:** [`docs/epts/PLANO_DE_EPTS.md`](../epts/PLANO_DE_EPTS.md) "
       "(41 EPTs D/A/E/R) — cada caso desta EPT consolidada aponta para a EPT do plano em "
       "`EPT_DO_PLANO`.  ")
     a(f"**Casos:** {len(CASOS)} — gerado por [`tools/gerar_ept.py`](../../tools/gerar_ept.py); "
       "não editar o CSV à mão, editar o gerador.\n")
-    a("---\n")
-    a("## 0. O que mudou na versão 1.1\n")
-    a("A v1.0 desta EPT foi construída sobre a edição de 18/10/2026 da especificação e sobre 67 "
-      "fixtures. A base do projeto avançou; esta versão acompanha:\n")
-    a("| Mudança | Efeito na EPT | Casos |")
-    a("| --- | --- | --- |")
-    a("| **Urgência isolada não gera revisão** (correção de 21/10/2026, R1 do contrato) | casos "
-      "urgentes passam a esperar `PROCESSADO`, `requer_auditoria_humana=false` e alerta; revisão só "
-      "com ambiguidade | CT-003, CT-017, CT-019, CT-052 |")
-    a("| **A1** — conflito impeditivo é ALTA ou MÉDIA | novos casos de gravidade MÉDIA (bloqueia) e "
-      "BAIXA (não bloqueia) | CT-101, CT-102 |")
-    a("| **A2** — dicionário clínico fechado | novo caso de conformidade com o dicionário | CT-110 |")
-    a("| **A3** — `score_extracao` determinístico | novo caso da fórmula, com piso 0 | CT-103 |")
-    a("| **A4** — prioridade `NAO_IDENTIFICADA` revisa | caso dedicado com fixture próprio | CT-104 |")
-    a("| **A5** — urgência `INDETERMINADO` é incerteza | caso dedicado com fixture próprio | CT-105 |")
-    a("| **A6** — 10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT, timeout 60 s, 2 retentativas | limites, "
-      "formatos e retry ganharam casos próprios; o antigo “limite pendente” saiu | CT-106…CT-109 |")
-    a("| **A7/A8** — metas fora do MVP, retenção até o fim do hackathon, auth fora do MVP | casos de "
-      "latência, precisão, privacidade e acesso passaram a registrar isso | CT-093, CT-100, CT-094, "
-      "CT-075 |")
-    a("| **A9** — farmacopeia própria da equipe | novo caso, inclusive sem a base carregada | CT-111 |")
-    a("| **79 fixtures** (eram 67) | massa, cobertura e anexos recalculados | todos |")
-    a("")
-    a("> **Atenção à base documental:** a cópia da **raiz** do repositório "
-      "(`MediFlow_Especificacao_Funcional_v1.0.pdf`, 15 páginas, 18/10/2026) é a edição **anterior**. "
-      "A edição de 21/10/2026 (16 páginas, com o Anexo A das decisões A1–A9) está em "
-      "`dist/MediFlow_Especificacao_Funcional_v1.0.pdf`. Esta EPT usa a de 21/10.\n")
     a("---\n")
     a("## 1. O que é esta EPT\n")
     a("Uma **Especificação de Procedimento de Teste**: uma linha por caso, com pré-condição, massa, "
@@ -1640,8 +1611,8 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("| --- | --- |")
     a(f"| `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` | **O que existe** para testar ({len(fixtures)} documentos) |")
     a("| `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |")
-    a("| `EPT_MediFlow_v1.1.csv` (esta) | **Como executar e como saber se passou** |")
-    a(f"| `EPT_MediFlow_v1.1.pdf` | **A EPT como documento**: capa, sumário, os {len(CASOS)} casos "
+    a("| `EPT_MediFlow.csv` (esta) | **Como executar e como saber se passou** |")
+    a(f"| `EPT_MediFlow.pdf` | **A EPT como documento**: capa, sumário, os {len(CASOS)} casos "
       "por suíte e os anexos de cobertura, com folha de aprovação |")
     a("| `docs/epts/` | **O plano oficial**: 41 EPTs (D/A/E/R), uma por caso da especificação |")
     a("| `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, "
@@ -1762,22 +1733,22 @@ def gerar_guia(fixtures: list[str]) -> None:
         fam = familias[ept.split("-")[1][0]]
         a(f"| `{ept}` | {fam} | {', '.join(sorted(set(plano_para_casos[ept])))} |")
     a("")
-    a("## 6. Pendências que bloqueiam ou limitam casos\n")
+    a("## 6. Definições aplicadas e pendências\n")
     a("A própria especificação (§15) lista definições que a equipe precisa fechar. Elas aparecem "
       "aqui como risco de execução, não como falha de teste:\n")
     a("| Pendência (§15) | Casos afetados |")
     a("| --- | --- |")
-    a("| Limite de tamanho, páginas e MIME | **decidido em A6** | 10 MB, 20 páginas, "
+    a("| Limite de tamanho, páginas e MIME | **definido em A6** | 10 MB, 20 páginas, "
       "PDF/JPG/PNG/WEBP/TXT — CT-106, CT-107, CT-108 |")
-    a("| Timeout e política de retry | **decidido em A6** | 60 s e 2 retentativas com backoff — "
+    a("| Timeout e política de retry | **definido em A6** | 60 s e 2 retentativas com backoff — "
       "CT-109, CT-078, CT-091 |")
-    a("| Dicionário de alto risco e conflitos | **decidido em A1/A2** | anexo fechado da EF — "
+    a("| Dicionário de alto risco e conflitos | **definido em A1/A2** | anexo fechado da EF — "
       "CT-019, CT-033, CT-101, CT-110 |")
-    a("| Farmacopeia da comparação de doses | **decidido em A9** | lista própria da equipe — CT-111 |")
-    a("| Autenticação e autorização | **fora do MVP (A8)** | CT-075 fica NAO APLICAVEL; exposição "
-      "pública exige auth |")
-    a("| Metas de latência e de precisão | **fora do MVP (A7)** | CT-093 mede, CT-100 aprova pelos "
-      "casos |")
+    a("| Farmacopeia da comparação de doses | **definido em A9** | lista própria da equipe — CT-111 |")
+    a("| Autenticação e autorização | **fora do escopo do MVP (A8)** | CT-075 fica NAO APLICAVEL; "
+      "exposição pública exige auth |")
+    a("| Metas de latência e de precisão | **fora do escopo do MVP (A7)** | CT-093 mede, CT-100 "
+      "aprova pelos casos |")
     a("| Formato final do upload | em aberto | CT-001, CT-002, CT-012 |\n")
     a("## 7. Adaptando ao template da sua área\n")
     a("O conteúdo não muda; só o cabeçalho. Se a Função Sistemas tiver um modelo próprio, ajuste a "
@@ -1801,7 +1772,7 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("```\n")
     a("Para ler a EPT no navegador, sem planilha:\n")
     a("```bash")
-    a("python3 tools/gerar_ept_pdf.py       # docs/testes/EPT_MediFlow_v1.1.pdf")
+    a("python3 tools/gerar_ept_pdf.py       # docs/testes/EPT_MediFlow.pdf")
     a("python3 tools/gerar_ept_preview.py   # docs/testes/EPT_MediFlow_preview.html (arquivo único)")
     a("```\n")
     a("O verificador garante: IDs únicos, campos obrigatórios preenchidos, enums de cenário e "

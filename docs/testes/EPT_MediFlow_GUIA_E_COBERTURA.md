@@ -1,31 +1,10 @@
 # EPT — MediFlow · guia de uso e cobertura
 
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10  
-**Artefato principal:** [`EPT_MediFlow_v1.1.csv`](EPT_MediFlow_v1.1.csv)  
-**Base:** Especificação Funcional v1.0 — **edição de 21/10/2026** (16 páginas, decisões A1–A9), em `dist/MediFlow_Especificacao_Funcional_v1.0.pdf`; contrato `app/models.py` (R1–R8); e os 79 fixtures de [`manifest.csv`](../../tests/fixtures/manifest.csv)  
+**Artefato principal:** [`EPT_MediFlow.csv`](EPT_MediFlow.csv)  
+**Base:** Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9); contrato `app/models.py` (R1–R8); e os 79 fixtures de [`manifest.csv`](../../tests/fixtures/manifest.csv)  
 **Plano oficial de EPTs:** [`docs/epts/PLANO_DE_EPTS.md`](../epts/PLANO_DE_EPTS.md) (41 EPTs D/A/E/R) — cada caso desta EPT consolidada aponta para a EPT do plano em `EPT_DO_PLANO`.  
 **Casos:** 111 — gerado por [`tools/gerar_ept.py`](../../tools/gerar_ept.py); não editar o CSV à mão, editar o gerador.
-
----
-
-## 0. O que mudou na versão 1.1
-
-A v1.0 desta EPT foi construída sobre a edição de 18/10/2026 da especificação e sobre 67 fixtures. A base do projeto avançou; esta versão acompanha:
-
-| Mudança | Efeito na EPT | Casos |
-| --- | --- | --- |
-| **Urgência isolada não gera revisão** (correção de 21/10/2026, R1 do contrato) | casos urgentes passam a esperar `PROCESSADO`, `requer_auditoria_humana=false` e alerta; revisão só com ambiguidade | CT-003, CT-017, CT-019, CT-052 |
-| **A1** — conflito impeditivo é ALTA ou MÉDIA | novos casos de gravidade MÉDIA (bloqueia) e BAIXA (não bloqueia) | CT-101, CT-102 |
-| **A2** — dicionário clínico fechado | novo caso de conformidade com o dicionário | CT-110 |
-| **A3** — `score_extracao` determinístico | novo caso da fórmula, com piso 0 | CT-103 |
-| **A4** — prioridade `NAO_IDENTIFICADA` revisa | caso dedicado com fixture próprio | CT-104 |
-| **A5** — urgência `INDETERMINADO` é incerteza | caso dedicado com fixture próprio | CT-105 |
-| **A6** — 10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT, timeout 60 s, 2 retentativas | limites, formatos e retry ganharam casos próprios; o antigo “limite pendente” saiu | CT-106…CT-109 |
-| **A7/A8** — metas fora do MVP, retenção até o fim do hackathon, auth fora do MVP | casos de latência, precisão, privacidade e acesso passaram a registrar isso | CT-093, CT-100, CT-094, CT-075 |
-| **A9** — farmacopeia própria da equipe | novo caso, inclusive sem a base carregada | CT-111 |
-| **79 fixtures** (eram 67) | massa, cobertura e anexos recalculados | todos |
-
-> **Atenção à base documental:** a cópia da **raiz** do repositório (`MediFlow_Especificacao_Funcional_v1.0.pdf`, 15 páginas, 18/10/2026) é a edição **anterior**. A edição de 21/10/2026 (16 páginas, com o Anexo A das decisões A1–A9) está em `dist/MediFlow_Especificacao_Funcional_v1.0.pdf`. Esta EPT usa a de 21/10.
 
 ---
 
@@ -39,8 +18,8 @@ Diferença prática:
 | --- | --- |
 | `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` | **O que existe** para testar (79 documentos) |
 | `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |
-| `EPT_MediFlow_v1.1.csv` (esta) | **Como executar e como saber se passou** |
-| `EPT_MediFlow_v1.1.pdf` | **A EPT como documento**: capa, sumário, os 111 casos por suíte e os anexos de cobertura, com folha de aprovação |
+| `EPT_MediFlow.csv` (esta) | **Como executar e como saber se passou** |
+| `EPT_MediFlow.pdf` | **A EPT como documento**: capa, sumário, os 111 casos por suíte e os anexos de cobertura, com folha de aprovação |
 | `docs/epts/` | **O plano oficial**: 41 EPTs (D/A/E/R), uma por caso da especificação |
 | `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, detalhe do caso e as matrizes de cobertura |
 
@@ -334,18 +313,18 @@ As 41 EPTs planejadas em `docs/epts/PLANO_DE_EPTS.md` têm pelo menos um caso ex
 | `EPT-R10` | Não funcional (§14) | CT-096 |
 | `EPT-R11` | Não funcional (§14) | CT-097 |
 
-## 6. Pendências que bloqueiam ou limitam casos
+## 6. Definições aplicadas e pendências
 
 A própria especificação (§15) lista definições que a equipe precisa fechar. Elas aparecem aqui como risco de execução, não como falha de teste:
 
 | Pendência (§15) | Casos afetados |
 | --- | --- |
-| Limite de tamanho, páginas e MIME | **decidido em A6** | 10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT — CT-106, CT-107, CT-108 |
-| Timeout e política de retry | **decidido em A6** | 60 s e 2 retentativas com backoff — CT-109, CT-078, CT-091 |
-| Dicionário de alto risco e conflitos | **decidido em A1/A2** | anexo fechado da EF — CT-019, CT-033, CT-101, CT-110 |
-| Farmacopeia da comparação de doses | **decidido em A9** | lista própria da equipe — CT-111 |
-| Autenticação e autorização | **fora do MVP (A8)** | CT-075 fica NAO APLICAVEL; exposição pública exige auth |
-| Metas de latência e de precisão | **fora do MVP (A7)** | CT-093 mede, CT-100 aprova pelos casos |
+| Limite de tamanho, páginas e MIME | **definido em A6** | 10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT — CT-106, CT-107, CT-108 |
+| Timeout e política de retry | **definido em A6** | 60 s e 2 retentativas com backoff — CT-109, CT-078, CT-091 |
+| Dicionário de alto risco e conflitos | **definido em A1/A2** | anexo fechado da EF — CT-019, CT-033, CT-101, CT-110 |
+| Farmacopeia da comparação de doses | **definido em A9** | lista própria da equipe — CT-111 |
+| Autenticação e autorização | **fora do escopo do MVP (A8)** | CT-075 fica NAO APLICAVEL; exposição pública exige auth |
+| Metas de latência e de precisão | **fora do escopo do MVP (A7)** | CT-093 mede, CT-100 aprova pelos casos |
 | Formato final do upload | em aberto | CT-001, CT-002, CT-012 |
 
 ## 7. Adaptando ao template da sua área
@@ -374,7 +353,7 @@ python3 tools/gerar_ept.py           # regrava o CSV e este guia
 Para ler a EPT no navegador, sem planilha:
 
 ```bash
-python3 tools/gerar_ept_pdf.py       # docs/testes/EPT_MediFlow_v1.1.pdf
+python3 tools/gerar_ept_pdf.py       # docs/testes/EPT_MediFlow.pdf
 python3 tools/gerar_ept_preview.py   # docs/testes/EPT_MediFlow_preview.html (arquivo único)
 ```
 

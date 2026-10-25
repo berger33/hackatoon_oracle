@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Gera a versão navegável da EPT (HTML autocontido) a partir do CSV.
 
-Lê `docs/testes/EPT_MediFlow_v1.0.csv` e escreve
+Lê `docs/testes/EPT_MediFlow.csv` e escreve
 `docs/testes/EPT_MediFlow_preview.html`: um arquivo único, sem dependência
 externa (CSS/JS embutidos, dados em JSON), que abre por duplo clique e também
 serve como preview local.
@@ -22,7 +22,7 @@ import os
 from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.csv")
+CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow.csv")
 MANIFEST = os.path.join(ROOT, "tests/fixtures/manifest.csv")
 SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_preview.html")
 
@@ -31,7 +31,7 @@ HTML = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EPT — MediFlow v1.1</title>
+<title>EPT — MediFlow</title>
 <style>
 :root{
   --bg:#f6f7f9; --surface:#ffffff; --ink:#16181d; --muted:#5b6270; --line:#e3e6ec;
@@ -126,7 +126,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
   <div class="wrap">
     <div class="brandline">
       <h1>EPT — Especificação de Procedimento de Teste</h1>
-      <span class="pill">MediFlow v1.1</span>
+      <span class="pill">MediFlow</span>
       <span class="sub">Hackathon ONE G10 · Oracle Next Education &amp; Alura</span>
     </div>
     <div class="cards" id="cards"></div>
@@ -152,7 +152,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
       <span>
         <button class="ghost" id="limpar">Limpar filtros</button>
         <button class="ghost" id="expandir">Expandir todos</button>
-        <a class="ghost" href="EPT_MediFlow_v1.1.csv" download
+        <a class="ghost" href="EPT_MediFlow.csv" download
            style="text-decoration:none;margin-left:6px">Baixar CSV</a>
       </span>
     </div>
@@ -186,7 +186,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
         <tr><th>Artefato</th><th>Responde</th></tr>
         <tr><td><code>CATALOGO_DE_DOCUMENTOS_DE_TESTE.md</code></td><td>O que existe para testar (67 documentos)</td></tr>
         <tr><td><code>CONTRATO_DE_DADOS.md</code> / <code>app/models.py</code></td><td>O que é uma resposta válida</td></tr>
-        <tr><td><code>EPT_MediFlow_v1.0.csv</code></td><td>Como executar e como saber se passou</td></tr>
+        <tr><td><code>EPT_MediFlow.csv</code></td><td>Como executar e como saber se passou</td></tr>
       </table>
       <h2>Formato</h2>
       <p>CSV com separador <code>;</code>, UTF-8 com BOM, CRLF e uma linha por caso (sem quebra de
@@ -245,7 +245,7 @@ $("#cards").innerHTML = [
 ].map(([v, l]) => `<div class="card"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("");
 
 $("#rodape").textContent =
-  `Gerado por tools/gerar_ept_preview.py a partir de ${DADOS.length} casos · base: Especificação Funcional v1.0, edição de 21/10/2026 (A1–A9) ` +
+  `Gerado por tools/gerar_ept_preview.py a partir de ${DADOS.length} casos · base: Especificação Funcional v1.0, incluindo o Anexo A (A1–A9) ` +
   `(RF-01…RF-30, RN-01…RN-07, RNF-01…RNF-11, §8.2, §10–§12, §16) + 67 fixtures do manifest.csv. ` +
   `Todos os dados são fictícios.`;
 

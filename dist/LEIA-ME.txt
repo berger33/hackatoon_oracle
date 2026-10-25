@@ -12,9 +12,9 @@ docs/
   testes/
     CONTRATO_DE_DADOS.md      O contrato em português, com o porquê de cada regra
     CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
-    EPT_MediFlow_v1.0.csv                 EPT executável: 100 casos (; UTF-8 BOM, abre no Excel)
+    EPT_MediFlow.csv                      EPT executável: 111 casos (; UTF-8 BOM, abre no Excel)
     EPT_MediFlow_GUIA_E_COBERTURA.md      Dicionário da EPT, ordem de execução e cobertura
-    EPT_MediFlow_v1.0.pdf                 A EPT em PDF: capa, sumário, 100 casos e anexos
+    EPT_MediFlow.pdf                      A EPT em PDF: capa, sumário, casos por suíte e anexos
     EPT_MediFlow_preview.html             A EPT navegável no navegador (filtros e cobertura)
     Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
 tests/fixtures/
@@ -43,8 +43,8 @@ PDFs de origem (base documental do hackathon)
 
 COMO USAR A EPT
 ---------------
-Abra docs/testes/EPT_MediFlow_v1.0.csv separando por ponto e vírgula. Cada linha é um
-caso (CT-001 a CT-100) com pré-condição, massa, passos e resultado esperado; as
+Abra docs/testes/EPT_MediFlow.csv separando por ponto e vírgula. Cada linha é um
+caso (CT-001 a CT-111) com pré-condição, massa, passos e resultado esperado; as
 colunas de execução começam vazias para o executor preencher. O guia ao lado explica
 cada coluna, a ordem de execução e o que cada caso cobre.
 

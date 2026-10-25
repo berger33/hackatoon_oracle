@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Gera o PDF da EPT (Especificação de Procedimento de Teste) do MediFlow.
 
-Entrada: `docs/testes/EPT_MediFlow_v1.0.csv` (gerado por tools/gerar_ept.py).
-Saída:   `docs/testes/EPT_MediFlow_v1.0.pdf`
+Entrada: `docs/testes/EPT_MediFlow.csv` (gerado por tools/gerar_ept.py).
+Saída:   `docs/testes/EPT_MediFlow.pdf`
 
 Estrutura do documento:
   capa · sumário · como ler · visão geral e cobertura · os 100 casos por suíte ·
@@ -37,9 +37,9 @@ from reportlab.platypus import (
 from reportlab.platypus.tableofcontents import TableOfContents
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.csv")
+CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow.csv")
 MANIFEST = os.path.join(ROOT, "tests/fixtures/manifest.csv")
-SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.pdf")
+SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow.pdf")
 
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"
 pdfmetrics.registerFont(TTFont("DJ", f"{FONT_DIR}/DejaVuSans.ttf"))
@@ -68,12 +68,12 @@ MARGEM_BASE = 18 * mm
 BARRA_MAX = 26 * mm   # largura máxima da barra nas tabelas de distribuição
 LARGURA = W - 2 * MARGEM_LAT
 
-VERSAO = "1.1"
+VERSAO = "1.0"
 TITULO = "Especificação de Procedimento de Teste"
 PROJETO = "MediFlow — Hackathon ONE G10 · Oracle Next Education & Alura"
-BASE = ("Especificação Funcional v1.0 — edição de 21/10/2026 (16 páginas, decisões A1–A9), em "
-        "dist/MediFlow_Especificacao_Funcional_v1.0.pdf · contrato app/models.py (R1–R8) · "
-        "massa de tests/fixtures/manifest.csv · plano oficial em docs/epts/PLANO_DE_EPTS.md")
+BASE = ("Especificação Funcional v1.0, incluindo o Anexo A (decisões A1 a A9) · Análise de "
+        "Requisitos v1.1 · contrato de dados app/models.py (R1–R8) · massa de "
+        "tests/fixtures/manifest.csv (79 fixtures) · plano de EPTs em docs/epts/PLANO_DE_EPTS.md")
 EMITIDO = date.today().strftime("%d/%m/%Y")
 
 # ------------------------------------------------------------------- estilos
@@ -309,16 +309,16 @@ def capa() -> list:
         Paragraph("EPT", S["capa_titulo"]),
         Paragraph(TITULO, st("t2", fontName="DJB", fontSize=15, leading=20, textColor=BRAND)),
         Spacer(1, 6 * mm),
-        Paragraph("Casos de teste executáveis para o MVP de triagem documental — roteiro, massa, "
-                  "resultado esperado e rastreabilidade requisito a requisito, na edição de "
-                  "21/10/2026 da especificação (decisões A1–A9).", S["capa_sub"]),
+        Paragraph("Roteiro de execução do MVP de triagem documental: pré-condição, massa, passos e "
+                  "resultado esperado de cada caso, com rastreabilidade a requisitos, critérios de "
+                  "aceite e fixtures.", S["capa_sub"]),
         Spacer(1, 14 * mm),
     ]
     meta = [
-        ("Versão", f"{VERSAO} — emitida em {EMITIDO}"),
+        ("Versão", f"{VERSAO} · {EMITIDO}"),
         ("Projeto", PROJETO),
         ("Base documental", BASE),
-        ("Formato", "CSV (uma linha por caso) + esta versão para leitura e assinatura; "
+        ("Formato", "CSV com uma linha por caso (execução) e este PDF (leitura e aprovação); "
                     "gerado por tools/gerar_ept.py e tools/gerar_ept_pdf.py"),
         ("Escopo", "MVP conforme a Especificação Funcional v1.0: ingestão, classificação, "
                    "extração, confiança e conflitos, decisão e roteamento, persistência, "
@@ -424,7 +424,7 @@ def como_ler(casos: list[dict]) -> list:
                   "código HTTP ou campo do payload — e não como “funciona corretamente”.", S["corpo_j"]),
         Spacer(1, 2 * mm),
         Paragraph("O mesmo conteúdo existe em CSV, com as colunas de execução vazias para o "
-                  "executor preencher: <font name='DJM' size='8'>docs/testes/EPT_MediFlow_v1.0.csv</font>. "
+                  "executor preencher: <font name='DJM' size='8'>docs/testes/EPT_MediFlow.csv</font>. "
                   "Este PDF é a versão de leitura, revisão e assinatura.", S["corpo_j"]),
         Paragraph("Dicionário de colunas", S["h2"]),
         t,
@@ -436,72 +436,6 @@ def como_ler(casos: list[dict]) -> list:
                   "<font name='DJM' size='8'>modo_fixture.score_forcado</font> do "
                   "<font name='DJM' size='8'>expected.json</font>. Score de modelo não é determinístico "
                   "e não deve ser comparado por igualdade.", S["corpo_j"]),
-        PageBreak(),
-    ]
-
-
-def o_que_mudou(casos: list[dict]) -> list:
-    mudancas = [
-        ("Urgência isolada não gera revisão (correção de 21/10/2026, R1 do contrato)",
-         "Casos urgentes passam a esperar PROCESSADO, requer_auditoria_humana=false e alerta "
-         "registrado; revisão só com ambiguidade.",
-         "CT-003, CT-017, CT-019, CT-052"),
-        ("A1 — conflito impeditivo é ALTA ou MÉDIA",
-         "Gravidade BAIXA é registrada e não bloqueia; novos casos para as duas gravidades.",
-         "CT-101, CT-102"),
-        ("A2 — dicionário clínico fechado",
-         "Achado crítico, alto risco e conflito passam a vir do anexo aprovado, não do modelo.",
-         "CT-110, CT-019, CT-033"),
-        ("A3 — score_extracao determinístico",
-         "Fórmula 1 − 0,2×ausente − 0,1×incerto − 0,3/0,2/0,1×conflito, com piso 0.",
-         "CT-103"),
-        ("A4 — prioridade NAO_IDENTIFICADA revisa",
-         "O terceiro valor do enum passa a ser gatilho de revisão por si só.",
-         "CT-104, CT-021"),
-        ("A5 — urgência INDETERMINADO é incerteza",
-         "Entra como campo incerto e gera revisão; nunca é convertida em NAO.",
-         "CT-105, CT-039"),
-        ("A6 — limites decididos",
-         "10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT, timeout de 60 s e 2 retentativas com backoff.",
-         "CT-106, CT-107, CT-108, CT-109"),
-        ("A7 e A8 — metas e autenticação fora do MVP",
-         "Casos de latência, precisão, retenção e acesso passaram a registrar a decisão.",
-         "CT-093, CT-100, CT-094, CT-075"),
-        ("A9 — farmacopeia própria da equipe",
-         "Comparação de dose contra a lista aprovada; sem o arquivo, vale a regra de conflito.",
-         "CT-111, CT-036"),
-        ("79 fixtures (eram 67)",
-         "Massa, cobertura, anexos e contagens recalculados a partir do manifesto.",
-         "todos"),
-    ]
-    dados = [[Paragraph("MUDANÇA", S["tabela_cab"]), Paragraph("EFEITO NA EPT", S["tabela_cab"]),
-              Paragraph("CASOS", S["tabela_cab"])]]
-    dados += [[par(a, "celula_b"), par(b), par(c, "mono")] for a, b, c in mudancas]
-    t = Table(dados, colWidths=[62 * mm, LARGURA - 62 * mm - 30 * mm, 30 * mm], repeatRows=1)
-    t.setStyle(TableStyle([
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-        ("BACKGROUND", (0, 0), (-1, 0), SOFT),
-        ("LINEBELOW", (0, 0), (-1, -1), 0.3, LINE),
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-    ]))
-    return [
-        Paragraph("O que mudou na versão 1.1", S["h1"]),
-        Spacer(1, 3 * mm),
-        Paragraph("A versão 1.0 desta EPT foi construída sobre a edição de 18/10/2026 da "
-                  "especificação e sobre 67 fixtures. A base do projeto avançou: a especificação foi "
-                  "reemitida em 21/10/2026 com as decisões A1–A9, o contrato mudou a regra de "
-                  "urgência e a massa cresceu para 79 documentos. Esta edição acompanha as três "
-                  "mudanças.", S["corpo_j"]),
-        Spacer(1, 3 * mm),
-        t,
-        Spacer(1, 4 * mm),
-        Paragraph("<b>Atenção à base documental.</b> A cópia da raiz do repositório "
-                  "(<font name='DJM' size='8'>MediFlow_Especificacao_Funcional_v1.0.pdf</font>, "
-                  "15 páginas, 18/10/2026) é a edição <b>anterior</b>. A edição de 21/10/2026 "
-                  "(16 páginas, com o Anexo A das decisões) está em "
-                  "<font name='DJM' size='8'>dist/MediFlow_Especificacao_Funcional_v1.0.pdf</font>. "
-                  "Esta EPT usa a de 21/10.", S["corpo_j"]),
         PageBreak(),
     ]
 
@@ -590,21 +524,21 @@ def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
     return [
         Paragraph("Visão geral e cobertura", S["h1"]),
         Spacer(1, 3 * mm),
-        Paragraph("A EPT cobre toda a Especificação Funcional v1.0 na edição de 21/10/2026 — RF-01 a "
-                  "RF-30, RN-01 a RN-07, RNF-01 a RNF-11 e as decisões A1 a A9 —, os 15 critérios de "
-                  f"aceite de §16, os {len(fixtures)} documentos fictícios do catálogo e as 41 EPTs "
-                  "do plano oficial. Cada requisito tem pelo menos um caso; as matrizes completas "
-                  "estão nos anexos A a C e F.", S["corpo_j"]),
+        Paragraph("A EPT cobre a Especificação Funcional v1.0 — RF-01 a RF-30, RN-01 a RN-07, "
+                  "RNF-01 a RNF-11 e as decisões A1 a A9 —, os 15 critérios de aceite de §16, os "
+                  f"{len(fixtures)} documentos fictícios do catálogo e as 41 EPTs do plano oficial. "
+                  "Cada requisito tem pelo menos um caso; as matrizes completas estão nos anexos A "
+                  "a C e F.", S["corpo_j"]),
         Spacer(1, 4 * mm),
         t_cartoes,
         Spacer(1, 5 * mm),
         duas_colunas,
         Spacer(1, 3 * mm),
         Paragraph("O que a EPT não faz", S["h2"]),
-        Paragraph("Ela não define critérios clínicos — apenas verifica os que a equipe aprovou. Os "
-                  "limites, o dicionário clínico, a farmacopeia e as metas deixaram de ser pendência "
-                  "com as decisões A1–A9; o que continua em aberto (formato final do upload) e o que "
-                  "ficou fora do MVP (autenticação e metas numéricas) está no Anexo D.", S["corpo_j"]),
+        Paragraph("Ela não define critérios clínicos: verifica os que a equipe aprovou. Limites, "
+                  "dicionário clínico, farmacopeia e metas seguem as decisões A1 a A9; o que está "
+                  "fora do escopo do MVP e o único ponto em aberto (formato final do upload) estão "
+                  "no Anexo D.", S["corpo_j"]),
         PageBreak(),
     ]
 
@@ -729,20 +663,20 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                       for f in fixtures]
 
     pend = [
-        ("Limites de tamanho, páginas e MIME", "decidido em A6", "CT-106, CT-107, CT-108",
-         "10 MB, 20 páginas e PDF/JPG/PNG/WEBP/TXT. Não bloqueia mais nenhum caso."),
-        ("Timeout e política de retry", "decidido em A6", "CT-109, CT-078, CT-091",
-         "60 s no Gemini e 2 retentativas com backoff."),
-        ("Dicionário clínico (conflitos, alto risco, achados)", "decidido em A1/A2", "CT-101, CT-110",
+        ("Limites de tamanho, páginas e MIME", "A6", "CT-106, CT-107, CT-108",
+         "10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT — verificados nas duas bordas."),
+        ("Timeout e política de retry", "A6", "CT-109, CT-078, CT-091",
+         "60 s no Gemini, 2 retentativas com backoff e falha registrada."),
+        ("Dicionário clínico (conflitos, alto risco, achados)", "A1, A2", "CT-101, CT-110",
          "Anexo A.2 é a fonte; o modelo não define risco livremente."),
-        ("Farmacopeia da comparação de doses", "decidido em A9", "CT-111",
+        ("Farmacopeia da comparação de doses", "A9", "CT-111",
          "Lista própria da equipe; sem o arquivo, vale a regra de conflito de RF-16."),
-        ("Autenticação e autorização", "fora do MVP (A8)", "CT-071, CT-075",
-         "Demonstração local; exposição pública exige auth antes. Caso fica NAO APLICAVEL."),
-        ("Metas de latência e de precisão", "fora do MVP (A7)", "CT-093, CT-100",
+        ("Autenticação e autorização", "fora do escopo (A8)", "CT-071, CT-075",
+         "Demonstração local; exposição pública exige auth antes. Caso NAO APLICAVEL no MVP."),
+        ("Metas de latência e de precisão", "fora do escopo (A7)", "CT-093, CT-100",
          "Os casos medem e registram; o aceite é pelos casos aprovados."),
         ("Formato final do upload (multipart × JSON)", "em aberto", "CT-001, CT-002, CT-012",
-         "Os dois caminhos estão previstos na spec; o contrato final deve ser registrado."),
+         "Os dois caminhos estão previstos na especificação; o contrato final deve ser registrado."),
     ]
     linhas_pend = [[par(a), par(b, "celula_b"), par(c, "mono"), par(d)] for a, b, c, d in pend]
 
@@ -764,7 +698,7 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
     ]))
 
     blocos: list = [NextPageTemplate("capa"), *capa(), *sumario(), *como_ler(casos),
-                    *o_que_mudou(casos), *visao_geral(casos, fixtures)]
+                    *visao_geral(casos, fixtures)]
     blocos += casos_por_suite(casos)
     blocos += anexo("Anexo A — Requisito → casos",
                     "RF-01 a RF-30, RN-01 a RN-07 e RNF-01 a RNF-11. Nenhum requisito da "
@@ -779,9 +713,9 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                     "Os 67 documentos fictícios do catálogo, cada um citado ao menos uma vez.",
                     ["FIXTURE", "CASOS", "ONDE"], linhas_fixture,
                     [54 * mm, 15 * mm, LARGURA - 69 * mm])
-    blocos += anexo("Anexo D — Definições e pendências",
-                    "O que foi decidido em A1–A9 desde a versão 1.0 e o que ainda depende da equipe.",
-                    ["DEFINIÇÃO", "SITUAÇÃO", "CASOS", "EFEITO"], linhas_pend,
+    blocos += anexo("Anexo D — Definições aplicadas e pendências",
+                    "De onde vem cada definição que a EPT usa e o que ainda depende da equipe.",
+                    ["DEFINIÇÃO", "ORIGEM", "CASOS", "ESTADO ESPERADO"], linhas_pend,
                     [46 * mm, 26 * mm, 30 * mm, LARGURA - 102 * mm])
     plano: dict[str, list[str]] = defaultdict(list)
     for c in casos:
@@ -798,13 +732,14 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                                      key=lambda kv: (kv[0].split("-")[1][0],
                                                      int(kv[0].split("-")[1][1:])))
     ]
-    blocos += anexo("Anexo F — EPT do plano oficial → casos",
-                    "As 41 EPTs de docs/epts/PLANO_DE_EPTS.md e os casos desta EPT consolidada que "
-                    "executam o mesmo comportamento.",
+    anexo_e = anexo("Anexo E — EPT do plano oficial → casos",
+                    "As 41 EPTs de docs/epts/PLANO_DE_EPTS.md e os casos desta EPT que executam o "
+                    "mesmo comportamento.",
                     ["EPT", "FAMÍLIA", "CASOS", "ONDE"], linhas_plano,
                     [26 * mm, 34 * mm, 15 * mm, LARGURA - 75 * mm])
+    blocos += anexo_e
     blocos += [
-        Paragraph("Anexo E — Registro de execução", S["h1"]),
+        Paragraph("Anexo F — Registro de execução", S["h1"]),
         Spacer(1, 2 * mm),
         Paragraph("Preencha no CSV, mantendo este documento como a versão de referência aprovada.",
                   S["pequeno"]),
@@ -819,10 +754,11 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
         _tabela_assinaturas(),
         Spacer(1, 8 * mm),
         Paragraph("Encerramento", S["h2"]),
-        Paragraph("Esta EPT cobre 100 casos e é gerada por script a partir da especificação e do "
-                  "manifesto de fixtures: mudou a spec ou a massa, o documento é regerado e a "
-                  "cobertura é revalidada. A execução completa dos casos de prioridade Alta é a "
-                  "condição mínima para declarar o MVP pronto para a banca.", S["corpo_j"]),
+        Paragraph("Esta EPT cobre todos os casos de teste do MVP e é gerada por script a partir da "
+                  "especificação e do "
+                  "manifesto de fixtures: a cobertura é revalidada a cada geração. A execução "
+                  "completa dos casos de prioridade Alta é a condição mínima para declarar o MVP "
+                  "pronto para a banca.", S["corpo_j"]),
     ]
     return blocos
 

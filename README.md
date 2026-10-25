@@ -91,9 +91,9 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
 │       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 79 casos, bloco por bloco
-│       ├── EPT_MediFlow_v1.1.csv                # EPT executável: casos com passo a passo e rastreabilidade
+│       ├── EPT_MediFlow.csv                    # EPT executável: casos com passo a passo e rastreabilidade
 │       ├── EPT_MediFlow_GUIA_E_COBERTURA.md     # dicionário da EPT + cobertura RF/RN/RNF/fixtures
-│       ├── EPT_MediFlow_v1.1.pdf                # a EPT em PDF: capa, sumário, casos por suíte, anexos
+│       ├── EPT_MediFlow.pdf                    # a EPT em PDF: capa, sumário, casos por suíte, anexos
 │       ├── EPT_MediFlow_preview.html            # a EPT navegável: filtros, detalhe e cobertura
 │       ├── Mapa_de_Documentos_de_Teste_MediFlow.pdf
 │       └── AUDITORIA_2026-10-20.md              # auditoria de consistência: CRM-SP, datas, pacote, verificadores
@@ -139,8 +139,8 @@ Para regerar os documentos (só necessário se mudar um caso):
 python3 tools/gerar_fixtures_demo.py
 python3 tools/gerar_fixtures_catalogo.py
 python3 tools/gerar_mapa_documentos.py
-python3 tools/gerar_ept.py                   # EPT: docs/testes/EPT_MediFlow_v1.0.csv
-python3 tools/gerar_ept_pdf.py               # EPT em PDF: docs/testes/EPT_MediFlow_v1.0.pdf
+python3 tools/gerar_ept.py                   # EPT: docs/testes/EPT_MediFlow.csv
+python3 tools/gerar_ept_pdf.py               # EPT em PDF: docs/testes/EPT_MediFlow.pdf
 python3 tools/gerar_ept_preview.py           # EPT navegável: docs/testes/EPT_MediFlow_preview.html
 ```
 
