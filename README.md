@@ -90,6 +90,8 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
 │       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 67 casos, bloco por bloco
+│       ├── EPT_MediFlow_v1.0.csv                # EPT executável: 100 casos, uma linha por caso
+│       ├── EPT_MediFlow_GUIA_E_COBERTURA.md     # dicionário da EPT + cobertura RF/RN/RNF/fixtures
 │       ├── Mapa_de_Documentos_de_Teste_MediFlow.pdf
 │       └── AUDITORIA_2026-10-20.md              # auditoria de consistência: CRM-SP, datas, pacote, verificadores
 ├── tests/
@@ -104,6 +106,7 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   ├── gerar_fixtures_demo.py                   # recria os 12 casos
 │   ├── gerar_fixtures_catalogo.py               # recria os 55 casos
 │   ├── gerar_mapa_documentos.py                 # recria o PDF do mapa
+│   ├── gerar_ept.py                             # gera a EPT (CSV + guia) a partir da spec e do manifesto
 │   ├── gerar_pacote.py                          # gera o ZIP de entrega (nomes UTF-8, datas fixas)
 │   └── verificar_consistencia.py                # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
 ├── dist/
@@ -118,6 +121,7 @@ python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pil
 
 python3 tests/testar_contrato.py             # 67/67 expected.json válidos e estáveis
 python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
+python3 tools/gerar_ept.py --check           # EPT cobre RF-01..30, RN-01..07, RNF-01..11, 67 fixtures e §16
 ```
 
 Para regerar os documentos (só necessário se mudar um caso):
@@ -126,6 +130,7 @@ Para regerar os documentos (só necessário se mudar um caso):
 python3 tools/gerar_fixtures_demo.py
 python3 tools/gerar_fixtures_catalogo.py
 python3 tools/gerar_mapa_documentos.py
+python3 tools/gerar_ept.py                   # EPT: docs/testes/EPT_MediFlow_v1.0.csv
 ```
 
 ## Critérios de aceite do MVP

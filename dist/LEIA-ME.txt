@@ -12,6 +12,8 @@ docs/
   testes/
     CONTRATO_DE_DADOS.md      O contrato em português, com o porquê de cada regra
     CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
+    EPT_MediFlow_v1.0.csv                 EPT executável: 100 casos (; UTF-8 BOM, abre no Excel)
+    EPT_MediFlow_GUIA_E_COBERTURA.md      Dicionário da EPT, ordem de execução e cobertura
     Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
 tests/fixtures/
   manifest.csv                67 fixtures em formato de máquina
@@ -25,6 +27,7 @@ tools/
   gerar_fixtures_demo.py      Recria os 12 casos de demonstração
   gerar_fixtures_catalogo.py  Recria os 55 casos restantes
   gerar_mapa_documentos.py    Recria o PDF do mapa
+  gerar_ept.py                Recria a EPT (CSV + guia)
   verificar_consistencia.py   Audita estrutura, schema, manifesto, CRM-SP e duplicidade
   gerar_pacote.py            Gera este ZIP (nomes UTF-8, datas fixas)
 requirements.txt              pydantic, reportlab, pymupdf, pillow
@@ -34,8 +37,15 @@ PDFs de origem (base documental do hackathon)
   MediFlow_-_Análise_de_Requisitos_v1.1.pdf
   MediFlow_Especificacao_Funcional_v1.0.pdf
 
-COMO USAR
----------
+COMO USAR A EPT
+---------------
+Abra docs/testes/EPT_MediFlow_v1.0.csv separando por ponto e vírgula. Cada linha é um
+caso (CT-001 a CT-100) com pré-condição, massa, passos e resultado esperado; as
+colunas de execução começam vazias para o executor preencher. O guia ao lado explica
+cada coluna, a ordem de execução e o que cada caso cobre.
+
+COMO USAR OS DOCUMENTOS
+-----------------------
 1. Envie {ID}.txt, {ID}.pdf e {ID}.jpg como três triagens independentes.
 2. Compare a resposta com "resposta_esperada" no expected.json da mesma pasta:
    o bloco é o payload completo, no formato do contrato (app/models.py).
