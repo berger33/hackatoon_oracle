@@ -22,7 +22,7 @@ import os
 from collections import Counter, defaultdict
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.0.csv")
+CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.csv")
 MANIFEST = os.path.join(ROOT, "tests/fixtures/manifest.csv")
 SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_preview.html")
 
@@ -31,7 +31,7 @@ HTML = """<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EPT — MediFlow v1.0</title>
+<title>EPT — MediFlow v1.1</title>
 <style>
 :root{
   --bg:#f6f7f9; --surface:#ffffff; --ink:#16181d; --muted:#5b6270; --line:#e3e6ec;
@@ -126,7 +126,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
   <div class="wrap">
     <div class="brandline">
       <h1>EPT — Especificação de Procedimento de Teste</h1>
-      <span class="pill">MediFlow v1.0</span>
+      <span class="pill">MediFlow v1.1</span>
       <span class="sub">Hackathon ONE G10 · Oracle Next Education &amp; Alura</span>
     </div>
     <div class="cards" id="cards"></div>
@@ -152,7 +152,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
       <span>
         <button class="ghost" id="limpar">Limpar filtros</button>
         <button class="ghost" id="expandir">Expandir todos</button>
-        <a class="ghost" href="EPT_MediFlow_v1.0.csv" download
+        <a class="ghost" href="EPT_MediFlow_v1.1.csv" download
            style="text-decoration:none;margin-left:6px">Baixar CSV</a>
       </span>
     </div>
@@ -171,6 +171,7 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
     <div class="grid2">
       <div class="panel"><h2>Requisito → casos</h2><div id="cov-req"></div></div>
       <div class="panel"><h2>Item de aceite (§16) → casos</h2><div id="cov-aceite"></div></div>
+      <div class="panel"><h2>EPT do plano oficial → casos</h2><div id="cov-plano"></div></div>
       <div class="panel" style="grid-column:1/-1"><h2>Fixture → casos</h2><div id="cov-massa"></div></div>
     </div>
   </section>
@@ -236,6 +237,7 @@ const c = DADOS.reduce((a, r) => {
 $("#cards").innerHTML = [
   [DADOS.length, "casos"],
   [COV.fixtures_total, "fixtures na massa"],
+  [Object.keys(COV.plano || {}).length, "EPTs do plano"],
   [c.suites.size, "suítes"],
   [Object.keys(COV.req).length, "requisitos cobertos"],
   [c.prio.Alta || 0, "prioridade alta"],
@@ -243,7 +245,7 @@ $("#cards").innerHTML = [
 ].map(([v, l]) => `<div class="card"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join("");
 
 $("#rodape").textContent =
-  `Gerado por tools/gerar_ept_preview.py a partir de ${DADOS.length} casos · base: Especificação Funcional v1.0 ` +
+  `Gerado por tools/gerar_ept_preview.py a partir de ${DADOS.length} casos · base: Especificação Funcional v1.0, edição de 21/10/2026 (A1–A9) ` +
   `(RF-01…RF-30, RN-01…RN-07, RNF-01…RNF-11, §8.2, §10–§12, §16) + 67 fixtures do manifest.csv. ` +
   `Todos os dados são fictícios.`;
 
@@ -292,6 +294,7 @@ function detalhe(r) {
       <p>${esc(r.TECNICA)} · <span class="tag auto">${esc(r.AUTOMATIZAVEL)}</span> · ${esc(r.AMBIENTE)}</p>
       <h3 style="margin-top:12px">Rastreabilidade</h3>
       <p>${esc(r.ID_REQUISITO || "—")}${r.REGRAS_NEGOCIO ? " · " + esc(r.REGRAS_NEGOCIO) : ""} · ${esc(r.CRITERIO_DE_ACEITE)}</p>
+      ${r.EPT_DO_PLANO ? `<h3 style="margin-top:12px">EPT do plano</h3><p>${esc(r.EPT_DO_PLANO)}</p>` : ""}
     </div>
     <div class="block">
       <h3>Passos</h3><ol>${passos}</ol>
@@ -352,6 +355,7 @@ function krows(mapa, rotulo) {
 }
 $("#cov-req").innerHTML = krows(COV.req);
 $("#cov-aceite").innerHTML = krows(COV.aceite, k => "§16 item " + k);
+$("#cov-plano").innerHTML = krows(COV.plano);
 $("#cov-massa").innerHTML = krows(COV.massa);
 
 $("#cols").innerHTML = `<tr><th>Coluna</th><th>Conteúdo</th></tr>` +
@@ -390,6 +394,7 @@ DESCRICAO_COLUNAS = [
     ("RESULTADO_ESPERADO", "Asserções objetivas: valores, códigos HTTP e campos do payload."),
     ("POS_CONDICOES", "Estado esperado do ambiente após a execução."),
     ("CRITERIO_DE_ACEITE", "Item de §16 associado ao caso."),
+    ("EPT_DO_PLANO", "EPT do plano oficial (docs/epts) que detalha o mesmo comportamento."),
     ("AUTOMATIZAVEL", "Sim, Parcial ou Não."),
     ("AMBIENTE", "API, Interface, Ambos ou Repositório."),
     ("OBSERVACOES", "Cuidados, dependências e pendências (PENDENTE (§15))."),
@@ -431,8 +436,16 @@ def main() -> None:
     with open(MANIFEST, newline="", encoding="utf-8") as f:
         total_fixtures = sum(1 for _ in csv.DictReader(f))
 
+    plano: dict[str, list[str]] = defaultdict(list)
+    for r in dados:
+        for ept in str(r.get("EPT_DO_PLANO", "")).split(";"):
+            ept = ept.strip()
+            if ept:
+                plano[ept].append(r["ID_CASO"])
+
     cobertura = {
         "req": ordena(req),
+        "plano": {k: sorted(set(v)) for k, v in sorted(plano.items())},
         "aceite": {k: sorted(set(v)) for k, v in sorted(aceite.items(), key=lambda kv: int(kv[0]))},
         "massa": {k: sorted(set(v)) for k, v in sorted(massa.items())},
         "fixtures_total": total_fixtures,

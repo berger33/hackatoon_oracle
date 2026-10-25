@@ -8,7 +8,7 @@ Esta pasta reúne a documentação da **massa de dados de teste** do MediFlow.
 | --- | --- |
 | [Contrato de dados](testes/CONTRATO_DE_DADOS.md) | Enums, payload, formatos de erro e as 7 regras de decisão — em português, com o porquê de cada uma |
 | [Catálogo de documentos de teste](testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md) | Os 79 casos, bloco por bloco: o que cada um testa e qual desfecho esperar |
-| [EPT consolidada (CSV)](testes/EPT_MediFlow_v1.1.csv) | Casos executáveis com pré-condição, massa, passos, resultado esperado, rastreabilidade à EPT do plano e colunas de execução |
+| [EPT consolidada (CSV)](testes/EPT_MediFlow_v1.1.csv) | 111 casos executáveis com pré-condição, massa, passos, resultado esperado, rastreabilidade à EPT do plano e colunas de execução |
 | [EPT consolidada — guia e cobertura](testes/EPT_MediFlow_GUIA_E_COBERTURA.md) | Dicionário de colunas, ordem de execução, cobertura de RF/RN/RNF, fixtures, §16 e EPTs D/A/E/R |
 | [EPT consolidada — documento (PDF)](testes/EPT_MediFlow_v1.1.pdf) | Capa, sumário, os casos por suíte, anexos de cobertura e folha de aprovação — versão de leitura e assinatura |
 | [EPT consolidada — versão navegável (HTML)](testes/EPT_MediFlow_preview.html) | Os casos com filtros, detalhe e as matrizes de cobertura, em um arquivo único |

@@ -37,9 +37,9 @@ from reportlab.platypus import (
 from reportlab.platypus.tableofcontents import TableOfContents
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.0.csv")
+CSV_EPT = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.csv")
 MANIFEST = os.path.join(ROOT, "tests/fixtures/manifest.csv")
-SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.0.pdf")
+SAIDA = os.path.join(ROOT, "docs/testes/EPT_MediFlow_v1.1.pdf")
 
 FONT_DIR = "/usr/share/fonts/truetype/dejavu"
 pdfmetrics.registerFont(TTFont("DJ", f"{FONT_DIR}/DejaVuSans.ttf"))
@@ -68,11 +68,12 @@ MARGEM_BASE = 18 * mm
 BARRA_MAX = 26 * mm   # largura máxima da barra nas tabelas de distribuição
 LARGURA = W - 2 * MARGEM_LAT
 
-VERSAO = "1.0"
+VERSAO = "1.1"
 TITULO = "Especificação de Procedimento de Teste"
 PROJETO = "MediFlow — Hackathon ONE G10 · Oracle Next Education & Alura"
-BASE = ("MediFlow_Especificacao_Funcional_v1.0.pdf (RF-01…RF-30, RN-01…RN-07, "
-        "RNF-01…RNF-11, §8.2, §10–§12, §16) + 67 fixtures de tests/fixtures/manifest.csv")
+BASE = ("Especificação Funcional v1.0 — edição de 21/10/2026 (16 páginas, decisões A1–A9), em "
+        "dist/MediFlow_Especificacao_Funcional_v1.0.pdf · contrato app/models.py (R1–R8) · "
+        "massa de tests/fixtures/manifest.csv · plano oficial em docs/epts/PLANO_DE_EPTS.md")
 EMITIDO = date.today().strftime("%d/%m/%Y")
 
 # ------------------------------------------------------------------- estilos
@@ -308,9 +309,9 @@ def capa() -> list:
         Paragraph("EPT", S["capa_titulo"]),
         Paragraph(TITULO, st("t2", fontName="DJB", fontSize=15, leading=20, textColor=BRAND)),
         Spacer(1, 6 * mm),
-        Paragraph("100 casos de teste executáveis para o MVP de triagem documental — "
-                  "roteiro, massa, resultado esperado e rastreabilidade requisito a requisito.",
-                  S["capa_sub"]),
+        Paragraph("Casos de teste executáveis para o MVP de triagem documental — roteiro, massa, "
+                  "resultado esperado e rastreabilidade requisito a requisito, na edição de "
+                  "21/10/2026 da especificação (decisões A1–A9).", S["capa_sub"]),
         Spacer(1, 14 * mm),
     ]
     meta = [
@@ -374,6 +375,7 @@ def como_ler(casos: list[dict]) -> list:
         ("RESULTADO_ESPERADO", "Asserções objetivas: valores, códigos HTTP e campos do payload."),
         ("POS_CONDICOES", "Estado esperado do ambiente após a execução."),
         ("CRITERIO_DE_ACEITE", "Item de §16 da especificação associado ao caso."),
+        ("EPT_DO_PLANO", "EPT do plano oficial (docs/epts) que detalha o mesmo comportamento."),
         ("AUTOMATIZAVEL", "Sim, Parcial ou Não."),
         ("AMBIENTE", "API, Interface, Ambos ou Repositório."),
         ("OBSERVACOES", "Cuidados, dependências e pendências sinalizadas."),
@@ -438,6 +440,72 @@ def como_ler(casos: list[dict]) -> list:
     ]
 
 
+def o_que_mudou(casos: list[dict]) -> list:
+    mudancas = [
+        ("Urgência isolada não gera revisão (correção de 21/10/2026, R1 do contrato)",
+         "Casos urgentes passam a esperar PROCESSADO, requer_auditoria_humana=false e alerta "
+         "registrado; revisão só com ambiguidade.",
+         "CT-003, CT-017, CT-019, CT-052"),
+        ("A1 — conflito impeditivo é ALTA ou MÉDIA",
+         "Gravidade BAIXA é registrada e não bloqueia; novos casos para as duas gravidades.",
+         "CT-101, CT-102"),
+        ("A2 — dicionário clínico fechado",
+         "Achado crítico, alto risco e conflito passam a vir do anexo aprovado, não do modelo.",
+         "CT-110, CT-019, CT-033"),
+        ("A3 — score_extracao determinístico",
+         "Fórmula 1 − 0,2×ausente − 0,1×incerto − 0,3/0,2/0,1×conflito, com piso 0.",
+         "CT-103"),
+        ("A4 — prioridade NAO_IDENTIFICADA revisa",
+         "O terceiro valor do enum passa a ser gatilho de revisão por si só.",
+         "CT-104, CT-021"),
+        ("A5 — urgência INDETERMINADO é incerteza",
+         "Entra como campo incerto e gera revisão; nunca é convertida em NAO.",
+         "CT-105, CT-039"),
+        ("A6 — limites decididos",
+         "10 MB, 20 páginas, PDF/JPG/PNG/WEBP/TXT, timeout de 60 s e 2 retentativas com backoff.",
+         "CT-106, CT-107, CT-108, CT-109"),
+        ("A7 e A8 — metas e autenticação fora do MVP",
+         "Casos de latência, precisão, retenção e acesso passaram a registrar a decisão.",
+         "CT-093, CT-100, CT-094, CT-075"),
+        ("A9 — farmacopeia própria da equipe",
+         "Comparação de dose contra a lista aprovada; sem o arquivo, vale a regra de conflito.",
+         "CT-111, CT-036"),
+        ("79 fixtures (eram 67)",
+         "Massa, cobertura, anexos e contagens recalculados a partir do manifesto.",
+         "todos"),
+    ]
+    dados = [[Paragraph("MUDANÇA", S["tabela_cab"]), Paragraph("EFEITO NA EPT", S["tabela_cab"]),
+              Paragraph("CASOS", S["tabela_cab"])]]
+    dados += [[par(a, "celula_b"), par(b), par(c, "mono")] for a, b, c in mudancas]
+    t = Table(dados, colWidths=[62 * mm, LARGURA - 62 * mm - 30 * mm, 30 * mm], repeatRows=1)
+    t.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("BACKGROUND", (0, 0), (-1, 0), SOFT),
+        ("LINEBELOW", (0, 0), (-1, -1), 0.3, LINE),
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+    ]))
+    return [
+        Paragraph("O que mudou na versão 1.1", S["h1"]),
+        Spacer(1, 3 * mm),
+        Paragraph("A versão 1.0 desta EPT foi construída sobre a edição de 18/10/2026 da "
+                  "especificação e sobre 67 fixtures. A base do projeto avançou: a especificação foi "
+                  "reemitida em 21/10/2026 com as decisões A1–A9, o contrato mudou a regra de "
+                  "urgência e a massa cresceu para 79 documentos. Esta edição acompanha as três "
+                  "mudanças.", S["corpo_j"]),
+        Spacer(1, 3 * mm),
+        t,
+        Spacer(1, 4 * mm),
+        Paragraph("<b>Atenção à base documental.</b> A cópia da raiz do repositório "
+                  "(<font name='DJM' size='8'>MediFlow_Especificacao_Funcional_v1.0.pdf</font>, "
+                  "15 páginas, 18/10/2026) é a edição <b>anterior</b>. A edição de 21/10/2026 "
+                  "(16 páginas, com o Anexo A das decisões) está em "
+                  "<font name='DJM' size='8'>dist/MediFlow_Especificacao_Funcional_v1.0.pdf</font>. "
+                  "Esta EPT usa a de 21/10.", S["corpo_j"]),
+        PageBreak(),
+    ]
+
+
 def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
     suites = Counter(c["SUITE"] for c in casos)
     cenarios = Counter(c["CENARIO"] for c in casos)
@@ -463,6 +531,8 @@ def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
         (str(len(reqs)), "requisitos", 17),
         (f"{len(aceites)}/15", "aceite §16", 17),
         (str(autos["Sim"]), "automatizáveis", 17),
+        (str(len({x.strip() for c in casos for x in str(c.get("EPT_DO_PLANO", "")).split(";")
+                  if x.strip()})), "EPTs do plano", 17),
     ]
     dados = [[Paragraph(f"<font name='DJB' size='{tam}'>{n}</font><br/>"
                         f"<font size='6.4' color='#6B7280'>{r.upper()}</font>",
@@ -520,20 +590,21 @@ def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
     return [
         Paragraph("Visão geral e cobertura", S["h1"]),
         Spacer(1, 3 * mm),
-        Paragraph("A EPT cobre toda a Especificação Funcional v1.0 — RF-01 a RF-30, RN-01 a RN-07 e "
-                  "RNF-01 a RNF-11 —, os 15 critérios de aceite de §16 e os 67 documentos fictícios "
-                  "do catálogo. Cada requisito tem pelo menos um caso; a matriz completa está no "
-                  "Anexo A.", S["corpo_j"]),
+        Paragraph("A EPT cobre toda a Especificação Funcional v1.0 na edição de 21/10/2026 — RF-01 a "
+                  "RF-30, RN-01 a RN-07, RNF-01 a RNF-11 e as decisões A1 a A9 —, os 15 critérios de "
+                  f"aceite de §16, os {len(fixtures)} documentos fictícios do catálogo e as 41 EPTs "
+                  "do plano oficial. Cada requisito tem pelo menos um caso; as matrizes completas "
+                  "estão nos anexos A a C e F.", S["corpo_j"]),
         Spacer(1, 4 * mm),
         t_cartoes,
         Spacer(1, 5 * mm),
         duas_colunas,
         Spacer(1, 3 * mm),
         Paragraph("O que a EPT não faz", S["h2"]),
-        Paragraph("Ela não define critérios clínicos — apenas verifica os que a equipe aprovar. As "
-                  "pendências de §15 (limites de tamanho, retry, dicionário de alto risco, "
-                  "autenticação e metas) aparecem no Anexo D: enquanto não forem fechadas, os casos "
-                  "afetados ficam BLOQUEADOS, e não reprovados.", S["corpo_j"]),
+        Paragraph("Ela não define critérios clínicos — apenas verifica os que a equipe aprovou. Os "
+                  "limites, o dicionário clínico, a farmacopeia e as metas deixaram de ser pendência "
+                  "com as decisões A1–A9; o que continua em aberto (formato final do upload) e o que "
+                  "ficou fora do MVP (autenticação e metas numéricas) está no Anexo D.", S["corpo_j"]),
         PageBreak(),
     ]
 
@@ -658,20 +729,22 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                       for f in fixtures]
 
     pend = [
-        ("Limites de tamanho, páginas e extensões/MIME", "CT-010, CT-089",
-         "Sem o limite configurado, o caso de 25 MB e a validação de borda ficam bloqueados."),
-        ("Timeout e política de retry", "CT-078, CT-091",
-         "O comportamento esperado existe; o número de tentativas depende da definição."),
-        ("Dicionário de achado crítico, alto risco e conflitos", "CT-019, CT-033, CT-036",
-         "O caso verifica a regra aprovada; o sistema não pode inventar tabela clínica."),
-        ("Autenticação, autorização e identificação do auditor", "CT-071, CT-075",
-         "Casos de acesso indevido ficam bloqueados até o mecanismo ser definido."),
-        ("Metas de latência e de precisão", "CT-093, CT-100",
-         "Os casos medem e registram; a aprovação depende da meta acordada."),
-        ("Formato final do upload (multipart × JSON)", "CT-001, CT-002, CT-012",
+        ("Limites de tamanho, páginas e MIME", "decidido em A6", "CT-106, CT-107, CT-108",
+         "10 MB, 20 páginas e PDF/JPG/PNG/WEBP/TXT. Não bloqueia mais nenhum caso."),
+        ("Timeout e política de retry", "decidido em A6", "CT-109, CT-078, CT-091",
+         "60 s no Gemini e 2 retentativas com backoff."),
+        ("Dicionário clínico (conflitos, alto risco, achados)", "decidido em A1/A2", "CT-101, CT-110",
+         "Anexo A.2 é a fonte; o modelo não define risco livremente."),
+        ("Farmacopeia da comparação de doses", "decidido em A9", "CT-111",
+         "Lista própria da equipe; sem o arquivo, vale a regra de conflito de RF-16."),
+        ("Autenticação e autorização", "fora do MVP (A8)", "CT-071, CT-075",
+         "Demonstração local; exposição pública exige auth antes. Caso fica NAO APLICAVEL."),
+        ("Metas de latência e de precisão", "fora do MVP (A7)", "CT-093, CT-100",
+         "Os casos medem e registram; o aceite é pelos casos aprovados."),
+        ("Formato final do upload (multipart × JSON)", "em aberto", "CT-001, CT-002, CT-012",
          "Os dois caminhos estão previstos na spec; o contrato final deve ser registrado."),
     ]
-    linhas_pend = [[par(a), par(b, "mono"), par(c)] for a, b, c in pend]
+    linhas_pend = [[par(a), par(b, "celula_b"), par(c, "mono"), par(d)] for a, b, c, d in pend]
 
     registro = [
         [par("Resultado", "celula_b"), par("PASSOU · FALHOU · BLOQUEADO · NAO APLICAVEL")],
@@ -691,7 +764,7 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
     ]))
 
     blocos: list = [NextPageTemplate("capa"), *capa(), *sumario(), *como_ler(casos),
-                    *visao_geral(casos, fixtures)]
+                    *o_que_mudou(casos), *visao_geral(casos, fixtures)]
     blocos += casos_por_suite(casos)
     blocos += anexo("Anexo A — Requisito → casos",
                     "RF-01 a RF-30, RN-01 a RN-07 e RNF-01 a RNF-11. Nenhum requisito da "
@@ -706,10 +779,30 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                     "Os 67 documentos fictícios do catálogo, cada um citado ao menos uma vez.",
                     ["FIXTURE", "CASOS", "ONDE"], linhas_fixture,
                     [54 * mm, 15 * mm, LARGURA - 69 * mm])
-    blocos += anexo("Anexo D — Pendências que bloqueiam casos",
-                    "Definições que a equipe precisa fechar (§15) e o efeito sobre a execução.",
-                    ["PENDÊNCIA (§15)", "CASOS", "EFEITO"], linhas_pend,
-                    [52 * mm, 34 * mm, LARGURA - 86 * mm])
+    blocos += anexo("Anexo D — Definições e pendências",
+                    "O que foi decidido em A1–A9 desde a versão 1.0 e o que ainda depende da equipe.",
+                    ["DEFINIÇÃO", "SITUAÇÃO", "CASOS", "EFEITO"], linhas_pend,
+                    [46 * mm, 26 * mm, 30 * mm, LARGURA - 102 * mm])
+    plano: dict[str, list[str]] = defaultdict(list)
+    for c in casos:
+        for ept in str(c.get("EPT_DO_PLANO", "")).split(";"):
+            ept = ept.strip()
+            if ept:
+                plano[ept].append(c["ID_CASO"])
+    familias = {"D": "Decisão (§8.2)", "A": "Aceite (§16)", "E": "Erros (§12)",
+                "R": "Não funcional (§14)"}
+    linhas_plano = [
+        [par(ept, "mono"), par(familias[ept.split("-")[1][0]]),
+         par(str(len(set(casos_ept))), "celula_b"), par(", ".join(sorted(set(casos_ept))))]
+        for ept, casos_ept in sorted(plano.items(),
+                                     key=lambda kv: (kv[0].split("-")[1][0],
+                                                     int(kv[0].split("-")[1][1:])))
+    ]
+    blocos += anexo("Anexo F — EPT do plano oficial → casos",
+                    "As 41 EPTs de docs/epts/PLANO_DE_EPTS.md e os casos desta EPT consolidada que "
+                    "executam o mesmo comportamento.",
+                    ["EPT", "FAMÍLIA", "CASOS", "ONDE"], linhas_plano,
+                    [26 * mm, 34 * mm, 15 * mm, LARGURA - 75 * mm])
     blocos += [
         Paragraph("Anexo E — Registro de execução", S["h1"]),
         Spacer(1, 2 * mm),
