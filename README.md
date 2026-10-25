@@ -130,7 +130,7 @@ python3 tests/testar_contrato.py             # 79/79 expected.json válidos e es
 python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
 python3 tools/verificar_epts.py              # EPTs: seções, IDs, fixtures citadas, cobertura das seções
 python3 tools/gerar_epts_pdf.py              # docs/epts/EPTs_MediFlow.pdf
-python3 tools/gerar_ept.py --check           # EPT consolidada: RF/RN/RNF, 79 fixtures, §16 e as 41 EPTs do plano
+python3 tools/gerar_ept.py --check           # EPT: RF/RN/RNF, 79 fixtures e os 15 itens de §16
 ```
 
 Para regerar os documentos (só necessário se mudar um caso):

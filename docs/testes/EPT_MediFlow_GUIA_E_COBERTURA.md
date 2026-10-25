@@ -3,7 +3,6 @@
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10  
 **Artefato principal:** [`EPT_MediFlow.csv`](EPT_MediFlow.csv)  
 **Base:** Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9); contrato `app/models.py` (R1–R8); e os 79 fixtures de [`manifest.csv`](../../tests/fixtures/manifest.csv)  
-**Plano oficial de EPTs:** [`docs/epts/PLANO_DE_EPTS.md`](../epts/PLANO_DE_EPTS.md) (41 EPTs D/A/E/R) — cada caso desta EPT consolidada aponta para a EPT do plano em `EPT_DO_PLANO`.  
 **Casos:** 111 — gerado por [`tools/gerar_ept.py`](../../tools/gerar_ept.py); não editar o CSV à mão, editar o gerador.
 
 ---
@@ -20,7 +19,6 @@ Diferença prática:
 | `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |
 | `EPT_MediFlow.csv` (esta) | **Como executar e como saber se passou** |
 | `EPT_MediFlow.pdf` | **A EPT como documento**: capa, sumário, os 111 casos por suíte e os anexos de cobertura, com folha de aprovação |
-| `docs/epts/` | **O plano oficial**: 41 EPTs (D/A/E/R), uma por caso da especificação |
 | `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, detalhe do caso e as matrizes de cobertura |
 
 ## 2. Como o arquivo está montado
@@ -55,7 +53,6 @@ Se a sua planilha usar `,` como separador, ajuste `delimiter` em `gravar_csv()` 
 | `PASSOS` | passos numerados | cada passo tem ação verificável |
 | `RESULTADO_ESPERADO` | asserções objetivas | valores e códigos, não “funciona bem” |
 | `CRITERIO_DE_ACEITE` | item de §16 | usado no relatório de aceite |
-| `EPT_DO_PLANO` | EPT do plano oficial (`EPT-D01`…`EPT-R11`) | liga esta execução ao documento de procedimento correspondente em `docs/epts/` |
 | `AUTOMATIZAVEL` | `Sim`, `Parcial`, `Não` | orienta a automação |
 | `AMBIENTE` | `API`, `Interface`, `Ambos`, `Repositório` | onde executar |
 | `OBSERVACOES` | pendências, cuidados, dependências | `PENDENTE (§15)` marca bloqueio |
@@ -264,54 +261,6 @@ Os 79 fixtures do `manifest.csv` são citados em pelo menos um caso (79/79 cober
 | 13 | CT-068, CT-071, CT-075, CT-076, CT-077, CT-080, CT-081, CT-082, CT-083, CT-084, CT-085, CT-086, CT-089, CT-094, CT-109 |
 | 14 | CT-095, CT-097 |
 | 15 | CT-041, CT-063, CT-077, CT-088, CT-094, CT-096 |
-
-### 5.6 EPT do plano oficial → casos
-
-As 41 EPTs planejadas em `docs/epts/PLANO_DE_EPTS.md` têm pelo menos um caso executável aqui. As duas já escritas (EPT-D01 e EPT-A08) são o modelo de procedimento detalhado; as demais ganham procedimento completo à medida que o plano avança.
-
-| EPT do plano | Família | Casos nesta EPT consolidada |
-| --- | --- | --- |
-| `EPT-A01` | Aceite (§16) | CT-002, CT-003, CT-004, CT-007, CT-008, CT-009, CT-010, CT-011, CT-012, CT-079, CT-106, CT-107, CT-108 |
-| `EPT-A02` | Aceite (§16) | CT-002, CT-004, CT-013, CT-018, CT-023, CT-027, CT-030, CT-034, CT-037, CT-049, CT-050, CT-051, CT-100, CT-102 |
-| `EPT-A03` | Aceite (§16) | CT-003, CT-017, CT-019, CT-020, CT-039, CT-052, CT-053, CT-054, CT-055, CT-078, CT-090 |
-| `EPT-A04` | Aceite (§16) | CT-014, CT-015, CT-021, CT-039, CT-053, CT-056, CT-104 |
-| `EPT-A05` | Aceite (§16) | CT-024, CT-025, CT-028, CT-031, CT-032, CT-035, CT-038, CT-058, CT-059, CT-100 |
-| `EPT-A06` | Aceite (§16) | CT-001, CT-006 |
-| `EPT-A07` | Aceite (§16) | CT-053, CT-060, CT-063, CT-064, CT-088 |
-| `EPT-A08` | Aceite (§16) | CT-020, CT-044, CT-045, CT-046, CT-047, CT-054, CT-103 |
-| `EPT-A09` | Aceite (§16) | CT-015, CT-016, CT-024, CT-026, CT-036, CT-039, CT-042, CT-085, CT-105, CT-111 |
-| `EPT-A10` | Aceite (§16) | CT-064, CT-065, CT-066, CT-067, CT-068, CT-069, CT-078, CT-091, CT-099, CT-109 |
-| `EPT-A11` | Aceite (§16) | CT-005, CT-041, CT-070, CT-071, CT-072, CT-073, CT-074, CT-087, CT-092, CT-098 |
-| `EPT-A12` | Aceite (§16) | CT-014, CT-022, CT-029, CT-033, CT-040, CT-042, CT-043, CT-048, CT-057, CT-061, CT-062, CT-093, CT-098, CT-101, CT-102, CT-110 |
-| `EPT-A13` | Aceite (§16) | CT-068, CT-071, CT-075, CT-076, CT-077, CT-080, CT-081, CT-082, CT-083, CT-084, CT-085, CT-086, CT-089, CT-094, CT-109 |
-| `EPT-A14` | Aceite (§16) | CT-095, CT-097 |
-| `EPT-A15` | Aceite (§16) | CT-041, CT-063, CT-077, CT-088, CT-094, CT-096 |
-| `EPT-D01` | Decisão (§8.2) | CT-003, CT-017, CT-019, CT-052 |
-| `EPT-D02` | Decisão (§8.2) | CT-045 |
-| `EPT-D03` | Decisão (§8.2) | CT-020, CT-053, CT-054 |
-| `EPT-D04` | Decisão (§8.2) | CT-049 |
-| `EPT-D05` | Decisão (§8.2) | CT-049, CT-050 |
-| `EPT-D06` | Decisão (§8.2) | CT-051 |
-| `EPT-D07` | Decisão (§8.2) | CT-014, CT-056 |
-| `EPT-E01` | Erros (§12) | CT-007, CT-008, CT-009, CT-010, CT-011, CT-012, CT-106, CT-107 |
-| `EPT-E02` | Erros (§12) | CT-015, CT-026 |
-| `EPT-E03` | Erros (§12) | CT-078, CT-091, CT-109 |
-| `EPT-E04` | Erros (§12) | CT-041 |
-| `EPT-E05` | Erros (§12) | CT-033, CT-036, CT-040, CT-048, CT-055, CT-101, CT-102, CT-110, CT-111 |
-| `EPT-E06` | Erros (§12) | CT-060 |
-| `EPT-E07` | Erros (§12) | CT-064 |
-| `EPT-E08` | Erros (§12) | CT-065, CT-066, CT-067 |
-| `EPT-R01` | Não funcional (§14) | CT-100 |
-| `EPT-R02` | Não funcional (§14) | CT-090 |
-| `EPT-R03` | Não funcional (§14) | CT-065 |
-| `EPT-R04` | Não funcional (§14) | CT-098 |
-| `EPT-R05` | Não funcional (§14) | CT-099 |
-| `EPT-R06` | Não funcional (§14) | CT-092 |
-| `EPT-R07` | Não funcional (§14) | CT-093 |
-| `EPT-R08` | Não funcional (§14) | CT-094 |
-| `EPT-R09` | Não funcional (§14) | CT-095 |
-| `EPT-R10` | Não funcional (§14) | CT-096 |
-| `EPT-R11` | Não funcional (§14) | CT-097 |
 
 ## 6. Definições aplicadas e pendências
 

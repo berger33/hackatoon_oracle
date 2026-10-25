@@ -5,9 +5,7 @@ Fonte de verdade:
   • Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9);
   • contrato executável `app/models.py` (regras R1–R8, `PESO_CONFLITO`,
     `GRAVIDADES_IMPEDITIVAS`, `calcular_score_extracao`);
-  • massa `tests/fixtures/manifest.csv` — 79 fixtures;
-  • plano oficial de EPTs `docs/epts/PLANO_DE_EPTS.md` (41 EPTs D/A/E/R), para
-    o qual cada caso desta EPT consolidada aponta.
+  • massa `tests/fixtures/manifest.csv` — 79 fixtures.
 
 Saídas:
   docs/testes/EPT_MediFlow.csv        → EPT executável (uma linha por caso)
@@ -48,7 +46,7 @@ COLUNAS = [
     "TITULO", "OBJETIVO", "PRE_CONDICOES", "MASSA_DE_DADOS", "PASSOS",
     "RESULTADO_ESPERADO", "POS_CONDICOES",
     # rastreabilidade
-    "CRITERIO_DE_ACEITE", "EPT_DO_PLANO", "AUTOMATIZAVEL", "AMBIENTE", "OBSERVACOES",
+    "CRITERIO_DE_ACEITE", "AUTOMATIZAVEL", "AMBIENTE", "OBSERVACOES",
     # execução (preenchido pelo executor)
     "STATUS_EXECUCAO", "RESULTADO_OBTIDO", "EVIDENCIA", "DEFEITO",
     "DATA_EXECUCAO", "EXECUTOR",
@@ -274,32 +272,6 @@ AUTO_MANUAL: dict[str, str] = {
 
 #: Casos opcionais no MVP.
 PRIORIDADE_BAIXA = {"CT-072"}
-
-#: EPTs do plano oficial (`docs/epts/PLANO_DE_EPTS.md`) além das de aceite,
-#: que são derivadas automaticamente do item de §16 citado em cada caso.
-EPTS_DO_PLANO = {
-    "CT-003": ["EPT-D01"], "CT-017": ["EPT-D01"], "CT-019": ["EPT-D01"],
-    "CT-020": ["EPT-D03"], "CT-045": ["EPT-D02"], "CT-049": ["EPT-D04", "EPT-D05"],
-    "CT-050": ["EPT-D05"], "CT-051": ["EPT-D06"], "CT-052": ["EPT-D01"],
-    "CT-053": ["EPT-D03"], "CT-054": ["EPT-D03"], "CT-056": ["EPT-D07"],
-    "CT-014": ["EPT-D07"],
-    "CT-007": ["EPT-E01"], "CT-008": ["EPT-E01"], "CT-009": ["EPT-E01"],
-    "CT-010": ["EPT-E01"], "CT-011": ["EPT-E01"], "CT-012": ["EPT-E01"],
-    "CT-015": ["EPT-E02"], "CT-026": ["EPT-E02"],
-    "CT-078": ["EPT-E03"], "CT-091": ["EPT-E03"],
-    "CT-041": ["EPT-E04"],
-    "CT-033": ["EPT-E05"], "CT-036": ["EPT-E05"], "CT-040": ["EPT-E05"],
-    "CT-048": ["EPT-E05"], "CT-055": ["EPT-E05"],
-    "CT-060": ["EPT-E06"], "CT-064": ["EPT-E07"],
-    "CT-065": ["EPT-E08", "EPT-R03"], "CT-066": ["EPT-E08"], "CT-067": ["EPT-E08"],
-    "CT-090": ["EPT-R02"], "CT-092": ["EPT-R06"], "CT-093": ["EPT-R07"],
-    "CT-094": ["EPT-R08"], "CT-095": ["EPT-R09"], "CT-096": ["EPT-R10"],
-    "CT-097": ["EPT-R11"], "CT-098": ["EPT-R04"], "CT-099": ["EPT-R05"],
-    "CT-100": ["EPT-R01"],
-    "CT-101": ["EPT-E05"], "CT-102": ["EPT-E05"],
-    "CT-106": ["EPT-E01"], "CT-107": ["EPT-E01"], "CT-109": ["EPT-E03"],
-    "CT-110": ["EPT-E05"], "CT-111": ["EPT-E05"],
-}
 
 # =====================================================================
 # SUITE 1 — Ingestão e validação de entrada (RF-01, RF-02, RF-03)
@@ -1459,13 +1431,6 @@ CASOS += [
 
 
 for _caso in CASOS:
-    # EPT_DO_PLANO: itens de §16 citados → EPT-A01..A15, mais o mapa explícito.
-    _plano = set(EPTS_DO_PLANO.get(_caso["ID_CASO"], []))
-    for _tok in str(_caso["CRITERIO_DE_ACEITE"]).replace(",", " ").split():
-        for _num in _tok.split():
-            if _num.isdigit() and 1 <= int(_num) <= 15:
-                _plano.add(f"EPT-A{int(_num):02d}")
-    _caso["EPT_DO_PLANO"] = "; ".join(sorted(_plano))
     if _caso["ID_CASO"] in AUTO_MANUAL:
         _caso["AUTOMATIZAVEL"] = AUTO_MANUAL[_caso["ID_CASO"]]
     if _caso["ID_CASO"] in PRIORIDADE_BAIXA:
@@ -1507,7 +1472,7 @@ def validar(fixtures: list[str]) -> list[str]:
         erros.append("ID_CASO duplicado")
     obrigatorios = ["ID_CASO", "SUITE", "ID_REQUISITO", "CENARIO", "TIPO_TESTE", "PRIORIDADE",
                     "TITULO", "OBJETIVO", "PRE_CONDICOES", "PASSOS", "RESULTADO_ESPERADO",
-                    "CRITERIO_DE_ACEITE", "EPT_DO_PLANO"]
+                    "CRITERIO_DE_ACEITE"]
     for c in CASOS:
         for campo in obrigatorios:
             if not str(c[campo]).strip():
@@ -1540,18 +1505,6 @@ def validar(fixtures: list[str]) -> list[str]:
     sem_caso = sorted(set(fixtures) - cobertos)
     if sem_caso:
         erros.append("fixtures sem caso: " + ", ".join(sem_caso))
-
-    # EPTs do plano oficial (D01..D07, A01..A15, E01..E08, R01..R11)
-    plano_citado = set()
-    for c in CASOS:
-        plano_citado |= {x.strip() for x in str(c["EPT_DO_PLANO"]).split(";") if x.strip()}
-    plano_esperado = ({f"EPT-D{i:02d}" for i in range(1, 8)}
-                      | {f"EPT-A{i:02d}" for i in range(1, 16)}
-                      | {f"EPT-E{i:02d}" for i in range(1, 9)}
-                      | {f"EPT-R{i:02d}" for i in range(1, 12)})
-    faltando_plano = sorted(plano_esperado - plano_citado)
-    if faltando_plano:
-        erros.append("EPTs do plano sem caso correspondente: " + ", ".join(faltando_plano))
 
     # itens de aceite §16 (1..15)
     aceites = set()
@@ -1595,9 +1548,6 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("**Base:** Especificação Funcional v1.0, com o Anexo A (decisões A1 a A9); contrato "
       "`app/models.py` (R1–R8); e os "
       f"{len(fixtures)} fixtures de [`manifest.csv`](../../tests/fixtures/manifest.csv)  ")
-    a("**Plano oficial de EPTs:** [`docs/epts/PLANO_DE_EPTS.md`](../epts/PLANO_DE_EPTS.md) "
-      "(41 EPTs D/A/E/R) — cada caso desta EPT consolidada aponta para a EPT do plano em "
-      "`EPT_DO_PLANO`.  ")
     a(f"**Casos:** {len(CASOS)} — gerado por [`tools/gerar_ept.py`](../../tools/gerar_ept.py); "
       "não editar o CSV à mão, editar o gerador.\n")
     a("---\n")
@@ -1614,7 +1564,6 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("| `EPT_MediFlow.csv` (esta) | **Como executar e como saber se passou** |")
     a(f"| `EPT_MediFlow.pdf` | **A EPT como documento**: capa, sumário, os {len(CASOS)} casos "
       "por suíte e os anexos de cobertura, com folha de aprovação |")
-    a("| `docs/epts/` | **O plano oficial**: 41 EPTs (D/A/E/R), uma por caso da especificação |")
     a("| `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, "
       "detalhe do caso e as matrizes de cobertura |\n")
     a("## 2. Como o arquivo está montado\n")
@@ -1649,8 +1598,6 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("| `PASSOS` | passos numerados | cada passo tem ação verificável |")
     a("| `RESULTADO_ESPERADO` | asserções objetivas | valores e códigos, não “funciona bem” |")
     a("| `CRITERIO_DE_ACEITE` | item de §16 | usado no relatório de aceite |")
-    a("| `EPT_DO_PLANO` | EPT do plano oficial (`EPT-D01`…`EPT-R11`) | liga esta execução ao "
-      "documento de procedimento correspondente em `docs/epts/` |")
     a("| `AUTOMATIZAVEL` | `Sim`, `Parcial`, `Não` | orienta a automação |")
     a("| `AMBIENTE` | `API`, `Interface`, `Ambos`, `Repositório` | onde executar |")
     a("| `OBSERVACOES` | pendências, cuidados, dependências | `PENDENTE (§15)` marca bloqueio |")
@@ -1715,23 +1662,6 @@ def gerar_guia(fixtures: list[str]) -> None:
                     aceite_para_casos[int(token)].append(c["ID_CASO"])
     for item in range(1, 16):
         a(f"| {item} | {', '.join(sorted(set(aceite_para_casos.get(item, [])))) or '—'} |")
-    a("")
-    a("### 5.6 EPT do plano oficial → casos\n")
-    plano_para_casos: dict[str, list[str]] = defaultdict(list)
-    for c in CASOS:
-        for ept in str(c["EPT_DO_PLANO"]).split(";"):
-            ept = ept.strip()
-            if ept:
-                plano_para_casos[ept].append(c["ID_CASO"])
-    a("As 41 EPTs planejadas em `docs/epts/PLANO_DE_EPTS.md` têm pelo menos um caso executável "
-      "aqui. As duas já escritas (EPT-D01 e EPT-A08) são o modelo de procedimento detalhado; as "
-      "demais ganham procedimento completo à medida que o plano avança.\n")
-    a("| EPT do plano | Família | Casos nesta EPT consolidada |")
-    a("| --- | --- | --- |")
-    familias = {"D": "Decisão (§8.2)", "A": "Aceite (§16)", "E": "Erros (§12)", "R": "Não funcional (§14)"}
-    for ept in sorted(plano_para_casos, key=lambda x: (x.split("-")[1][0], int(x.split("-")[1][1:]))):
-        fam = familias[ept.split("-")[1][0]]
-        a(f"| `{ept}` | {fam} | {', '.join(sorted(set(plano_para_casos[ept])))} |")
     a("")
     a("## 6. Definições aplicadas e pendências\n")
     a("A própria especificação (§15) lista definições que a equipe precisa fechar. Elas aparecem "

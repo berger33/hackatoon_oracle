@@ -171,7 +171,6 @@ footer{padding:0 28px 40px;color:var(--muted);font-size:12px;max-width:1440px;ma
     <div class="grid2">
       <div class="panel"><h2>Requisito → casos</h2><div id="cov-req"></div></div>
       <div class="panel"><h2>Item de aceite (§16) → casos</h2><div id="cov-aceite"></div></div>
-      <div class="panel"><h2>EPT do plano oficial → casos</h2><div id="cov-plano"></div></div>
       <div class="panel" style="grid-column:1/-1"><h2>Fixture → casos</h2><div id="cov-massa"></div></div>
     </div>
   </section>
@@ -237,7 +236,6 @@ const c = DADOS.reduce((a, r) => {
 $("#cards").innerHTML = [
   [DADOS.length, "casos"],
   [COV.fixtures_total, "fixtures na massa"],
-  [Object.keys(COV.plano || {}).length, "EPTs do plano"],
   [c.suites.size, "suítes"],
   [Object.keys(COV.req).length, "requisitos cobertos"],
   [c.prio.Alta || 0, "prioridade alta"],
@@ -294,7 +292,6 @@ function detalhe(r) {
       <p>${esc(r.TECNICA)} · <span class="tag auto">${esc(r.AUTOMATIZAVEL)}</span> · ${esc(r.AMBIENTE)}</p>
       <h3 style="margin-top:12px">Rastreabilidade</h3>
       <p>${esc(r.ID_REQUISITO || "—")}${r.REGRAS_NEGOCIO ? " · " + esc(r.REGRAS_NEGOCIO) : ""} · ${esc(r.CRITERIO_DE_ACEITE)}</p>
-      ${r.EPT_DO_PLANO ? `<h3 style="margin-top:12px">EPT do plano</h3><p>${esc(r.EPT_DO_PLANO)}</p>` : ""}
     </div>
     <div class="block">
       <h3>Passos</h3><ol>${passos}</ol>
@@ -355,7 +352,6 @@ function krows(mapa, rotulo) {
 }
 $("#cov-req").innerHTML = krows(COV.req);
 $("#cov-aceite").innerHTML = krows(COV.aceite, k => "§16 item " + k);
-$("#cov-plano").innerHTML = krows(COV.plano);
 $("#cov-massa").innerHTML = krows(COV.massa);
 
 $("#cols").innerHTML = `<tr><th>Coluna</th><th>Conteúdo</th></tr>` +
@@ -394,7 +390,6 @@ DESCRICAO_COLUNAS = [
     ("RESULTADO_ESPERADO", "Asserções objetivas: valores, códigos HTTP e campos do payload."),
     ("POS_CONDICOES", "Estado esperado do ambiente após a execução."),
     ("CRITERIO_DE_ACEITE", "Item de §16 associado ao caso."),
-    ("EPT_DO_PLANO", "EPT do plano oficial (docs/epts) que detalha o mesmo comportamento."),
     ("AUTOMATIZAVEL", "Sim, Parcial ou Não."),
     ("AMBIENTE", "API, Interface, Ambos ou Repositório."),
     ("OBSERVACOES", "Cuidados, dependências e pendências (PENDENTE (§15))."),
@@ -436,16 +431,8 @@ def main() -> None:
     with open(MANIFEST, newline="", encoding="utf-8") as f:
         total_fixtures = sum(1 for _ in csv.DictReader(f))
 
-    plano: dict[str, list[str]] = defaultdict(list)
-    for r in dados:
-        for ept in str(r.get("EPT_DO_PLANO", "")).split(";"):
-            ept = ept.strip()
-            if ept:
-                plano[ept].append(r["ID_CASO"])
-
     cobertura = {
         "req": ordena(req),
-        "plano": {k: sorted(set(v)) for k, v in sorted(plano.items())},
         "aceite": {k: sorted(set(v)) for k, v in sorted(aceite.items(), key=lambda kv: int(kv[0]))},
         "massa": {k: sorted(set(v)) for k, v in sorted(massa.items())},
         "fixtures_total": total_fixtures,

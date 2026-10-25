@@ -73,7 +73,7 @@ TITULO = "Especificação de Procedimento de Teste"
 PROJETO = "MediFlow — Hackathon ONE G10 · Oracle Next Education & Alura"
 BASE = ("Especificação Funcional v1.0, incluindo o Anexo A (decisões A1 a A9) · Análise de "
         "Requisitos v1.1 · contrato de dados app/models.py (R1–R8) · massa de "
-        "tests/fixtures/manifest.csv (79 fixtures) · plano de EPTs em docs/epts/PLANO_DE_EPTS.md")
+        "tests/fixtures/manifest.csv (79 fixtures)")
 EMITIDO = date.today().strftime("%d/%m/%Y")
 
 # ------------------------------------------------------------------- estilos
@@ -359,7 +359,7 @@ def sumario() -> list:
 
 def como_ler(casos: list[dict]) -> list:
     colunas = [
-        ("ID_CASO", "Identificador único do caso (CT-001…CT-100); usado em evidência e defeito."),
+        ("ID_CASO", "Identificador único do caso (CT-001…CT-111); usado em evidência e defeito."),
         ("SUITE", "Agrupamento funcional do caso."),
         ("ID_REQUISITO", "RF/RNF da especificação que o caso verifica."),
         ("REGRAS_NEGOCIO", "RN aplicada; vazio quando não há regra de negócio."),
@@ -375,7 +375,6 @@ def como_ler(casos: list[dict]) -> list:
         ("RESULTADO_ESPERADO", "Asserções objetivas: valores, códigos HTTP e campos do payload."),
         ("POS_CONDICOES", "Estado esperado do ambiente após a execução."),
         ("CRITERIO_DE_ACEITE", "Item de §16 da especificação associado ao caso."),
-        ("EPT_DO_PLANO", "EPT do plano oficial (docs/epts) que detalha o mesmo comportamento."),
         ("AUTOMATIZAVEL", "Sim, Parcial ou Não."),
         ("AMBIENTE", "API, Interface, Ambos ou Repositório."),
         ("OBSERVACOES", "Cuidados, dependências e pendências sinalizadas."),
@@ -465,8 +464,6 @@ def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
         (str(len(reqs)), "requisitos", 17),
         (f"{len(aceites)}/15", "aceite §16", 17),
         (str(autos["Sim"]), "automatizáveis", 17),
-        (str(len({x.strip() for c in casos for x in str(c.get("EPT_DO_PLANO", "")).split(";")
-                  if x.strip()})), "EPTs do plano", 17),
     ]
     dados = [[Paragraph(f"<font name='DJB' size='{tam}'>{n}</font><br/>"
                         f"<font size='6.4' color='#6B7280'>{r.upper()}</font>",
@@ -526,9 +523,8 @@ def visao_geral(casos: list[dict], fixtures: list[str]) -> list:
         Spacer(1, 3 * mm),
         Paragraph("A EPT cobre a Especificação Funcional v1.0 — RF-01 a RF-30, RN-01 a RN-07, "
                   "RNF-01 a RNF-11 e as decisões A1 a A9 —, os 15 critérios de aceite de §16, os "
-                  f"{len(fixtures)} documentos fictícios do catálogo e as 41 EPTs do plano oficial. "
-                  "Cada requisito tem pelo menos um caso; as matrizes completas estão nos anexos A "
-                  "a C e F.", S["corpo_j"]),
+                  f"{len(fixtures)} documentos fictícios do catálogo. Cada requisito tem pelo "
+                  "menos um caso; as matrizes completas estão nos anexos A a C.", S["corpo_j"]),
         Spacer(1, 4 * mm),
         t_cartoes,
         Spacer(1, 5 * mm),
@@ -717,29 +713,8 @@ def montar(casos: list[dict], fixtures: list[str]) -> list:
                     "De onde vem cada definição que a EPT usa e o que ainda depende da equipe.",
                     ["DEFINIÇÃO", "ORIGEM", "CASOS", "ESTADO ESPERADO"], linhas_pend,
                     [46 * mm, 26 * mm, 30 * mm, LARGURA - 102 * mm])
-    plano: dict[str, list[str]] = defaultdict(list)
-    for c in casos:
-        for ept in str(c.get("EPT_DO_PLANO", "")).split(";"):
-            ept = ept.strip()
-            if ept:
-                plano[ept].append(c["ID_CASO"])
-    familias = {"D": "Decisão (§8.2)", "A": "Aceite (§16)", "E": "Erros (§12)",
-                "R": "Não funcional (§14)"}
-    linhas_plano = [
-        [par(ept, "mono"), par(familias[ept.split("-")[1][0]]),
-         par(str(len(set(casos_ept))), "celula_b"), par(", ".join(sorted(set(casos_ept))))]
-        for ept, casos_ept in sorted(plano.items(),
-                                     key=lambda kv: (kv[0].split("-")[1][0],
-                                                     int(kv[0].split("-")[1][1:])))
-    ]
-    anexo_e = anexo("Anexo E — EPT do plano oficial → casos",
-                    "As 41 EPTs de docs/epts/PLANO_DE_EPTS.md e os casos desta EPT que executam o "
-                    "mesmo comportamento.",
-                    ["EPT", "FAMÍLIA", "CASOS", "ONDE"], linhas_plano,
-                    [26 * mm, 34 * mm, 15 * mm, LARGURA - 75 * mm])
-    blocos += anexo_e
     blocos += [
-        Paragraph("Anexo F — Registro de execução", S["h1"]),
+        Paragraph("Anexo E — Registro de execução", S["h1"]),
         Spacer(1, 2 * mm),
         Paragraph("Preencha no CSV, mantendo este documento como a versão de referência aprovada.",
                   S["pequeno"]),
