@@ -1379,7 +1379,9 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("| --- | --- |")
     a("| `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` | **O que existe** para testar (67 documentos) |")
     a("| `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |")
-    a("| `EPT_MediFlow_v1.0.csv` (esta) | **Como executar e como saber se passou** |\n")
+    a("| `EPT_MediFlow_v1.0.csv` (esta) | **Como executar e como saber se passou** |")
+    a("| `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, "
+      "detalhe do caso e as matrizes de cobertura |\n")
     a("## 2. Como o arquivo está montado\n")
     a("| Item | Escolha | Por quê |")
     a("| --- | --- | --- |")
@@ -1507,6 +1509,10 @@ def gerar_guia(fixtures: list[str]) -> None:
     a("```bash")
     a("python3 tools/gerar_ept.py --check   # falha se faltar requisito, fixture ou item de aceite")
     a("python3 tools/gerar_ept.py           # regrava o CSV e este guia")
+    a("```\n")
+    a("Para ler a EPT no navegador, sem planilha:\n")
+    a("```bash")
+    a("python3 tools/gerar_ept_preview.py   # docs/testes/EPT_MediFlow_preview.html (arquivo único)")
     a("```\n")
     a("O verificador garante: IDs únicos, campos obrigatórios preenchidos, enums de cenário e "
       "prioridade válidos, cobertura de **RF-01…RF-30**, **RN-01…RN-07**, **RNF-01…RNF-11**, "

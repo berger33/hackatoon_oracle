@@ -18,6 +18,7 @@ Diferença prática:
 | `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` | **O que existe** para testar (67 documentos) |
 | `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |
 | `EPT_MediFlow_v1.0.csv` (esta) | **Como executar e como saber se passou** |
+| `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, detalhe do caso e as matrizes de cobertura |
 
 ## 2. Como o arquivo está montado
 
@@ -281,6 +282,12 @@ O conteúdo não muda; só o cabeçalho. Se a Função Sistemas tiver um modelo 
 ```bash
 python3 tools/gerar_ept.py --check   # falha se faltar requisito, fixture ou item de aceite
 python3 tools/gerar_ept.py           # regrava o CSV e este guia
+```
+
+Para ler a EPT no navegador, sem planilha:
+
+```bash
+python3 tools/gerar_ept_preview.py   # docs/testes/EPT_MediFlow_preview.html (arquivo único)
 ```
 
 O verificador garante: IDs únicos, campos obrigatórios preenchidos, enums de cenário e prioridade válidos, cobertura de **RF-01…RF-30**, **RN-01…RN-07**, **RNF-01…RNF-11**, cobertura dos **67 fixtures** e dos **15 itens de aceite de §16**.
