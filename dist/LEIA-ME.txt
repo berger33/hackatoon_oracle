@@ -14,6 +14,7 @@ docs/
     CATALOGO_DE_DOCUMENTOS_DE_TESTE.md    Catálogo analítico dos 67 fixtures
     EPT_MediFlow_v1.0.csv                 EPT executável: 100 casos (; UTF-8 BOM, abre no Excel)
     EPT_MediFlow_GUIA_E_COBERTURA.md      Dicionário da EPT, ordem de execução e cobertura
+    EPT_MediFlow_v1.0.pdf                 A EPT em PDF: capa, sumário, 100 casos e anexos
     EPT_MediFlow_preview.html             A EPT navegável no navegador (filtros e cobertura)
     Mapa_de_Documentos_de_Teste_MediFlow.pdf   Mapa visual (8 páginas)
 tests/fixtures/
@@ -29,6 +30,7 @@ tools/
   gerar_fixtures_catalogo.py  Recria os 55 casos restantes
   gerar_mapa_documentos.py    Recria o PDF do mapa
   gerar_ept.py                Recria a EPT (CSV + guia)
+  gerar_ept_pdf.py            Recria a EPT em PDF
   gerar_ept_preview.py        Recria a versão navegável da EPT
   verificar_consistencia.py   Audita estrutura, schema, manifesto, CRM-SP e duplicidade
   gerar_pacote.py            Gera este ZIP (nomes UTF-8, datas fixas)

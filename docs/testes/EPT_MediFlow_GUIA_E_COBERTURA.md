@@ -18,6 +18,7 @@ Diferença prática:
 | `CATALOGO_DE_DOCUMENTOS_DE_TESTE.md` | **O que existe** para testar (67 documentos) |
 | `CONTRATO_DE_DADOS.md` / `app/models.py` | **O que é uma resposta válida** |
 | `EPT_MediFlow_v1.0.csv` (esta) | **Como executar e como saber se passou** |
+| `EPT_MediFlow_v1.0.pdf` | **A EPT como documento**: capa, sumário, os 100 casos por suíte e os anexos de cobertura, com folha de aprovação |
 | `EPT_MediFlow_preview.html` | **A mesma EPT navegável**: filtros por suíte/cenário/prioridade, detalhe do caso e as matrizes de cobertura |
 
 ## 2. Como o arquivo está montado
@@ -287,6 +288,7 @@ python3 tools/gerar_ept.py           # regrava o CSV e este guia
 Para ler a EPT no navegador, sem planilha:
 
 ```bash
+python3 tools/gerar_ept_pdf.py       # docs/testes/EPT_MediFlow_v1.0.pdf
 python3 tools/gerar_ept_preview.py   # docs/testes/EPT_MediFlow_preview.html (arquivo único)
 ```
 
