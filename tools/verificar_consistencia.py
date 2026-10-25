@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 """Verifica a consistência do catálogo de fixtures do MediFlow.
 
-Checa, para os 67 casos:
-  1. estrutura das pastas (4 arquivos nos funcionais, 2 nos negativos técnicos)
+Checa, para os 79 casos:
+  1. estrutura das pastas: o conjunto de arquivos esperado vem do próprio
+     `expected.json` — `entrada.renditions` nos funcionais (que pode trazer um
+     formato extra, como o PNG do `Limite_Formato_Png`) e `entrada.arquivo` nos
+     negativos técnicos
   2. nome da pasta = nome dos arquivos = fixture_id do expected.json; schema
      `mediflow.fixture/2` e enums do domínio (importados de `app/models.py`,
      para não haver duas listas)
   3. manifest.csv x expected.json (tipo, status, revisão, notificação, destinos)
-  4. arquivos realmente legíveis (PDF abre, JPG abre, TXT tem marca de fictício)
+  4. arquivos realmente legíveis (PDF abre, JPG/PNG/WEBP abrem, TXT tem marca de fictício)
   5. coerência clínica: o que o expected diz ter sido extraído existe mesmo no TXT
      (paciente, médico, CRM, diagnóstico, CID, idade) e todo CRM é da UF do hospital
   6. duplicidade: arquivos byte-idênticos, textos clínicos iguais e saídas idênticas
@@ -43,9 +46,15 @@ SCHEMA = "mediflow.fixture/2"
 NA = "-"
 #: Arquivos grandes que o .gitignore deixa fora do Git (regerados por script).
 #: Se faltarem, é aviso — não erro — e o verificador diz como gerá-los.
+#: Arquivos grandes demais para o histórico do git: o gerador os recria.
+#: (ver .gitignore) A chave é a fixture; o valor, os arquivos não versionados.
 NAO_VERSIONADOS = {
-    "Validacao_ArquivoGrande": "tools/gerar_fixtures_catalogo.py",
+    "Validacao_ArquivoGrande": ["Validacao_ArquivoGrande.pdf"],
+    "Limite_Tamanho_10MB": ["Limite_Tamanho_10MB.pdf"],
+    "Limite_Tamanho_Acima10MB": ["Limite_Tamanho_Acima10MB.pdf"],
+    "Limite_Texto_Acima10MB": ["Limite_Texto_Acima10MB.txt"],
 }
+GERADOR_CATALOGO = "tools/gerar_fixtures_catalogo.py"
 #: O Hospital Aurora fica em São Paulo: todo médico que assina tem CRM-SP.
 #: (Um CRM de outra UF num hospital paulista é erro de domínio, não variação.)
 UF_DO_HOSPITAL = "SP"
@@ -90,41 +99,55 @@ def normaliza_texto(path):
 
 
 def verifica_estrutura(manifest, quiet):
+    """A pasta de cada caso contém exatamente o que o expected.json declara.
+
+    A lista de arquivos vem de `entrada.renditions` (casos funcionais) ou de
+    `entrada.arquivo` (negativos técnicos) — não do nome da pasta. Assim um caso
+    de formato pode declarar uma rendição extra (PNG, WEBP) sem abrir exceção.
+    """
     print("\n== 1. Estrutura das pastas")
-    total = {4: 0, 2: 0}
     tipos = {}
     vistos = set()
+    negativos = 0
     for kind, fid, d in pastas():
         if fid in vistos:
             add_erro(f"{fid}: aparece em demo/ e catalogo/ ao mesmo tempo")
         vistos.add(fid)
-        arquivos = sorted(os.listdir(d))
-        negativo = fid.startswith("Validacao_")
-        esperado = 2 if negativo else 4
-        if fid in NAO_VERSIONADOS and arquivos == ["expected.json"]:
-            add_aviso(f"{kind}/{fid}: arquivo ausente (no .gitignore); rode {NAO_VERSIONADOS[fid]}")
-        elif len(arquivos) != esperado:
-            add_erro(f"{kind}/{fid}: {len(arquivos)} arquivos (esperado {esperado}): {arquivos}")
-        total[esperado] = total.get(esperado, 0) + 1
-        if "expected.json" in arquivos:
-            try:
-                with open(os.path.join(d, "expected.json"), encoding="utf-8") as fh:
-                    t = json.load(fh).get("tipo_de_teste", "?")
-            except (OSError, ValueError):
-                t = "?"
-            tipos[t] = tipos.get(t, 0) + 1
-
-        if not negativo:
-            for suf in (".txt", ".pdf", ".jpg"):
-                if f"{fid}{suf}" not in arquivos:
-                    add_erro(f"{kind}/{fid}: falta {fid}{suf}")
+        arquivos = set(os.listdir(d))
         if "expected.json" not in arquivos:
             add_erro(f"{kind}/{fid}: falta expected.json")
+            if fid not in manifest:
+                add_erro(f"{kind}/{fid}: não está no manifest.csv")
+            continue
+        try:
+            with open(os.path.join(d, "expected.json"), encoding="utf-8") as fh:
+                e = json.load(fh)
+        except (OSError, ValueError) as ex:  # noqa: BLE001
+            add_erro(f"{kind}/{fid}: expected.json ilegível ({ex})")
+            continue
+        tipos[e.get("tipo_de_teste", "?")] = tipos.get(e.get("tipo_de_teste", "?"), 0) + 1
+        entrada = e.get("entrada") or {}
+        if e.get("tipo_de_teste") == "negativo_tecnico":
+            negativos += 1
+            esperados = {"expected.json", os.path.basename(entrada.get("arquivo", ""))}
+        else:
+            esperados = {"expected.json"} | {os.path.basename(v)
+                                             for v in (entrada.get("renditions") or {}).values()}
+
+        nao_versionados = set(NAO_VERSIONADOS.get(fid, ()))
+        if nao_versionados and nao_versionados & (esperados - arquivos):
+            add_aviso(f"{kind}/{fid}: {', '.join(sorted(nao_versionados))} ausente(s) "
+                      f"(no .gitignore); rode {GERADOR_CATALOGO}")
+        faltando = esperados - arquivos - nao_versionados
+        sobrando = arquivos - esperados
+        if faltando:
+            add_erro(f"{kind}/{fid}: falta(m) {sorted(faltando)}")
+        if sobrando:
+            add_erro(f"{kind}/{fid}: arquivo(s) fora do padrão {sorted(sobrando)}")
 
         for f in arquivos:
             if os.path.getsize(os.path.join(d, f)) == 0 and fid != "Validacao_ArquivoVazio":
                 add_erro(f"{kind}/{fid}/{f}: arquivo de 0 bytes")
-
         if fid not in manifest:
             add_erro(f"{kind}/{fid}: não está no manifest.csv")
 
@@ -133,11 +156,10 @@ def verifica_estrutura(manifest, quiet):
             add_erro(f"{fid}: está no manifest.csv mas não tem pasta")
     info["pastas"] = len(vistos)
     info["tipos"] = tipos
-    info["negativos"] = total.get(2, 0)
+    info["negativos"] = negativos
     if not quiet:
-        print(f"   {len(vistos)} pastas · {total.get(4,0)} com 4 arquivos · "
-              f"{total.get(2,0)} com 2 arquivos (negativos técnicos)")
-        print("   por tipo_de_teste: " + ", ".join(f"{k}={v}" for k, v in sorted(tipos.items())))
+        print(f"   {len(vistos)} pastas · {negativos} negativos técnicos · "
+              + " · ".join(f"{k}={v}" for k, v in sorted(tipos.items())))
 
 
 def verifica_expected(manifest, quiet):
@@ -195,8 +217,10 @@ def verifica_expected(manifest, quiet):
             if c or resp.get("dados_extraidos"):
                 add_erro(f"{fid}: erro de processamento não pode ter dados extraídos")
 
+        # arquivos do .gitignore (os três PDFs grandes) já viram aviso acima
+        nao_versionados_rel = {f"{kind}/{fid}/{n}" for n in NAO_VERSIONADOS.get(fid, ())}
         for k, rel in (e.get("entrada", {}).get("renditions") or {}).items():
-            if not os.path.exists(os.path.join(BASE, rel)):
+            if not os.path.exists(os.path.join(BASE, rel)) and rel not in nao_versionados_rel:
                 add_erro(f"{fid}: rendition {k} aponta para arquivo inexistente ({rel})")
     if not quiet:
         print(f"   {info['pastas']} expected.json lidos · {com_erro} inválidos")
@@ -287,7 +311,7 @@ def verifica_arquivos(quiet):
                     add_erro(f"{fid}/{f}: PDF sem páginas")
                 if chars == 0:
                     sem_texto.append(f"{fid}/{f}")
-            elif f.lower().endswith(".jpg"):
+            elif f.lower().endswith((".jpg", ".png", ".webp")):
                 try:
                     Image.open(p).verify()
                 except Exception:  # noqa: BLE001

@@ -16,7 +16,7 @@
     }
   },
   "resposta_esperada": {
-    "status": "EM_REVISAO",
+    "status": "PROCESSADO",
     "documento_id": "DOC-BEFDD90A",
     "classificacao": {
       "tipo_documento": "LAUDO_EXAME_IMAGEM",
@@ -60,8 +60,8 @@
       "destinos": [
         "FILA_URGENCIA_MEDICA"
       ],
-      "requer_auditoria_humana": true,
-      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com notificação e auditoria humana na própria fila de urgência.",
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com alerta registrado. Sem ambiguidade, segue sem revisão humana.",
       "notificacao": {
         "gerada": true,
         "canal": "SIMULADO_SLACK_PLANTAO",
@@ -78,5 +78,5 @@
     "Destino FILA_URGENCIA_MEDICA com alerta",
     "CID ausente permanece null e não exige revisão por si só"
   ],
-  "observacoes": "Espelha o exemplo do Projeto_oracle.pdf. A spec v1.0 prevê EM_REVISAO para urgência, embora o exemplo do brief mostre 'processado'."
+  "observacoes": "Espelha o exemplo do Projeto_oracle.pdf: urgência sem ambiguidade termina em PROCESSADO, com requer_auditoria_humana false e alerta registrado."
 }

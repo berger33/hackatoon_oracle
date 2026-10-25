@@ -3,7 +3,7 @@
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
 **Código:** [`app/models.py`](../../app/models.py) (Pydantic 2)
 **Data:** 20/10/2026
-**Escopo:** o contrato que os 67 `expected.json` documentam e validam.
+**Escopo:** o contrato que os 79 `expected.json` documentam e validam.
 
 ---
 
@@ -15,10 +15,10 @@ O contrato responde a três perguntas, e só a estas:
 2. **Quais valores são válidos** em cada campo controlado — sem texto livre, sem acento, sem espaço.
 3. **Como a decisão é tomada** a partir dos fatos extraídos (score, campos ausentes, incertos, conflitos, prioridade).
 
-Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 67 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
+Ele é executável: `app/models.py` roda as regras e recusa payload incoerente. Os 79 fixtures são instâncias válidas desse modelo, e o teste `tests/testar_contrato.py` prova isso a cada execução.
 
 ```bash
-python3 tests/testar_contrato.py        # 67/67 no contrato
+python3 tests/testar_contrato.py        # 79/79 no contrato
 python3 tools/verificar_consistencia.py # estrutura, manifesto, duplicidade
 ```
 
@@ -42,6 +42,7 @@ Decisões que fecham divergências antigas:
 - **`POUCO_URGENTE` não existe.** A especificação define três níveis; o valor foi removido em vez de ficar sem fixture.
 - **`OUTRO` e `NAO_IDENTIFICADO` são resultados**, não erros: continuam sendo `TipoDocumento`, com revisão obrigatória.
 - **`NAO_IDENTIFICADA` é prioridade**; `N/A` deixou de existir em qualquer campo.
+- **Urgência isolada não gera revisão humana** (`PROCESSADO` + `requer_auditoria_humana=False`). Decisão tomada a partir do `Projeto_oracle.pdf`, cujo exemplo devolve `"status": "processado"` e `"requer_auditoria_humana": false` para um caso urgente, e guarda o objeto em `processados/urgentes/`. Revisão é consequência de **ambiguidade**, nunca de urgência sozinha.
 
 ---
 
@@ -97,6 +98,7 @@ Notas de modelagem:
 | `medico.crm.uf` | sempre `SP`: todas as fixtures acontecem no Hospital Aurora, em São Paulo, e o CRM acompanha a UF de atuação |
 | `dados_extraidos.urgencia` | declara o que o documento diz (`SIM`/`NAO`/`INDETERMINADO`), em vez de inferir do texto |
 | `qualidade.campos_ausentes` / `campos_incertos` | vêm do extrator; o validador **não recalcula** (ver §5) |
+| `qualidade.score_extracao` | produzido pelo extrator com a fórmula do §5 (`calcular_score_extracao`); o validador não o recalcula, porque os 79 casos aprovados trazem scores ilustrativos |
 | `qualidade.score_combinado` | sempre `min(score_classificacao, score_extracao)` — recalculado pelo validador |
 | `decisao_roteamento.destino_principal` | derivado: é sempre `destinos[0]` |
 | `armazenamento_oci` | opcional: persistência é etapa posterior e pode falhar (`ERRO_PERSISTENCIA`) |
@@ -118,25 +120,49 @@ Os dois casos de leitura antes usavam o schema de triagem preenchido com `"N/A"`
 
 | # | Regra | Efeito |
 | --- | --- | --- |
-| R1 | `nivel_prioridade == URGENTE` | `FILA_URGENCIA_MEDICA` + `notificacao` + `requer_auditoria_humana=True` + `EM_REVISAO` |
-| R2 | Ambiguidade: campo obrigatório ausente **ou** campo incerto **ou** conflito **ou** `score_combinado < limiar` **ou** `OUTRO`/`NAO_IDENTIFICADO` | revisão humana |
+| R1 | `nivel_prioridade == URGENTE` | `FILA_URGENCIA_MEDICA` + `notificacao` + `PROCESSADO`. **Urgência isolada não gera revisão humana** (`requer_auditoria_humana=False`) — é o comportamento do exemplo do `Projeto_oracle.pdf` |
+| R2 | Ambiguidade: campo obrigatório ausente **ou** campo incerto **ou** conflito **impeditivo** (`ALTA`/`MEDIA`) **ou** `score_combinado < limiar` **ou** `OUTRO`/`NAO_IDENTIFICADO` **ou** prioridade `NAO_IDENTIFICADA` **ou** `urgencia == INDETERMINADO` | revisão humana |
 | R3 | Ambiguidade **sem** urgência | destino **substituído** por `FILA_REVISAO_HUMANA` |
-| R4 | Ambiguidade **com** urgência | `FILA_URGENCIA_MEDICA` **+** `FILA_REVISAO_HUMANA` |
+| R4 | Ambiguidade **com** urgência | `FILA_URGENCIA_MEDICA` **+** `FILA_REVISAO_HUMANA` + `requer_auditoria_humana=True` + `EM_REVISAO` |
 | R5 | `score_combinado = min(...)`, limiar **estrito** | 0,85 passa; 0,84 revisa |
+| R8 | Conflito de gravidade `BAIXA` | é registrado em `qualidade.conflitos` e na justificativa, mas **não** vira conflito impeditivo e **não** gera revisão |
 | R6 | `campos_ausentes` é do extrator | só os 5 obrigatórios disparam revisão; CID/medicamentos/exames ausentes são registrados e não bloqueiam |
 | R7 | Erro de leitura | `ERRO_PROCESSAMENTO` + `erro.codigo`, sem dados |
 
 **Campos obrigatórios (RF-21):** `paciente.nome`, `paciente.idade`, `medico.nome`, `medico.crm`, `diagnostico`.
 
-### A exceção da urgência, explicada
+### A urgência, explicada
 
-Um documento urgente sem nenhuma ambiguidade termina com `requer_auditoria_humana = true` e **sem** `FILA_REVISAO_HUMANA`. Não é contradição: a auditoria da urgência acontece **na própria fila de urgência** (alerta no plantão + conferência humana). A `FILA_REVISAO_HUMANA` só é acrescentada quando existe ambiguidade adicional (R4).
+**Urgência isolada não é ambiguidade, e por isso não gera revisão humana.** Um documento urgente sem nenhuma ambiguidade termina em `PROCESSADO`, com `requer_auditoria_humana = false`, um único destino (`FILA_URGENCIA_MEDICA`) e o alerta registrado. É o comportamento do exemplo do `Projeto_oracle.pdf`, que devolve `"status": "processado"`, `"requer_auditoria_humana": false` e guarda o objeto em `processados/urgentes/`.
 
-É o que acontece em `Matriz_Guia_Imagem`, `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem` e `Conflito_AltoRisco` — cinco casos, um destino.
+A `FILA_REVISAO_HUMANA` só entra quando existe, além da urgência, uma ambiguidade (R4) — campo obrigatório ausente, campo incerto, conflito impeditivo, score abaixo do limiar, tipo fora da taxonomia, prioridade `NAO_IDENTIFICADA` ou urgência `INDETERMINADO`. Nesse caso a urgência **acrescenta** o destino em vez de substituí-lo, e o status passa a `EM_REVISAO`.
+
+É o que acontece em `Matriz_Guia_Imagem`, `Matriz_LaudoDeImagem_Pdf`, `Matriz_LaudoDeImagem_Imagem`, `Matriz_Receituario_Imagem` e `Conflito_AltoRisco` — cinco casos, um destino, status `PROCESSADO`, com alerta. Os três casos de duas filas (`Conflito_Prioridade`, `Simultaneo_Urgencia_Ilegivel`, `Simultaneo_Urgencia_Score`) mantêm `EM_REVISAO` porque há ambiguidade junto.
 
 ### Por que o validador não deduz "campo ausente"
 
 `Matriz_LaudoLaboratorial_Texto` tem `diagnostico: null` e termina em `PROCESSADO` — um laudo laboratorial legitimamente não tem diagnóstico. `Ausencia_Diagnostico` também tem `diagnostico: null` e termina em `EM_REVISAO`. O dado é o mesmo; a diferença está na intenção registrada em `qualidade.campos_ausentes`, que é saída do extrator. Recalcular essa lista olhando para `null` erraria um dos dois lados.
+
+### Decisões de 21/10/2026 incorporadas ao contrato
+
+| Decisão | Regra | Onde |
+| --- | --- | --- |
+| A1 | Só conflito de gravidade `ALTA` ou `MEDIA` é **impeditivo** e leva à revisão. `BAIXA` é registrado e não bloqueia. | `GRAVIDADES_IMPEDITIVAS`, R2, R8 |
+| A3 | `score_extracao` é determinístico: `1 − 0,2×campo obrigatório ausente − 0,1×campo incerto − 0,3/0,2/0,1 por conflito ALTA/MEDIA/BAIXA`, com piso 0. | `calcular_score_extracao`, `PESO_CONFLITO` |
+| A4 | `nivel_prioridade == NAO_IDENTIFICADA` é ambiguidade e gera revisão. | R2 |
+| A5 | `urgencia == INDETERMINADO` entra como campo incerto e gera revisão. | R2 |
+
+A `GRAVIDADES_IMPEDITIVAS` e o `calcular_score_extracao` ficam em `app/models.py`; a regra também está registrada no Anexo A da Especificação Funcional v1.0 (A.1 a A.7).
+
+**As duas primeiras eram invisíveis nos 67 casos originais** — e é por isso que o catálogo ganhou 3 fixtures:
+
+| Regra | Situação nos 67 casos | Caso criado para prová-la |
+| --- | --- | --- |
+| A1 (gravidade) | todos os conflitos existentes eram `ALTA`; nada distinguia `MEDIA` de `BAIXA` | `Conflito_Gravidade_Media` (revisa) e `Conflito_Gravidade_Baixa` (não revisa) |
+| A4 (`NAO_IDENTIFICADA`) | os 8 casos `NAO_IDENTIFICADA` já revisavam por outros gatilhos | `Borda_Prioridade_NaoIdentificada` — prioridade indefinida como único gatilho |
+| A5 (`INDETERMINADO`) | os 8 casos `INDETERMINADO` já revisavam por outros gatilhos | `Borda_Urgencia_Indeterminada` — urgência indeterminada como único gatilho |
+
+Medição: com `GRAVIDADES_IMPEDITIVAS = {ALTA, MEDIA, BAIXA}` o caso `Conflito_Gravidade_Baixa` passaria a `EM_REVISAO`; com `{ALTA}` o caso `Conflito_Gravidade_Media` passaria a `PROCESSADO`; sem A4 e A5 os dois casos de borda passariam a `PROCESSADO`. Os três novos casos pegam a mudança — antes deles, a suíte não detectaria nenhuma regressão em A1, A4 ou A5.
 
 ---
 
@@ -195,14 +221,14 @@ python3 tools/gerar_fixtures_catalogo.py --somente-expected
 | Comando | O que garante |
 | --- | --- |
 | `python3 tests/testar_contrato.py` | cada `expected.json` valida no modelo certo e é **ponto fixo**: rodar as regras de novo devolve o mesmo JSON |
-| `python3 tools/verificar_consistencia.py` | estrutura (4/2 arquivos por pasta), `manifest.csv` × expected, legibilidade de PDF/JPG/TXT, duplicidade |
+| `python3 tools/verificar_consistencia.py` | estrutura (arquivos esperados lidos de `entrada.renditions`), `manifest.csv` × expected, legibilidade de PDF/JPG/PNG/WEBP/TXT, duplicidade |
 | `python3 tools/gerar_mapa_documentos.py` | regera o mapa em PDF a partir do manifesto |
 
 Resultado atual:
 
 ```text
-tests/testar_contrato.py        → 67 fixtures: 57 funcionais + 2 erros de leitura + 8 negativos, 0 falhas
-tools/verificar_consistencia.py → 67 pastas (59 com 4 arquivos + 8 com 2), 0 erros, 0 avisos
+tests/testar_contrato.py        → 79 fixtures: 65 funcionais + 2 erros de leitura + 12 negativos, 0 falhas
+tools/verificar_consistencia.py → 79 pastas (65 com 4 arquivos + 12 com 2), 0 erros, 0 avisos
 ```
 
 ---
@@ -217,7 +243,7 @@ O modelo anterior (v2.0) foi descartado. Resumo do que ele não cobria e que ago
 | `status: str` com default `PROCESSADO` | `StatusTriagem` com os 6 estados, sem default |
 | sem contrato de erro; `dados_extraidos` obrigatório | `ErroResposta` (HTTP) e `TriagemMediFlow.erro` (leitura) |
 | validador apagava `campos_incertos`/`conflitos` recebidos | evidência preservada e cobrada nas regras |
-| urgência não gerava `EM_REVISAO`; diagnóstico "ou exame" | R1 e R6 acima |
+| urgência não gerava `EM_REVISAO`; diagnóstico "ou exame" | urgência isolada volta a terminar em `PROCESSADO`, agora **por decisão** (R1: exemplo do `Projeto_oracle.pdf`), e não por omissão de regra; diagnóstico obrigatório segue R6 |
 | `especialidade: str`, `exame_ou_procedimento: str`, `crm` duplicado | listas e objeto CRM único |
 | limiar 0,85 fixo no corpo do validador | `qualidade.limiar_aplicado` (default 0,85, por payload) |
 

@@ -6,15 +6,15 @@ Este diretório guarda os documentos fictícios usados nos testes do agente de t
 - **Catálogo analítico:** [`docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md`](../../docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md)
 - **Mapa em PDF:** [`docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf`](../../docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf)
 - **Manifesto (fonte de verdade):** [`manifest.csv`](manifest.csv)
-- **Status:** **67 de 67 fixtures produzidos**
+- **Status:** **79 de 79 fixtures produzidos**
 
 ## Estrutura
 
 ```text
 tests/fixtures/
-├── manifest.csv        # 67 linhas: ID, tipo, formato, cenário, destino e status esperados
+├── manifest.csv        # 79 linhas: ID, tipo, formato, cenário, destino e status esperados
 ├── demo/               # 12 casos de pitch (1 pasta por fixture)
-├── catalogo/           # 55 casos restantes, incluindo os 8 negativos técnicos
+├── catalogo/           # 67 casos restantes, incluindo os 12 negativos técnicos
 └── README.md           # este arquivo
 ```
 
@@ -25,9 +25,12 @@ Cada pasta de fixture contém:
 | `{ID}.txt` | Documento em texto puro (UTF-8) |
 | `{ID}.pdf` | Mesma peça em PDF (digital, escaneado, protegido ou corrompido, conforme o caso) |
 | `{ID}.jpg` | Mesma peça fotografada, em JPEG 150 dpi |
+| `{ID}.png` / `{ID}.webp` | Só nos dois casos de formato do bloco Limite |
 | `expected.json` | Resposta esperada completa (`resposta_esperada`), no formato do contrato, + asserções em texto |
 
-Os 8 negativos do bloco **Validação** são a exceção: têm **um único arquivo inválido** (`Validacao_ArquivoDocx.docx`, `Validacao_ArquivoVazio.pdf`, `Validacao_ArquivoGrande.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
+Os 12 negativos técnicos (8 do bloco **Validação** e 4 do bloco **Limite**) são a exceção: têm **um único arquivo inválido** (`Validacao_ArquivoDocx.docx`, `Validacao_ArquivoVazio.pdf`, `Limite_Paginas_21.pdf`, etc.) e um `expected.json` com o **envelope de erro** (HTTP + código funcional), não um JSON de triagem.
+
+Quatro arquivos grandes ficam fora do git (`.gitignore`) e são recriados pelo gerador: `Validacao_ArquivoGrande.pdf` (25 MB), `Limite_Tamanho_10MB.pdf` (10 MB), `Limite_Tamanho_Acima10MB.pdf` (10,5 MB) e `Limite_Texto_Acima10MB.txt` (10,5 MB).
 
 ### O que há dentro de um `expected.json`
 
@@ -48,7 +51,7 @@ Os 8 negativos do bloco **Validação** são a exceção: têm **um único arqui
 }
 ```
 
-`resposta_esperada` **é** o JSON da API — não há tradução de nomes entre o fixture e a resposta. Os 67 arquivos validam no contrato (`python3 tests/testar_contrato.py`).
+`resposta_esperada` **é** o JSON da API — não há tradução de nomes entre o fixture e a resposta. Os 79 arquivos validam no contrato (`python3 tests/testar_contrato.py`).
 
 ## Como ler os nomes
 
@@ -58,11 +61,12 @@ Nenhum nome usa abreviação. O padrão é **`Bloco_Assunto_Detalhe`**: três pa
 | --- | ---: | --- | --- |
 | **Matriz** | 24 | "O sistema acerta cada tipo de documento em cada formato?" | `Matriz_Receituario_Pdf`, `Matriz_LaudoLaboratorial_Imagem`, `Matriz_Guia_Texto` |
 | **Ausencia** | 8 | "O que acontece quando falta um campo?" | `Ausencia_Paciente_Nome`, `Ausencia_Medico_Crm`, `Ausencia_SomenteCid` |
-| **Borda** | 2 | "O comportamento muda exatamente no limiar 0,85?" | `Borda_Score_084`, `Borda_Score_085` |
-| **Conflito** | 5 | "O sistema detecta contradição clínica?" | `Conflito_Dose`, `Conflito_Cid_Diagnostico` |
+| **Borda** | 4 | "O comportamento muda exatamente no limiar 0,85? E com prioridade ou urgência indefinidas?" | `Borda_Score_084`, `Borda_Score_085`, `Borda_Prioridade_NaoIdentificada`, `Borda_Urgencia_Indeterminada` |
+| **Conflito** | 7 | "O sistema detecta contradição clínica? E distingue a gravidade do conflito?" | `Conflito_Dose`, `Conflito_Cid_Diagnostico`, `Conflito_Gravidade_Media`, `Conflito_Gravidade_Baixa` |
 | **Simultaneo** | 2 | "E quando urgência e ambiguidade acontecem juntas?" | `Simultaneo_Urgencia_Ilegivel` |
 | **Qualidade** | 8 | "E quando o arquivo está ruim ou protegido?" | `Qualidade_Foto_Rotacionada`, `Qualidade_Pdf_ComSenha` |
 | **Validacao** | 8 | "E quando a entrada é inválida?" | `Validacao_ArquivoDocx`, `Validacao_ArquivoGrande`, `Validacao_MimeInvalido` |
+| **Limite** | 8 | "O corte está mesmo em 10 MB, 20 páginas, nesses formatos e no texto?" | `Limite_Tamanho_10MB`, `Limite_Paginas_21`, `Limite_Paginas_21_Digitalizado`, `Limite_Formato_Webp`, `Limite_Texto_Acima10MB` |
 | **Escaneado** | 6 | "E quando o PDF é só imagem, sem texto?" | `Escaneado_Receituario_PdfDigitalizado` |
 | **Diferencial** | 4 | "Os opcionais funcionam?" | `Diferencial_ReceituarioManuscrito`, `Diferencial_HemogramaCompleto` |
 
@@ -102,7 +106,7 @@ A lógica é **bloco + sujeito + o que está sendo testado**:
 
 ```text
 tests/fixtures/
-├── manifest.csv     ← comece por aqui: 67 linhas, uma por documento, com o resultado esperado
+├── manifest.csv     ← comece por aqui: 79 linhas, uma por documento, com o resultado esperado
 ├── demo/            ← 12 casos que cobrem o pitch (todos os blocos, exceto Qualidade e Validacao)
 └── catalogo/        ← 55 casos restantes (Qualidade e Validacao ficam só aqui)
 ```
@@ -115,7 +119,7 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 | ---: | --- | --- | --- | --- |
 | 1 | `Matriz_Receituario_Texto` | Receituário — rotina | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
 | 2 | `Matriz_Receituario_Pdf` | Receituário — 2 medicamentos | `FARMACIA_HOSPITALAR` | `PROCESSADO` |
-| 3 | `Matriz_Receituario_Imagem` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
+| 3 | `Matriz_Receituario_Imagem` | Receituário — urgência com opioide | `FILA_URGENCIA_MEDICA` | `PROCESSADO` |
 | 4 | `Matriz_LaudoDeImagem_Pdf` | TC de tórax — TEP agudo | `FILA_URGENCIA_MEDICA` | `EM_REVISAO` |
 | 5 | `Matriz_LaudoLaboratorial_Pdf` | Hemograma — rotina | `PRONTUARIO_ELETRONICO` | `PROCESSADO` |
 | 6 | `Matriz_Guia_Pdf` | Guia de ressonância — eletiva | `AUDITORIA_AUTORIZACOES` | `PROCESSADO` |
@@ -146,7 +150,7 @@ O mesmo ID existe em um único lugar — `demo/` e `catalogo/` não se repetem. 
 python3 tools/verificar_consistencia.py
 ```
 
-O script confere, nos 67 casos: número de arquivos por pasta, nome da pasta = nome dos arquivos = `fixture_id`, schema do `expected.json`, aderência ao `manifest.csv`, legibilidade dos PDFs e JPGs, e **duplicidade** (arquivos byte-idênticos, textos clínicos iguais e saídas esperadas iguais). Sai com código 1 se encontrar erro.
+O script confere, nos 79 casos: conjunto de arquivos por pasta (lido de `entrada.renditions`), nome da pasta = nome dos arquivos = `fixture_id`, schema do `expected.json`, aderência ao `manifest.csv`, legibilidade de PDF/JPG/PNG/WEBP/TXT, e **duplicidade** (arquivos byte-idênticos, textos clínicos iguais e saídas esperadas iguais). Sai com código 1 se encontrar erro.
 
 Três grupos compartilham a mesma saída esperada sem serem redundantes:
 
@@ -186,7 +190,7 @@ Três grupos compartilham a mesma saída esperada sem serem redundantes:
 ```bash
 python3 -m pip install -r requirements.txt
 
-python3 tests/testar_contrato.py           # 67/67 expected.json válidos no contrato
+python3 tests/testar_contrato.py           # 79/79 expected.json válidos no contrato
 python3 tools/verificar_consistencia.py    # estrutura, schema, manifesto, legibilidade, coerência clínica (CRM-SP) e duplicidade
 
 python3 tools/gerar_fixtures_demo.py       # 12 casos → 48 arquivos em tests/fixtures/demo/

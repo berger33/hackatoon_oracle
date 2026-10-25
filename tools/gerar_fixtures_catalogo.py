@@ -99,7 +99,7 @@ c(id="Matriz_LaudoDeImagem_Imagem", titulo="LAUDO DE EXAME DE IMAGEM",
         sec("Conclusão", "Pneumotórax espontâneo à direita, com sinais de hipertensão. Avaliação médica imediata.")],
   doc=("Dra. Renata Silveira", "CRM 145892-SP"),
   exp=dict(tipo="LAUDO_EXAME_IMAGEM", esp=["Radiologia", "Pneumologia"], prio="URGENTE",
-           status="EM_REVISAO", dest=["FILA_URGENCIA_MEDICA"], rev=True, notif=True,
+           status="PROCESSADO", dest=["FILA_URGENCIA_MEDICA"], rev=False, notif=True,
            dados=dict(paciente=dict(nome="Antônio Carlos Vieira", idade=71),
                       medico=dict(nome="Dra. Renata Silveira", crm=dict(numero="145892", uf="SP")),
                       diagnostico="Pneumotórax espontâneo à direita", cid=None, medicamentos=[],
@@ -134,7 +134,7 @@ c(id="Matriz_Guia_Imagem", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
         sec("Autorização", "Solicitação URGENTE. Autorização em análise pela auditoria.")],
   doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
   exp=dict(tipo="GUIA_PROCEDIMENTO", esp=["Gastroenterologia"], prio="URGENTE",
-           status="EM_REVISAO", dest=["FILA_URGENCIA_MEDICA"], rev=True, notif=True,
+           status="PROCESSADO", dest=["FILA_URGENCIA_MEDICA"], rev=False, notif=True,
            dados=dict(paciente=dict(nome="Márcia Helena dos Santos", idade=49),
                       medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
                       diagnostico="Hemorragia digestiva alta", cid="K92.2", medicamentos=[],
@@ -542,7 +542,7 @@ c(id="Conflito_AltoRisco", titulo="RECEITUÁRIO MÉDICO",
         sec("Orientações", "Controle de INR conforme protocolo. Não há menção a urgência no documento.")],
   doc=("Dra. Helena Prado", "CRM 187432-SP"),
   exp=dict(tipo="RECEITUARIO_MEDICO", esp=["Cardiologia"], prio="URGENTE",
-           status="EM_REVISAO", dest=["FILA_URGENCIA_MEDICA"], rev=True, notif=True,
+           status="PROCESSADO", dest=["FILA_URGENCIA_MEDICA"], rev=False, notif=True,
            dados=dict(paciente=dict(nome="Alzira Mendes Coelho", idade=70),
                       medico=dict(nome="Dra. Helena Prado", crm=dict(numero="187432", uf="SP")),
                       diagnostico="Fibrilação atrial crônica", cid="I48.9",
@@ -714,8 +714,9 @@ c(id="Qualidade_Pdf_Multipagina", titulo="RELATÓRIO DE ALTA HOSPITALAR",
                       diagnostico="Sepse de foco pulmonar", cid="A41.9",
                       medicamentos=["Amoxicilina + clavulanato 875/125 mg"], exames=[],
                       urgencia="NAO"),
-           ass=["PDF com 6+ páginas é aceito", "Conteúdo completo é considerado na extração",
-                "Limite de páginas ainda pendente na spec (§15)"]))
+           ass=["PDF com 7 páginas é aceito: está dentro do limite de 20 páginas (A6)",
+                "Conteúdo completo é considerado na extração",
+                "Destino PRONTUARIO_ELETRONICO, sem revisão"]))
 
 c(id="Qualidade_Pdf_ComSenha", titulo="RECEITUÁRIO MÉDICO",
   sub="PDF protegido por senha",
@@ -955,6 +956,216 @@ c(id="Diferencial_GuiaTiss", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
                 "Destino AUDITORIA_AUTORIZACOES"],
            obs="Diferencial opcional. Códigos TUSS fictícios, apenas para teste de extração."))
 
+# ============================================================ BLOCO CONFLITO — gravidade (A1)
+c(id="Conflito_Gravidade_Media", titulo="GUIA DE SOLICITAÇÃO DE PROCEDIMENTO",
+  sub="Guia eletiva cujo texto pede atendimento preferencial, sem sinal clínico de urgência",
+  meta=[("Paciente", "Otávio Lemos Prado"), ("Idade", "45 anos"), ("Documento", "DOC-GUI-2026-0051"),
+        ("Data", "18/10/2026"), ("Origem", "Ambulatório de Ortopedia")],
+  secs=[sec("Prioridade declarada", "ROTINA — atendimento eletivo."),
+        sec("Diagnóstico / CID", "Gonartrose unilateral de joelho direito — CID-10 M17.1."),
+        sec("Procedimento solicitado", "Ressonância magnética de joelho direito."),
+        sec("Justificativa clínica",
+            "Dor mecânica em joelho direito há 8 meses, sem sinais flogísticos, sem derrame articular e "
+            "sem limitação funcional aguda. Exame solicitado para programação de conduta eletiva. O "
+            "texto pede atendimento preferencial, mas não descreve nenhum sinal clínico de urgência.")],
+  doc=("Dr. André Luiz Barbosa", "CRM 165432-SP"),
+  exp=dict(tipo="GUIA_PROCEDIMENTO", esp=["Ortopedia"], prio="ROTINA",
+           status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
+           score=dict(score_classificacao=0.95, score_extracao=0.95, score_combinado=0.95, limiar=0.85),
+           dados=dict(paciente=dict(nome="Otávio Lemos Prado", idade=45),
+                      medico=dict(nome="Dr. André Luiz Barbosa", crm=dict(numero="165432", uf="SP")),
+                      diagnostico="Gonartrose unilateral de joelho direito", cid="M17.1",
+                      medicamentos=[], exames=["Ressonância magnética de joelho direito"],
+                      urgencia="NAO"),
+           conflitos=[dict(tipo="PRIORIDADE_TEXTO", campos=["nivel_prioridade", "texto"],
+                           gravidade="MEDIA",
+                           descricao="Texto pede atendimento preferencial, mas a guia é eletiva e não "
+                                     "há sinal clínico de urgência")],
+           ass=["Conflito de gravidade MÉDIA é impeditivo e leva à revisão humana (decisão A1)",
+                "Não há urgência: a revisão substitui o destino, sem gerar alerta",
+                "Scores em 0,95: o gatilho é a gravidade, não o score"],
+           obs="Caso criado em 21/10/2026 para isolar a regra A1. Os dois scores são forçados em 0,95 "
+               "(modo fixture) para que o único gatilho de revisão seja o conflito MÉDIA."))
+
+c(id="Conflito_Gravidade_Baixa", titulo="ATESTADO MÉDICO",
+  sub="Atestado em que o nome do paciente muda de grafia entre cabeçalho e corpo",
+  meta=[("Paciente", "Thiago Pelegrini Moraes"), ("Idade", "33 anos"), ("Documento", "DOC-ATE-2026-0052"),
+        ("Data", "18/10/2026"), ("Origem", "Ambulatório de Clínica Médica")],
+  secs=[sec("Finalidade", "Atestado de comparecimento de 1 dia."),
+        sec("Texto do atestado",
+            "Atesto que o paciente compareceu a consulta em 18/10/2026, permanecendo no serviço por "
+            "aproximadamente 3 horas."),
+        sec("Diagnóstico / CID", "Cefaleia tensional — CID-10 G44.2."),
+        sec("Observação", "O nome consta como Thiago Pelegrini Moraes no cabeçalho e como Thiago "
+                          "Pelegrini Morais no corpo do atestado. Trata-se do mesmo paciente, prontuário 512884.")],
+  doc=("Dra. Camila Ferreira Lopes", "CRM 198765-SP"),
+  exp=dict(tipo="ATESTADO_MEDICO", esp=["Clínica Médica"], prio="ROTINA",
+           status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.90, score_combinado=0.90, limiar=0.85),
+           dados=dict(paciente=dict(nome="Thiago Pelegrini Moraes", idade=33),
+                      medico=dict(nome="Dra. Camila Ferreira Lopes", crm=dict(numero="198765", uf="SP")),
+                      diagnostico="Cefaleia tensional", cid="G44.2", medicamentos=[], exames=[],
+                      urgencia="NAO"),
+           conflitos=[dict(tipo="DADOS_PACIENTE", campos=["paciente.nome"], gravidade="BAIXA",
+                           descricao="Variação de grafia do nome entre cabeçalho e corpo: "
+                                     "Moraes x Morais, mesmo prontuário")],
+           ass=["Conflito de gravidade BAIXA é registrado em qualidade.conflitos e não bloqueia (A1)",
+                "Score combinado 0,90 fica acima do limiar de 0,85",
+                "O conflito continua visível na resposta, para auditoria"],
+           obs="Caso criado em 21/10/2026. score_extracao = 0,90 vem da fórmula aprovada (A3): "
+               "1 − 0,1 por um conflito BAIXA. O conflito é registrado, mas não gera revisão."))
+
+# ============================================================ BLOCO BORDA — A4 e A5
+c(id="Borda_Prioridade_NaoIdentificada", titulo="RECEITUÁRIO MÉDICO",
+  sub="Receita completa e legível, sem campo que permita definir a prioridade",
+  meta=[("Paciente", "Luzia Ferraz Bonfim"), ("Idade", "62 anos"), ("Documento", "DOC-REC-2026-0053"),
+        ("Data", "18/10/2026"), ("Origem", "Unidade Básica de Saúde")],
+  secs=[sec("Hipótese diagnóstica", "Hipotireoidismo primário — CID-10 E03.9."),
+        sec("Prescrição", "Levotiroxina sódica 75 mcg — 1 comprimido por via oral em jejum, uso contínuo."),
+        sec("Caráter do atendimento", "Campo de caráter do atendimento em branco no formulário: não há "
+                                      "marcação de eletivo nem de urgente em nenhuma parte do documento."),
+        sec("Orientações", "Retorno em 90 dias com dosagem de TSH.")],
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
+  exp=dict(tipo="RECEITUARIO_MEDICO", esp=["Endocrinologia"], prio="NAO_IDENTIFICADA",
+           status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Luzia Ferraz Bonfim", idade=62),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
+                      diagnostico="Hipotireoidismo primário", cid="E03.9",
+                      medicamentos=["Levotiroxina sódica 75 mcg"], exames=[], urgencia="NAO"),
+           ass=["Prioridade NAO_IDENTIFICADA é ambiguidade e gera revisão (decisão A4)",
+                "Documento está completo e legível: nenhum outro gatilho está presente",
+                "Não é urgência: um destino só, sem alerta"],
+           obs="Caso criado em 21/10/2026 para isolar a regra A4. Todos os campos obrigatórios estão "
+               "presentes, sem campos incertos, sem conflitos e com score acima do limiar — o único "
+               "gatilho de revisão é a prioridade não identificada."))
+
+c(id="Borda_Urgencia_Indeterminada", titulo="LAUDO EXAME LABORATORIAL",
+  sub="Laudo completo cujo texto não permite afirmar nem afastar urgência",
+  meta=[("Paciente", "Nilo Sérgio Amarante"), ("Idade", "58 anos"), ("Documento", "DOC-LAB-2026-0054"),
+        ("Data", "18/10/2026"), ("Origem", "Laboratório central")],
+  secs=[sec("Resultados", "Potássio: 5,6 mEq/L (referência 3,5–5,0)\nCreatinina: 1,4 mg/dL "
+                          "(referência 0,7–1,3)\nHemoglobina: 12,1 g/dL (referência 13,0–17,0)"),
+        sec("Conclusão", "Hipercalemia leve com função renal discretamente alterada. O laudo não registra "
+                         "solicitação de urgência nem liberação imediata ao médico assistente."),
+        sec("Observação", "Não há no documento nenhuma marcação de urgência, nem menção a resultado "
+                          "crítico. A definição depende de correlação clínica que o documento não traz.")],
+  doc=("Dra. Renata Silveira", "CRM 145892-SP"),
+  exp=dict(tipo="LAUDO_EXAME_LABORATORIAL", esp=["Nefrologia", "Clínica Médica"], prio="ROTINA",
+           status="EM_REVISAO", dest=["FILA_REVISAO_HUMANA"], rev=True, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Nilo Sérgio Amarante", idade=58),
+                      medico=dict(nome="Dra. Renata Silveira", crm=dict(numero="145892", uf="SP")),
+                      diagnostico="Hipercalemia leve com função renal discretamente alterada", cid=None,
+                      medicamentos=[], exames=["Potássio", "Creatinina", "Hemoglobina"],
+                      urgencia="INDETERMINADO"),
+           ass=["Urgência INDETERMINADO conta como campo incerto e gera revisão (decisão A5)",
+                "Não é urgência confirmada: não há alerta nem fila de urgência",
+                "O documento não autoriza afirmar SIM nem NAO"],
+           obs="Caso criado em 21/10/2026 para isolar a regra A5. O laudo está completo e legível, mas "
+               "não permite decidir a urgência — é a situação que a RF-13 manda marcar como "
+               "INDETERMINADO em vez de declarar NAO."))
+
+# ============================================================ BLOCO LIMITE (A6)
+c(id="Limite_Tamanho_10MB", titulo="ATESTADO MÉDICO",
+  sub="Atestado válido com exatamente 10 MB — no limite do upload",
+  meta=[("Paciente", "Cecília Andrade Vilela"), ("Idade", "29 anos"), ("Documento", "DOC-ATE-2026-0055"),
+        ("Data", "18/10/2026"), ("Origem", "Upload manual")],
+  secs=[sec("Finalidade", "Atestado de afastamento de 1 dia."),
+        sec("Texto do atestado", "Atesto que a paciente necessita de afastamento de suas atividades "
+                                 "por 1 (um) dia, a contar de 18/10/2026."),
+        sec("Diagnóstico / CID", "Cefaleia — CID-10 R51."),
+        sec("Observação", "O arquivo tem exatamente 10 MB (10.485.760 bytes): está no limite fixado "
+                          "para o upload, e por isso deve ser aceito. O tamanho vem de um comentário de "
+                          "preenchimento antes do marcador de fim do PDF; o conteúdo clínico é o de "
+                          "qualquer atestado de uma página.")],
+  doc=("Dr. Marcos Vinícius Tavares", "CRM 176543-SP"),
+  flags=dict(tamanho_mb=10),
+  exp=dict(tipo="ATESTADO_MEDICO", esp=["Clínica Médica"], prio="ROTINA",
+           status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Cecília Andrade Vilela", idade=29),
+                      medico=dict(nome="Dr. Marcos Vinícius Tavares", crm=dict(numero="176543", uf="SP")),
+                      diagnostico="Cefaleia", cid="R51", medicamentos=[], exames=[], urgencia="NAO"),
+           ass=["Arquivo de exatamente 10 MB é aceito: o limite é inclusivo (A6)",
+                "O tamanho não interfere na classificação nem na extração",
+                "Destino PRONTUARIO_ELETRONICO, sem revisão"],
+           obs="Caso criado em 21/10/2026. O PDF é preenchido até 10.485.760 bytes pelo gerador; "
+               "por isso fica fora do git (.gitignore) e é recriado por tools/gerar_fixtures_catalogo.py."))
+
+c(id="Limite_Paginas_20", titulo="RELATÓRIO DE ALTA HOSPITALAR",
+  sub="Relatório de internação com exatamente 20 páginas — no limite",
+  meta=[("Paciente", "Ademir Vilanova Prado"), ("Idade", "68 anos"), ("Documento", "DOC-ALT-2026-0056"),
+        ("Data", "18/10/2026"), ("Origem", "Enfermaria 4C")],
+  secs=[sec("Período de internação", "Admissão em 02/10/2026, alta em 18/10/2026 (16 dias)."),
+        sec("Diagnóstico principal", "Doença pulmonar obstrutiva crônica exacerbada — CID-10 J44.1.")] +
+       [sec(f"Evolução — dia {d}",
+            f"Dia {d}: paciente em uso de broncodilatador e corticoide, mantendo saturação acima de "
+            f"92% em ar ambiente. Ausculta com sibilos esparsos. Fisioterapia respiratória realizada.")
+        for d in range(1, 18)] +
+       [sec("Medicações de alta", "Budesonida 200 mcg — 2 inalações por via oral a cada 12 horas, uso contínuo.")],
+  doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
+  flags=dict(multipage=True, break_every=1),
+  exp=dict(tipo="RELATORIO_ALTA_INTERNACAO", esp=["Pneumologia"], prio="ROTINA",
+           status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Ademir Vilanova Prado", idade=68),
+                      medico=dict(nome="Dr. Paulo Mendes Rocha", crm=dict(numero="203114", uf="SP")),
+                      diagnostico="Doença pulmonar obstrutiva crônica exacerbada", cid="J44.1",
+                      medicamentos=["Budesonida 200 mcg"], exames=[], urgencia="NAO"),
+           ass=["Documento de exatamente 20 páginas é aceito: o limite é inclusivo (A6)",
+                "Conteúdo clínico das 20 páginas é considerado na extração",
+                "Destino PRONTUARIO_ELETRONICO, sem revisão"],
+           obs="Caso criado em 21/10/2026, par do Limite_Paginas_21. Juntos, os dois provam que o corte "
+               "está em 20 páginas."))
+
+c(id="Limite_Formato_Png", titulo="RECEITUÁRIO MÉDICO",
+  sub="Receita enviada como imagem PNG",
+  meta=[("Paciente", "Sueli Marcondes Reis"), ("Idade", "54 anos"), ("Documento", "DOC-REC-2026-0057"),
+        ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
+  secs=[sec("Hipótese diagnóstica", "Gastrite crônica — CID-10 K29.5."),
+        sec("Prescrição", "Omeprazol 20 mg — 1 comprimido por via oral em jejum, por 28 dias."),
+        sec("Orientações", "Retorno em 28 dias. Evitar anti-inflamatórios.")],
+  doc=("Dra. Helena Prado", "CRM 187432-SP"),
+  flags=dict(formato_extra="png"),
+  exp=dict(tipo="RECEITUARIO_MEDICO", esp=["Gastroenterologia"], prio="ROTINA",
+           status="PROCESSADO", dest=["FARMACIA_HOSPITALAR"], rev=False, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Sueli Marcondes Reis", idade=54),
+                      medico=dict(nome="Dra. Helena Prado", crm=dict(numero="187432", uf="SP")),
+                      diagnostico="Gastrite crônica", cid="K29.5",
+                      medicamentos=["Omeprazol 20 mg"], exames=[], urgencia="NAO"),
+           ass=["PNG está na lista de formatos aceitos (A6: PDF, JPG, PNG, WEBP, TXT)",
+                "Imagem é lida pelo caminho multimodal",
+                "Destino FARMACIA_HOSPITALAR"],
+           rendicoes_extra=dict(png="png"),
+           obs="Caso criado em 21/10/2026. A pasta tem os três arquivos padrão mais o PNG sob teste, "
+               "declarado em entrada.renditions."))
+
+c(id="Limite_Formato_Webp", titulo="LAUDO DE EXAME DE IMAGEM",
+  sub="Laudo de imagem enviado como WEBP",
+  meta=[("Paciente", "Rafael Coutinho Bessa"), ("Idade", "41 anos"), ("Documento", "DOC-LDI-2026-0058"),
+        ("Data", "18/10/2026"), ("Origem", "Foto enviada por celular")],
+  secs=[sec("Exame realizado", "Radiografia de tórax em duas incidências."),
+        sec("Achados", "Campos pulmonares livres, sem infiltrados. Silhueta cardíaca de dimensões "
+                       "normais. Sem derrame pleural."),
+        sec("Conclusão", "Radiografia de tórax sem alterações relevantes.")],
+  doc=("Dra. Renata Silveira", "CRM 145892-SP"),
+  flags=dict(formato_extra="webp"),
+  exp=dict(tipo="LAUDO_EXAME_IMAGEM", esp=["Radiologia"], prio="ROTINA",
+           status="PROCESSADO", dest=["PRONTUARIO_ELETRONICO"], rev=False, notif=False,
+           score=dict(score_classificacao=0.93, score_extracao=0.91, score_combinado=0.91, limiar=0.85),
+           dados=dict(paciente=dict(nome="Rafael Coutinho Bessa", idade=41),
+                      medico=dict(nome="Dra. Renata Silveira", crm=dict(numero="145892", uf="SP")),
+                      diagnostico="Radiografia de tórax sem alterações relevantes", cid=None,
+                      medicamentos=[], exames=["Radiografia de tórax"], urgencia="NAO"),
+           ass=["WEBP está na lista de formatos aceitos (A6: PDF, JPG, PNG, WEBP, TXT)",
+                "Imagem é lida pelo caminho multimodal",
+                "Destino PRONTUARIO_ELETRONICO"],
+           rendicoes_extra=dict(webp="webp"),
+           obs="Caso criado em 21/10/2026. A pasta tem os três arquivos padrão mais o WEBP sob teste, "
+               "declarado em entrada.renditions."))
+
 # ============================================================ BLOCO V (8) — erros
 V_CASES = [
     dict(id="Validacao_ArquivoDocx", arquivo="Validacao_ArquivoDocx.docx", kind="docx",
@@ -983,12 +1194,36 @@ V_CASES = [
          aceita="Não deve descompactar nem chamar o modelo."),
     dict(id="Validacao_ArquivoGrande", arquivo="Validacao_ArquivoGrande.pdf", kind="big",
          http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
-         desc="Arquivo de 25 MB: acima do limite configurado (limite ainda pendente na spec).",
+         desc="Arquivo de 25 MB: acima do limite de 10 MB fixado para o MVP (decisão A6).",
          aceita="Rejeitar pelo tamanho antes de qualquer inferência."),
     dict(id="Validacao_MimeInvalido", arquivo="Validacao_MimeInvalido.pdf", kind="fakemime",
          http=415, codigo="MIME_INVALIDO",
          desc="Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME.",
          aceita="Validar o conteúdo, não apenas a extensão."),
+    # --- limites operacionais (decisão A6 de 21/10/2026)
+    dict(id="Limite_Tamanho_Acima10MB", arquivo="Limite_Tamanho_Acima10MB.pdf", kind="big_mb",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="PDF válido de 10,5 MB: 0,5 MB acima do limite de 10 MB fixado para o MVP (A6).",
+         aceita="Rejeitar pelo tamanho antes de qualquer inferência.",
+         mb=10.5),
+    dict(id="Limite_Texto_Acima10MB", arquivo="Limite_Texto_Acima10MB.txt", kind="big_txt",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="Texto de 10,5 MB no envelope JSON: o limite de 10 MB (A6) vale para "
+              "documento_texto, não só para upload de arquivo.",
+         aceita="Rejeitar pelo tamanho antes de qualquer inferência.",
+         mb=10.5),
+    dict(id="Limite_Paginas_21_Digitalizado", arquivo="Limite_Paginas_21_Digitalizado.pdf",
+         kind="paginas_scan",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="PDF digitalizado (só imagem) de 21 páginas: a contagem de páginas não pode "
+              "depender da camada de texto, senão o arquivo passaria por 1 página e iria para OCR.",
+         aceita="Rejeitar pela contagem de páginas antes de rasterizar ou chamar o modelo.",
+         paginas=21),
+    dict(id="Limite_Paginas_21", arquivo="Limite_Paginas_21.pdf", kind="paginas",
+         http=413, codigo="ARQUIVO_MAIOR_QUE_LIMITE",
+         desc="PDF válido de 21 páginas: uma acima do limite de 20 páginas fixado para o MVP (A6).",
+         aceita="Rejeitar pela contagem de páginas antes de qualquer inferência.",
+         paginas=21),
 ]
 
 
@@ -1129,7 +1364,7 @@ def draw_case_paged(case, path, stamp=False):
     draw_case(case, path, stamp=stamp, total_pages=total)
 
 
-def write_txt_case(case, path):
+def write_txt_case(case, path, paginas=1):
     lines = [
         HOSPITAL, HOSPITAL_SUB, "=" * 78, FICTION, "=" * 78, "",
         case["titulo"], case["sub"], "", f"Fixture: {case['id']}",
@@ -1142,9 +1377,21 @@ def write_txt_case(case, path):
         lines.extend(body.split("\n"))
         lines.append("")
     lines += ["-" * 78, case["doc"][0], case["doc"][1], "-" * 78,
-              f"MediFlow · fixture {case['id']} · dados sintéticos · página 1 de 1"]
+              f"MediFlow · fixture {case['id']} · dados sintéticos · página 1 de {paginas}"]
     with open(path, "w", encoding="utf-8") as f:
         f.write("\n".join(lines) + "\n")
+
+
+def contar_paginas(pdf_path):
+    """Páginas do PDF gerado; 1 quando o arquivo não abre (corrompido/protegido)."""
+    try:
+        doc = fitz.open(pdf_path)
+        n = doc.page_count
+        doc.close()
+        # um PDF truncado abre, mas devolve 0 páginas; nunca escrever "1 de 0"
+        return max(1, n)
+    except Exception:  # noqa: BLE001
+        return 1
 
 
 def rasterize(pdf_path, jpg_path, rot=0.35, blur=0.0, contrast=1.0, brightness=1.0,
@@ -1220,6 +1467,65 @@ def image_only_pdf(jpg_path, pdf_path):
     c.drawImage(ImageReader(jpg_path), x, y, width=w, height=h)
     c.showPage()
     c.save()
+
+
+def imagem_apenas_multipagina(pdf_path, out_path, dpi=110, qualidade=78):
+    """PDF com uma imagem por página e nenhuma camada de texto (várias páginas).
+
+    Serve ao caso `Limite_Paginas_21_Digitalizado`: um laudo digitalizado com
+    mais páginas do que o limite. A contagem de páginas não pode depender da
+    camada de texto — se depender, este arquivo passaria por "1 página" e
+    seguiria para o OCR.
+    """
+    from reportlab.lib.utils import ImageReader
+    doc = fitz.open(pdf_path)
+    tmp = tempfile.mktemp(suffix=".jpg")
+    c = canvas.Canvas(out_path, pagesize=(W, H), invariant=1)
+    for page in doc:
+        pix = page.get_pixmap(dpi=dpi)
+        img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+        img.save(tmp, "JPEG", quality=qualidade)
+        escala = min(W / img.size[0], H / img.size[1])
+        w, h = img.size[0] * escala, img.size[1] * escala
+        c.drawImage(ImageReader(tmp), (W - w) / 2, (H - h) / 2, width=w, height=h)
+        c.showPage()
+    c.save()
+    doc.close()
+    os.unlink(tmp)
+
+
+def preencher_texto_ate(path, mb):
+    """Escreve um TXT com exatamente `mb` MiB, em registros de evolução.
+
+    É o mesmo corte dos 10 MB, mas pelo caminho `documento_texto` do envelope
+    JSON — que nenhum caso testava.
+    """
+    alvo = int(mb * 1024 * 1024)
+    fid = os.path.splitext(os.path.basename(path))[0]
+    # a linha de separador fica em variável: escrever `f"...\n" "=" * 78`
+    # concatenaria os literais ANTES de multiplicar, repetindo o cabeçalho 78×
+    separador = "=" * 78
+    cabecalho = (
+        f"MediFlow · DOCUMENTO FICTÍCIO de teste de limite de tamanho\n"
+        f"Fixture: {fid}\n"
+        f"{separador}\n"
+        "Histórico clínico exportado do sistema — dados sintéticos, sem paciente real.\n"
+        "Este arquivo existe para provar que o limite de 10 MB (decisão A6) vale\n"
+        "também para o texto enviado no envelope JSON, não só para o upload.\n"
+        f"{separador}\n\n"
+    ).encode("utf-8")
+    registro = ("Registro {n:07d} · Evolução: paciente em acompanhamento ambulatorial, "
+                "sem sinais de alerta neste registro.\n").encode("utf-8")
+    with open(path, "wb") as f:
+        f.write(cabecalho)
+        n = 0
+        while True:
+            n += 1
+            bloco = registro.replace(b"{n:07d}", f"{n:07d}".encode())
+            if f.tell() + len(bloco) >= alvo:
+                f.write(b" " * (alvo - f.tell() - 1) + b"\n")
+                break
+            f.write(bloco)
 
 
 def degrade_strong(pdf_path, jpg_path, mode="scan"):
@@ -1339,6 +1645,61 @@ def make_handwritten(case, jpg_path, pdf_path):
 
 
 #: Data fixa nos ZIPs: sem isso cada geração produz bytes diferentes do mesmo conteúdo.
+def preencher_ate(path, mb):
+    """Preenche um PDF válido até exatamente `mb` MiB.
+
+    O tamanho vem de um comentário antes do marcador %%EOF: o arquivo continua
+    abrindo em qualquer leitor e o único defeito é o tamanho, que é justamente
+    o que o caso quer testar.
+    """
+    alvo = int(mb * 1024 * 1024)
+    with open(path, "rb") as f:
+        base = f.read()
+    corte = base.rfind(b"%%EOF")
+    prefixo = b"% preenchimento de teste de limite de tamanho - MediFlow\n%"
+    sufixo = b"\n"
+    zeros = alvo - len(base) - len(prefixo) - len(sufixo)
+    if zeros < 0:
+        raise SystemExit(f"{path}: já tem mais de {mb} MB ({len(base)} bytes)")
+    with open(path, "wb") as f:
+        f.write(base[:corte] + prefixo + b"0" * zeros + sufixo + base[corte:])
+
+
+def case_paginado(n_paginas, fid=None):
+    """Relatório de alta sintético com `n_paginas` páginas (uma seção por página)."""
+    paciente = "Joana Ribeiro Vasconcelos" if n_paginas > 20 else "Ademir Vilanova Prado"
+    return dict(
+        id=fid or f"Limite_Paginas_{n_paginas}",
+        titulo="RELATÓRIO DE ALTA HOSPITALAR",
+        sub=f"Relatório de internação com {n_paginas} páginas",
+        meta=[("Paciente", paciente), ("Idade", "68 anos"),
+              ("Documento", "DOC-ALT-2026-0059" if n_paginas > 20 else "DOC-ALT-2026-0056"),
+              ("Data", "18/10/2026"), ("Origem", "Enfermaria 4C")],
+        secs=[sec("Período de internação", "Admissão em 02/10/2026, alta em 18/10/2026 (16 dias)."),
+              sec("Diagnóstico principal",
+                  "Doença pulmonar obstrutiva crônica exacerbada — CID-10 J44.1.")] +
+             [sec(f"Evolução — dia {d}",
+                  f"Dia {d}: paciente em uso de broncodilatador e corticoide, mantendo saturação acima "
+                  f"de 92% em ar ambiente. Ausculta com sibilos esparsos. Fisioterapia respiratória "
+                  f"realizada.") for d in range(1, n_paginas - 2)] +
+             [sec("Medicações de alta",
+                  "Budesonida 200 mcg — 2 inalações por via oral a cada 12 horas, uso contínuo.")],
+        doc=("Dr. Paulo Mendes Rocha", "CRM 203114-SP"),
+        flags=dict(multipage=True, break_every=1))
+
+
+def rendicao_extra(pdf_path, out_path, formato):
+    """Gera a rendição no formato sob teste (PNG ou WEBP) a partir do PDF."""
+    doc = fitz.open(pdf_path)
+    pix = doc[0].get_pixmap(dpi=150)
+    doc.close()
+    img = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+    if formato.lower() == "webp":
+        img.save(out_path, "WEBP", quality=86, method=6)
+    else:
+        img.save(out_path, formato.upper(), optimize=True)
+
+
 ZIP_DATA = (2026, 10, 18, 9, 0, 0)
 
 
@@ -1439,6 +1800,34 @@ def build_negative(case):
                 + b"0" * max(pad, 0) + b"\n" + base[cut:])
         with open(path, "wb") as f:
             f.write(blob)
+    elif kind == "big_mb":
+        # PDF válido preenchido até o tamanho pedido (por padrão, 10,5 MB).
+        tmp = tempfile.mktemp(suffix=".pdf")
+        draw_case_paged(dict(titulo="DOCUMENTO DE TESTE DE LIMITE DE TAMANHO",
+                             sub=f"PDF válido com {case.get('mb', 10.5)} MB",
+                             id=case["id"],
+                             meta=[("Paciente", "—"), ("Idade", "—"), ("Documento", "DOC-LIM-2026-0060"),
+                                   ("Data", "18/10/2026"), ("Origem", "Upload manual")],
+                             secs=[sec("Conteúdo",
+                                       "Documento válido e legível, usado apenas para testar o limite de "
+                                       "tamanho do upload. O conteúdo clínico é irrelevante: a rejeição "
+                                       "acontece antes de qualquer inferência.")],
+                             doc=("—", "—"), flags={}),
+                        tmp)
+        os.replace(tmp, path)
+        preencher_ate(path, case.get("mb", 10.5))
+    elif kind == "paginas":
+        # PDF válido com uma página a mais do que o limite (20 páginas, decisão A6).
+        draw_case_paged(case_paginado(case.get("paginas", 21)), path)
+    elif kind == "big_txt":
+        preencher_texto_ate(path, case.get("mb", 10.5))
+    elif kind == "paginas_scan":
+        # relatório de 21 páginas convertido em PDF só de imagens: sem camada de
+        # texto, a contagem de páginas tem de vir do PDF, não da extração.
+        tmp = tempfile.mktemp(suffix=".pdf")
+        draw_case_paged(case_paginado(case.get("paginas", 21), fid=case["id"]), tmp)
+        imagem_apenas_multipagina(tmp, path)
+        os.unlink(tmp)
     elif kind == "fakemime":
         img = Image.new("RGB", (900, 1200), (250, 250, 248))
         d2 = ImageDraw.Draw(img)
@@ -1454,7 +1843,8 @@ def escreve_expected(case):
     os.makedirs(d, exist_ok=True)
     with open(os.path.join(d, "expected.json"), "w", encoding="utf-8") as f:
         json.dump(expected_json(case["id"], e, base="catalogo",
-                                assercoes=e["ass"], observacoes=e.get("obs", "")),
+                                assercoes=e["ass"], observacoes=e.get("obs", ""),
+                                rendicoes_extra=e.get("rendicoes_extra")),
                   f, ensure_ascii=False, indent=2)
         f.write("\n")
 
@@ -1488,8 +1878,6 @@ def main():
         pdf = os.path.join(d, f"{case['id']}.pdf")
         jpg = os.path.join(d, f"{case['id']}.jpg")
         flags = case["flags"]
-
-        write_txt_case(case, txt)
 
         if flags.get("handwritten"):
             make_handwritten(case, jpg, pdf)
@@ -1553,6 +1941,15 @@ def main():
         else:
             draw_case_paged(case, pdf)
             rasterize(pdf, jpg, quality=86)
+
+        # o TXT é escrito depois do PDF para declarar a paginação correta
+        write_txt_case(case, txt, paginas=contar_paginas(pdf))
+
+        if flags.get("tamanho_mb"):
+            preencher_ate(pdf, flags["tamanho_mb"])
+        if flags.get("formato_extra"):
+            rendicao_extra(pdf, os.path.join(d, f"{case['id']}.{flags['formato_extra']}"),
+                           flags["formato_extra"])
 
         escreve_expected(case)
         total += 4

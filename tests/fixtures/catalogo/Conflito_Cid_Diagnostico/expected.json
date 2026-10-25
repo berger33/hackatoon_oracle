@@ -71,7 +71,7 @@
         "FILA_REVISAO_HUMANA"
       ],
       "requer_auditoria_humana": true,
-      "justificativa_roteamento": "Revisão humana obrigatória: conflitos: CID_DIAGNOSTICO.",
+      "justificativa_roteamento": "Revisão humana obrigatória: conflitos impeditivos: CID_DIAGNOSTICO.",
       "notificacao": null
     },
     "armazenamento_oci": null,

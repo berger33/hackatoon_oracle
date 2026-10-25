@@ -71,7 +71,7 @@
         "FILA_REVISAO_HUMANA"
       ],
       "requer_auditoria_humana": true,
-      "justificativa_roteamento": "Urgência com ambiguidade: mantém FILA_URGENCIA_MEDICA e acrescenta FILA_REVISAO_HUMANA. conflitos: PRIORIDADE_TEXTO.",
+      "justificativa_roteamento": "Urgência com ambiguidade: mantém FILA_URGENCIA_MEDICA e acrescenta FILA_REVISAO_HUMANA. conflitos impeditivos: PRIORIDADE_TEXTO.",
       "notificacao": {
         "gerada": true,
         "canal": "SIMULADO_SLACK_PLANTAO",

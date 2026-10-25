@@ -1,5 +1,13 @@
 # Auditoria de consistência — 2026-10-20
 
+> **Retrato de 20/10/2026.** Os números abaixo (67 fixtures, 59 pastas com 4
+> arquivos, 8 negativos) eram os daquela data e não devem ser lidos como estado
+> atual. Em 21/10/2026 a suíte passou a **77 fixtures** (65 funcionais + 2 erros
+> de leitura + 10 negativos técnicos), com o bloco **Limite** e os casos de
+> gravidade, prioridade e urgência indefinidas. Vale hoje o que está no
+> [`manifest.csv`](../../tests/fixtures/manifest.csv) e no
+> [catálogo](CATALOGO_DE_DOCUMENTOS_DE_TESTE.md).
+
 **Escopo:** todo o repositório `berger33/hackatoon_oracle` e todas as suas branches, com foco na regra **CRM de São Paulo** (um hospital, uma UF) em todos os formatos: texto, PDF, imagem, `expected.json`, manifesto, documentação, PDFs de origem e pacote ZIP.
 
 ---
@@ -69,5 +77,6 @@ A reprodutibilidade (item 4) foi confirmada rodando os geradores duas vezes e co
 2. **Limite de tamanho.** A especificação não define o limite de upload. O catálogo propõe 10 MB e 10 páginas, mas isso ainda não foi decidido (já registrado no catálogo).
 3. **Números de CRM.** Os CRMs são fictícios, mas são números de 6 dígitos que podem coincidir com registros reais. Antes de publicar os fixtures fora do repositório, vale conferir ou trocar os números.
 4. **Divergência brief × especificação.** O `Projeto_oracle.pdf` diz que urgência tem `requer_auditoria_humana: false`, mas a especificação v1.0 manda `EM_REVISAO` (já registrado no catálogo, seção 10). Os fixtures seguem a especificação.
+   > **Resolvido em 21/10/2026 — decisão: seguir o `Projeto_oracle.pdf`.** Urgência isolada passa a terminar em `PROCESSADO`, com `requer_auditoria_humana = false`, um único destino (`FILA_URGENCIA_MEDICA`) e alerta registrado; `EM_REVISAO` só com ambiguidade. Regra R1 de `app/models.py` alterada, 5 fixtures regenerados, contrato e catálogo atualizados. A EF v1.0 (§5.3 e §8.2) e a Análise de Requisitos serão atualizadas pela equipe.
 5. **Placeholders do README.** Equipe e licença seguem como "A definir".
 6. **Branch `arena/9bba261b-hackatoon-oracle`.** Já está incorporada a `main`. Pode ser apagada quando convier; esta auditoria não a remove.

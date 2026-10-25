@@ -2,22 +2,29 @@
 
 Este é o **único** contrato do projeto: o payload que o agente devolve, os
 enums aceitos, as regras de decisão e o formato de erro. Tudo o que a equipe
-chamar de "JSON de triagem" tem de validar aqui — inclusive os 67
+chamar de "JSON de triagem" tem de validar aqui — inclusive os 79
 `expected.json` de `tests/fixtures/`.
 
 Regras de negócio implementadas (RF-16, RF-18, RF-21, §5.3, §5.4, §8.2):
 
-  R1. Prioridade `URGENTE` → destino `FILA_URGENCIA_MEDICA`, notificação
-      registrada e `requer_auditoria_humana = True`. A auditoria da urgência
-      acontece **na própria fila de urgência**; `FILA_REVISAO_HUMANA` só é
-      acrescentada quando há ambiguidade além da urgência (R4).
+  R1. Prioridade `URGENTE` → destino `FILA_URGENCIA_MEDICA` e notificação
+      registrada. **Urgência isolada não gera revisão humana**: o caso termina
+      em `PROCESSADO`, com `requer_auditoria_humana = False` — é o
+      comportamento do exemplo do `Projeto_oracle.pdf` (`status: processado`,
+      `requer_auditoria_humana: false`, objeto em `processados/urgentes/`).
+      A `FILA_REVISAO_HUMANA` só entra quando há ambiguidade além da urgência
+      (R4).
   R2. Ambiguidade → revisão humana. Conta como ambiguidade: campo obrigatório
-      ausente (RF-21), campo incerto, conflito detectado, score combinado
-      abaixo do limiar, ou tipo fora da taxonomia (`OUTRO`/`NAO_IDENTIFICADO`).
+      ausente (RF-21), campo incerto, **conflito impeditivo** (gravidade `ALTA`
+      ou `MEDIA` — a `BAIXA` é registrada e não bloqueia), score combinado
+      abaixo do limiar, tipo fora da taxonomia (`OUTRO`/`NAO_IDENTIFICADO`),
+      prioridade `NAO_IDENTIFICADA` ou urgência `INDETERMINADO` (que entra como
+      campo incerto).
   R3. Sem urgência, a revisão **substitui** o destino primário: o documento vai
       para `FILA_REVISAO_HUMANA` e não para a fila do seu tipo.
-  R4. Com urgência, a revisão **acrescenta** destino: mantém
-      `FILA_URGENCIA_MEDICA` e soma `FILA_REVISAO_HUMANA`.
+  R4. Urgência **com** ambiguidade → os dois destinos: mantém
+      `FILA_URGENCIA_MEDICA`, soma `FILA_REVISAO_HUMANA` e termina em
+      `EM_REVISAO`. A urgência, sozinha, não revisa; a ambiguidade, sim.
   R5. `score_combinado = min(score_classificacao, score_extracao)`.
       Limiar é **estrito**: 0,85 passa, 0,84 revisa.
   R6. `campos_ausentes` é saída do extrator, não inferência do validador:
@@ -38,6 +45,13 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 VERSAO_CONTRATO = "1.0"
 LIMIAR_PADRAO = 0.85
+
+#: Peso de cada conflito no score de extração (decisão A3, Anexo A.4 da EF).
+PESO_CONFLITO = {"ALTA": 0.3, "MEDIA": 0.2, "BAIXA": 0.1}
+
+#: Só estas gravidades tornam um conflito impeditivo (decisão A1).
+#: Conflito de gravidade BAIXA é registrado e não leva à revisão humana.
+GRAVIDADES_IMPEDITIVAS = frozenset({"ALTA", "MEDIA"})
 
 #: Campos cuja ausência obriga revisão humana (RF-21).
 CAMPOS_OBRIGATORIOS = frozenset({
@@ -118,6 +132,21 @@ DESTINO_POR_TIPO.update({
     TipoDocumento.RELATORIO_ALTA_INTERNACAO: Destino.PRONTUARIO_ELETRONICO,
     TipoDocumento.ATESTADO_MEDICO: Destino.PRONTUARIO_ELETRONICO,
 })
+
+
+def calcular_score_extracao(campos_ausentes, campos_incertos, conflitos) -> float:
+    """Score de extração pela fórmula aprovada (decisão A3, Anexo A.4 da EF).
+
+    Parte de 1, subtrai 0,2 por campo obrigatório ausente, 0,1 por campo
+    incerto e 0,3/0,2/0,1 por conflito ALTA/MEDIA/BAIXA; piso 0.
+
+    É a regra que o extrator tem de usar para produzir `score_extracao`. O
+    validador não recalcula o valor recebido: os 79 casos aprovados trazem
+    scores ilustrativos, e sobrescrevê-los aqui mudaria o aceite do MVP.
+    """
+    peso = sum(PESO_CONFLITO.get(getattr(c, "gravidade", "ALTA"), 0.3) for c in conflitos)
+    obrigatorios = sum(1 for c in campos_ausentes if c in CAMPOS_OBRIGATORIOS)
+    return max(0.0, round(1.0 - 0.2 * obrigatorios - 0.1 * len(campos_incertos) - peso, 2))
 
 
 # --------------------------------------------------------------------- entidades
@@ -270,8 +299,15 @@ class TriagemMediFlow(BaseModel):
         fora_da_taxonomia = c.tipo_documento in (TipoDocumento.OUTRO, TipoDocumento.NAO_IDENTIFICADO)
         abaixo_do_limiar = q.score_combinado < limiar
         falta_obrigatorio = bool(set(ausentes) & CAMPOS_OBRIGATORIOS)
+        # A1: só conflito ALTA/MEDIA é impeditivo; BAIXA é registrada e não bloqueia.
+        impeditivos = [x for x in q.conflitos if x.gravidade.value in GRAVIDADES_IMPEDITIVAS]
+        nao_bloqueantes = [x for x in q.conflitos if x.gravidade.value not in GRAVIDADES_IMPEDITIVAS]
+        # A4: prioridade não identificada. A5: urgência indeterminada entra como campo incerto.
+        prioridade_indefinida = c.nivel_prioridade is NivelPrioridade.NAO_IDENTIFICADA
+        urgencia_indefinida = d.urgencia is Urgencia.INDETERMINADO
         ambiguidade = bool(
-            falta_obrigatorio or incertos or q.conflitos or abaixo_do_limiar or fora_da_taxonomia
+            falta_obrigatorio or incertos or impeditivos or abaixo_do_limiar
+            or fora_da_taxonomia or prioridade_indefinida or urgencia_indefinida
         )
 
         destinos: List[Destino] = []
@@ -290,17 +326,24 @@ class TriagemMediFlow(BaseModel):
             motivos.append("campos obrigatórios ausentes: " + ", ".join(sorted(set(ausentes) & CAMPOS_OBRIGATORIOS)))
         if incertos:
             motivos.append("campos incertos: " + ", ".join(incertos))
-        if q.conflitos:
-            motivos.append("conflitos: " + ", ".join(x.tipo for x in q.conflitos))
+        if impeditivos:
+            motivos.append("conflitos impeditivos: " + ", ".join(x.tipo for x in impeditivos))
+        if nao_bloqueantes:
+            motivos.append("conflitos de gravidade BAIXA apenas registrados: "
+                           + ", ".join(x.tipo for x in nao_bloqueantes))
         if fora_da_taxonomia:
             motivos.append(f"tipo fora da taxonomia: {c.tipo_documento.value}")
+        if prioridade_indefinida:
+            motivos.append("prioridade não identificada")
+        if urgencia_indefinida:
+            motivos.append("urgência indeterminada (conta como campo incerto)")
 
         if urgente and ambiguidade:
             justificativa = ("Urgência com ambiguidade: mantém FILA_URGENCIA_MEDICA e acrescenta "
                              "FILA_REVISAO_HUMANA. " + "; ".join(motivos) + ".")
         elif urgente:
-            justificativa = ("Urgência clínica: FILA_URGENCIA_MEDICA com notificação e auditoria "
-                             "humana na própria fila de urgência.")
+            justificativa = ("Urgência clínica: FILA_URGENCIA_MEDICA com alerta registrado. "
+                             "Sem ambiguidade, segue sem revisão humana.")
         elif ambiguidade:
             justificativa = "Revisão humana obrigatória: " + "; ".join(motivos) + "."
         else:
@@ -310,7 +353,7 @@ class TriagemMediFlow(BaseModel):
         decisao = self.decisao_roteamento or DecisaoRoteamento()
         decisao.destinos = destinos
         decisao.destino_principal = destinos[0]
-        decisao.requer_auditoria_humana = urgente or ambiguidade
+        decisao.requer_auditoria_humana = ambiguidade
         decisao.justificativa_roteamento = justificativa
         decisao.notificacao = (
             Notificacao(mensagem=f"ALERTA URGENTE [{self.documento_id}]: "

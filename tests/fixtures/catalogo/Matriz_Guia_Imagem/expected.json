@@ -16,7 +16,7 @@
     }
   },
   "resposta_esperada": {
-    "status": "EM_REVISAO",
+    "status": "PROCESSADO",
     "documento_id": "DOC-D06D8B78",
     "classificacao": {
       "tipo_documento": "GUIA_PROCEDIMENTO",
@@ -59,8 +59,8 @@
       "destinos": [
         "FILA_URGENCIA_MEDICA"
       ],
-      "requer_auditoria_humana": true,
-      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com notificação e auditoria humana na própria fila de urgência.",
+      "requer_auditoria_humana": false,
+      "justificativa_roteamento": "Urgência clínica: FILA_URGENCIA_MEDICA com alerta registrado. Sem ambiguidade, segue sem revisão humana.",
       "notificacao": {
         "gerada": true,
         "canal": "SIMULADO_SLACK_PLANTAO",

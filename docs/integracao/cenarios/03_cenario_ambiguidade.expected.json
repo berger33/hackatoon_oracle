@@ -1,0 +1,87 @@
+{
+  "schema": "mediflow.fixture/2",
+  "fixture_id": "G10_Cenario3_Ambiguo",
+  "documento_ficticio": true,
+  "tipo_de_teste": "funcional",
+  "entrada": {
+    "formatos_disponiveis": [
+      "TXT"
+    ],
+    "documento_texto": "RECEITUÁRIO MÉDICO ILEGÍVEL / AMBÍGUO. Paciente: João da Silva [Idade borrada/ilegível]. Solicitante: Dr. Desconhecido [Carimbo borrado, CRM não identificado]. Prescrição: Morfina [Dosagem borrada: 10mg ou 100mg??] via intravenosa a cada 4 horas. Alergias: Penicilina relatada verbalmente. Alerta: Prescrição de opioide forte com dosagem indeterminada e identificação profissional incompleta."
+  },
+  "resposta_esperada": {
+    "status": "EM_REVISAO",
+    "documento_id": "DOC-CLIN-2026-3391",
+    "classificacao": {
+      "tipo_documento": "RECEITUARIO_MEDICO",
+      "especialidade": [
+        "Clínica Médica"
+      ],
+      "nivel_prioridade": "NAO_IDENTIFICADA",
+      "score_classificacao": 0.65
+    },
+    "dados_extraidos": {
+      "paciente": {
+        "nome": "João da Silva",
+        "idade": null
+      },
+      "medico": {
+        "nome": null,
+        "crm": {
+          "numero": null,
+          "uf": null
+        }
+      },
+      "diagnostico": null,
+      "cid": null,
+      "exames": [],
+      "medicamentos": [
+        {
+          "nome": "Morfina",
+          "dosagem": null,
+          "frequencia": "via intravenosa a cada 4 horas"
+        }
+      ],
+      "urgencia": "INDETERMINADO"
+    },
+    "qualidade": {
+      "score_extracao": 0.0,
+      "score_combinado": 0.0,
+      "limiar_aplicado": 0.85,
+      "campos_ausentes": [
+        "paciente.idade",
+        "medico.nome",
+        "medico.crm",
+        "diagnostico"
+      ],
+      "campos_incertos": [
+        "medicamentos[0].dosagem",
+        "urgencia"
+      ],
+      "conflitos": []
+    },
+    "decisao_roteamento": {
+      "destino_principal": "FILA_REVISAO_HUMANA",
+      "destinos": [
+        "FILA_REVISAO_HUMANA"
+      ],
+      "requer_auditoria_humana": true,
+      "justificativa_roteamento": "Revisão humana obrigatória: campos obrigatórios ausentes: diagnostico, medico.crm, medico.nome, paciente.idade; campo incerto; prioridade não identificada; urgência indeterminada (conta como campo incerto).",
+      "notificacao": null
+    },
+    "armazenamento_oci": {
+      "bucket": "mediflow-documentos-clinicos",
+      "caminho_objeto": "auditoria_humana/2026/10/DOC-CLIN-2026-3391.json",
+      "status_backup": "sucesso"
+    },
+    "erro": null
+  },
+  "modo_fixture": {},
+  "assercoes": [
+    "Campos obrigatórios ausentes (idade, médico, CRM, diagnóstico) exigem revisão (RF-21)",
+    "Prioridade NAO_IDENTIFICADA é ambiguidade e gera revisão (decisão A4)",
+    "Urgência INDETERMINADO conta como campo incerto e gera revisão (decisão A5)",
+    "Documento roteado a revisão é armazenado no caminho de auditoria (RF-29, §6 passo 7)"
+  ],
+  "observacoes": "Tradução de data/samples/03_cenario_ambiguidade.json. Duas divergências em relação ao cenário original: (1) o score_extracao de 0,65 do cenário dela é ilustrativo — pela fórmula aprovada (A3) ele vale 0,00, porque há 4 campos obrigatórios ausentes (-0,8) e 2 incertos (-0,2); o desfecho não muda, mas o número tem de ser calculado, não estimado. (2) 'Ambiguidade/Revisão Humana' não é valor de prioridade: a §5.2 define URGENTE, ROTINA e NAO_IDENTIFICADA. PENDÊNCIA: se morfina constar no dicionário de medicamentos de alto risco (A2), a RN-03 obriga a dois destinos (FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA) e a gerar alerta; o dicionário clínico ainda não está fechado pelo time."
+}

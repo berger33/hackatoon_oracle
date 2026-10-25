@@ -28,7 +28,7 @@ O **MediFlow** recebe documentos clínicos e administrativos em **PDF, imagem ou
 
 | Situação | Destino | Revisão humana | Alerta |
 | --- | --- | --- | --- |
-| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Sim (auditoria na própria fila) | Sim |
+| Urgência ou achado crítico | `FILA_URGENCIA_MEDICA` | Não — só se houver ambiguidade junto | Sim |
 | Score combinado < 0,85 | `FILA_REVISAO_HUMANA` | Sim | Não, salvo urgência |
 | Urgência + ambiguidade/ilegibilidade | `FILA_URGENCIA_MEDICA` + `FILA_REVISAO_HUMANA` | Sim | Sim |
 | Receita de rotina | `FARMACIA_HOSPITALAR` | Não | Não |
@@ -87,23 +87,26 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 │   └── models.py                                # CONTRATO v1.0 (Pydantic): payload, enums, regras
 ├── docs/
 │   ├── README.md
+│   ├── epts/                                # EPTs: um procedimento por caso da especificação funcional
 │   └── testes/
 │       ├── CONTRATO_DE_DADOS.md                 # o contrato em português, com o porquê de cada regra
-│       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 67 casos, bloco por bloco
-│       ├── EPT_MediFlow_v1.0.csv                # EPT executável: 100 casos, uma linha por caso
+│       ├── CATALOGO_DE_DOCUMENTOS_DE_TESTE.md   # os 79 casos, bloco por bloco
+│       ├── EPT_MediFlow_v1.1.csv                # EPT executável: casos com passo a passo e rastreabilidade
 │       ├── EPT_MediFlow_GUIA_E_COBERTURA.md     # dicionário da EPT + cobertura RF/RN/RNF/fixtures
-│       ├── EPT_MediFlow_v1.0.pdf                # a EPT em PDF: capa, sumário, casos por suíte, anexos
+│       ├── EPT_MediFlow_v1.1.pdf                # a EPT em PDF: capa, sumário, casos por suíte, anexos
 │       ├── EPT_MediFlow_preview.html            # a EPT navegável: filtros, detalhe e cobertura
 │       ├── Mapa_de_Documentos_de_Teste_MediFlow.pdf
 │       └── AUDITORIA_2026-10-20.md              # auditoria de consistência: CRM-SP, datas, pacote, verificadores
 ├── tests/
-│   ├── testar_contrato.py                       # valida os 67 expected.json no contrato
+│   ├── testar_contrato.py                       # valida os 79 expected.json no contrato
 │   └── fixtures/
 │       ├── README.md                            # como ler os nomes e os blocos
-│       ├── manifest.csv                         # 67 linhas: uma por documento
+│       ├── manifest.csv                         # 79 linhas: uma por documento
 │       ├── demo/                                # 12 casos de pitch (TXT + PDF + JPG + expected.json)
 │       └── catalogo/                            # 55 casos restantes, inclusive negativos técnicos
 ├── tools/
+│   ├── gerar_epts_pdf.py                        # PDF consolidado das EPTs
+│   ├── verificar_epts.py                        # estrutura, IDs, fixtures citadas e cobertura das EPTs
 │   ├── contrato_fixtures.py                     # monta os expected.json a partir do contrato
 │   ├── gerar_fixtures_demo.py                   # recria os 12 casos
 │   ├── gerar_fixtures_catalogo.py               # recria os 55 casos
@@ -123,9 +126,11 @@ Este repositório entrega a **massa de dados de teste** do MediFlow e o **contra
 ```bash
 python3 -m pip install -r requirements.txt   # pydantic, reportlab, pymupdf, pillow
 
-python3 tests/testar_contrato.py             # 67/67 expected.json válidos e estáveis
+python3 tests/testar_contrato.py             # 79/79 expected.json válidos e estáveis
 python3 tools/verificar_consistencia.py      # estrutura, manifesto, legibilidade, CRM-SP, duplicidade
-python3 tools/gerar_ept.py --check           # EPT cobre RF-01..30, RN-01..07, RNF-01..11, 67 fixtures e §16
+python3 tools/verificar_epts.py              # EPTs: seções, IDs, fixtures citadas, cobertura das seções
+python3 tools/gerar_epts_pdf.py              # docs/epts/EPTs_MediFlow.pdf
+python3 tools/gerar_ept.py --check           # EPT consolidada cobre RF/RN/RNF, 79 fixtures e §16
 ```
 
 Para regerar os documentos (só necessário se mudar um caso):

@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-"""Confere os 67 fixtures contra o contrato oficial (`app/models.py`).
+"""Confere os 77 fixtures contra o contrato oficial (`app/models.py`).
 
 Para cada `expected.json`:
 
-  1. valida `resposta_esperada` no modelo certo — `TriagemMediFlow` nos 59
-     funcionais e nos 2 erros de leitura, `ErroResposta` nos 8 negativos;
+  1. valida `resposta_esperada` no modelo certo — `TriagemMediFlow` nos 65
+     funcionais e nos 2 erros de leitura, `ErroResposta` nos 10 negativos;
   2. confere o **ponto fixo**: montar o payload, rodar as regras e serializar de
      novo tem de devolver exatamente o mesmo JSON. Se alguém mudar uma regra,
-     algum dos 67 quebra aqui;
+     algum dos 77 quebra aqui;
   3. confere a coerência dos campos de saída (destino principal = 1º destino,
-     revisão = status EM_REVISAO, notificação só em urgência).
+     revisão = status EM_REVISAO, notificação só em urgência, conflito
+     impeditivo sempre revisado).
 
 Uso:
     python3 tests/testar_contrato.py          # resumo
@@ -26,7 +27,8 @@ sys.path.insert(0, ROOT)
 from pydantic import ValidationError  # noqa: E402
 
 from app.models import (  # noqa: E402
-    CAMPOS_OBRIGATORIOS, ErroResposta, StatusTriagem, TriagemMediFlow,
+    CAMPOS_OBRIGATORIOS, GRAVIDADES_IMPEDITIVAS, ErroResposta, StatusTriagem,
+    TriagemMediFlow,
 )
 
 FALHAS = []
@@ -72,8 +74,10 @@ def confere_regras(fid, t):
         falha(fid, "campo obrigatório ausente sem revisão")
     if q.campos_incertos and not d.requer_auditoria_humana:
         falha(fid, "campo incerto sem revisão")
-    if q.conflitos and not d.requer_auditoria_humana:
-        falha(fid, "conflito registrado sem revisão")
+    # A1: só conflito ALTA/MEDIA é impeditivo; BAIXA é registrado e não bloqueia.
+    impeditivos = [c for c in q.conflitos if c.gravidade.value in GRAVIDADES_IMPEDITIVAS]
+    if impeditivos and not d.requer_auditoria_humana:
+        falha(fid, "conflito impeditivo (ALTA/MEDIA) sem revisão")
 
 
 def main():

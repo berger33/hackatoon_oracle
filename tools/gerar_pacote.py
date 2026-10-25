@@ -25,7 +25,11 @@ LEIA_ME = os.path.join(ROOT, "dist", "LEIA-ME.txt")
 README_DIST = os.path.join(ROOT, "dist", "README.md")
 
 #: Pastas que nunca entram no pacote.
-EXCLUIR_PASTAS = {".git", "dist", "__pycache__", ".pytest_cache", ".venv", "venv"}
+#:
+#: `epts` fica fora porque as EPTs ainda não foram aprovadas pelo time: nenhum
+#: pacote entregue pode sair com elas dentro. Voltar para o pacote quando a
+#: aprovação acontecer.
+EXCLUIR_PASTAS = {".git", "dist", "epts", "__pycache__", ".pytest_cache", ".venv", "venv"}
 #: Arquivos de sistema que nunca entram no pacote.
 EXCLUIR_ARQUIVOS = {".DS_Store", "Thumbs.db"}
 #: Data fixa para o ZIP ser reprodutível (ZIP não guarda hora antes de 1980).

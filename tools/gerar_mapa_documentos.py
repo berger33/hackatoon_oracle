@@ -299,7 +299,7 @@ def main():
     import glob as _glob
     for _pat in ("tests/fixtures/demo/*/*", "tests/fixtures/catalogo/*/*"):
         n_files += len([f for f in _glob.glob(os.path.join(ROOT, _pat)) if os.path.isfile(f)])
-    cards = [("67", "fixtures no catálogo"), (str(n_produced), "já produzidos"),
+    cards = [(str(len(ROWS)), "fixtures no catálogo"), (str(n_produced), "já produzidos"),
              (str(n_files), "arquivos no repositório"), ("8", "simulações sem arquivo")]
     cw = (CW - 3 * 10) / 4
     for i, (num, label) in enumerate(cards):
@@ -323,7 +323,7 @@ def main():
         "Seção 1 — cobertura: os 8 tipos controlados contra os 4 formatos de entrada.",
         "Seção 2 — fluxo de decisão que cada fixture exercita (rotina, urgência, ambiguidade, erro).",
         "Seção 3 — kit de demonstração: os 12 casos de pitch, com TXT, PDF, JPG e expected.json.",
-        "Seção 4 — catálogo completo dos 67 fixtures, bloco por bloco, com destino e status esperados.",
+        f"Seção 4 — catálogo completo dos {len(ROWS)} fixtures, bloco por bloco, com destino e status esperados.",
         "Seção 5 — pendências da especificação e como regenerar o catálogo.",
     ], size=8.6, lead=13)
 
@@ -380,17 +380,22 @@ def main():
     c.setFont("DJB", 10)
     c.drawString(M, y, "Composição do catálogo por bloco")
     y -= 14
-    blocos = [
-        ("Matriz", "Tipos × formatos", 24, "24"),
-        ("Ausencia", "Campos ausentes", 8, "32"),
-        ("Borda", "Fronteira do limiar (0,84 e 0,85)", 2, "34"),
-        ("Conflito", "Contradições e alto risco", 5, "39"),
-        ("Simultaneo", "Urgência + ambiguidade simultâneas", 2, "41"),
-        ("Qualidade", "Ilegibilidade e PDFs especiais", 8, "49"),
-        ("Validacao", "Negativos técnicos de entrada", 8, "57"),
-        ("Escaneado", "PDF escaneado dos 6 tipos restantes", 6, "63"),
-        ("Diferencial", "Itens opcionais", 4, "67"),
-    ]
+    # contagem derivada do manifesto: acrescentar um caso não exige editar número
+    ordem = [("Matriz", "Tipos × formatos"),
+             ("Ausencia", "Campos ausentes"),
+             ("Borda", "Fronteira do limiar, prioridade e urgência indefinidas"),
+             ("Conflito", "Contradições, alto risco e gravidade do conflito"),
+             ("Simultaneo", "Urgência + ambiguidade simultâneas"),
+             ("Qualidade", "Ilegibilidade e PDFs especiais"),
+             ("Validacao", "Negativos técnicos de entrada"),
+             ("Limite", "Limites operacionais: tamanho, páginas e formato (A6)"),
+             ("Escaneado", "PDF escaneado dos 6 tipos restantes"),
+             ("Diferencial", "Itens opcionais")]
+    blocos, acumulado = [], 0
+    for nome, desc in ordem:
+        n = sum(1 for r in ROWS if r["bloco"] == nome)
+        acumulado += n
+        blocos.append((nome, desc, n, str(acumulado)))
     table(c, M, y, [(72, "Bloco"), (196, "O que cobre"), (56, "Arquivos"), (60, "Acumulado")],
           [[b, d, str(n), acc] for b, d, n, acc in blocos], font_size=7.2, row_h=13)
 
@@ -533,16 +538,20 @@ def main():
     ], size=8.2, lead=11.6)
 
     # ---------------------------------------------------------------- 4. catálogo
+    def n_bloco(b):
+        return sum(1 for r in ROWS if r["bloco"] == b)
+
     blocks = [
-        ("Matriz", "4.1 Bloco Matriz — tipos × formatos (24)"),
-        ("Ausencia", "4.2 Bloco Ausência — campos ausentes (8)"),
-        ("Borda", "4.3 Bloco Borda — fronteira do limiar (2)"),
-        ("Conflito", "4.4 Bloco Conflito — contradições e alto risco (5)"),
-        ("Simultaneo", "4.5 Bloco Simultâneo — urgência + ambiguidade (2)"),
-        ("Qualidade", "4.6 Bloco Qualidade — ilegibilidade e PDFs especiais (8)"),
-        ("Validacao", "4.7 Bloco Validação — negativos técnicos de entrada (8)"),
-        ("Escaneado", "4.8 Bloco Escaneado — PDF digitalizado dos tipos restantes (6)"),
-        ("Diferencial", "4.9 Bloco Diferencial — itens opcionais (4)"),
+        ("Matriz", f"4.1 Bloco Matriz — tipos × formatos ({n_bloco('Matriz')})"),
+        ("Ausencia", f"4.2 Bloco Ausência — campos ausentes ({n_bloco('Ausencia')})"),
+        ("Borda", f"4.3 Bloco Borda — limiar, prioridade e urgência indefinidas ({n_bloco('Borda')})"),
+        ("Conflito", f"4.4 Bloco Conflito — contradições, alto risco e gravidade ({n_bloco('Conflito')})"),
+        ("Simultaneo", f"4.5 Bloco Simultâneo — urgência + ambiguidade ({n_bloco('Simultaneo')})"),
+        ("Qualidade", f"4.6 Bloco Qualidade — ilegibilidade e PDFs especiais ({n_bloco('Qualidade')})"),
+        ("Validacao", f"4.7 Bloco Validação — negativos técnicos de entrada ({n_bloco('Validacao')})"),
+        ("Limite", f"4.8 Bloco Limite — tamanho, páginas e formato, decisão A6 ({n_bloco('Limite')})"),
+        ("Escaneado", f"4.9 Bloco Escaneado — PDF digitalizado dos tipos restantes ({n_bloco('Escaneado')})"),
+        ("Diferencial", f"4.10 Bloco Diferencial — itens opcionais ({n_bloco('Diferencial')})"),
     ]
     colspec = [(122, "ID / pasta"), (92, "Tipo"), (46, "Formato"), (44, "Cenário"),
                (76, "Destino esperado"), (94, "Status / HTTP"), (14, "Rev"), (20, "OK")]
@@ -559,7 +568,7 @@ def main():
             n = max(n, len(wrap(row[ci], "DJ", FS, colspec[ci][0] - 5)))
         return RH * n
 
-    new_page(c, "4. Catálogo completo — 67 fixtures",
+    new_page(c, f"4. Catálogo completo — {len(ROWS)} fixtures",
              "Rev = requer auditoria humana · OK = fixture produzido e versionado")
     y = H - 104
     for key, title in blocks:
@@ -635,7 +644,7 @@ def main():
         "python3 tools/gerar_fixtures_demo.py — recria os 12 casos do kit de demonstração.",
         "python3 tools/gerar_fixtures_catalogo.py — recria os 55 restantes, incluindo PDFs escaneados, senha e corrompido.",
         "python3 tools/gerar_mapa_documentos.py — recria este PDF.",
-        "python3 tests/testar_contrato.py — confere os 67 expected.json no contrato (app/models.py).",
+        f"python3 tests/testar_contrato.py — confere os {len(ROWS)} expected.json no contrato (app/models.py).",
     ]
     for i, st in enumerate(steps, 1):
         c.setFillColor(RED)
@@ -668,7 +677,7 @@ def main():
     table(c, M, y, [(210, "Arquivo"), (299, "Conteúdo")],
           [["docs/testes/CATALOGO_DE_DOCUMENTOS_DE_TESTE.md", "Catálogo analítico completo, regras e rastreabilidade"],
            ["docs/testes/Mapa_de_Documentos_de_Teste_MediFlow.pdf", "Este documento"],
-           ["tests/fixtures/manifest.csv", "Os 67 fixtures em formato de máquina"],
+           ["tests/fixtures/manifest.csv", f"Os {len(ROWS)} fixtures em formato de máquina"],
            ["tests/fixtures/demo/", "12 casos de pitch × (TXT + PDF + JPG + expected.json)"],
            ["tests/fixtures/catalogo/", "55 casos restantes, incluindo os 8 negativos técnicos"],
            ["tools/gerar_fixtures_*.py", "Geradores reprodutíveis de todo o catálogo"],

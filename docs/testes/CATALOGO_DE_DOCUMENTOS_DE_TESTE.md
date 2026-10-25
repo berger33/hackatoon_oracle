@@ -1,7 +1,8 @@
 # Catálogo de documentos de teste — MediFlow
 
 **Projeto:** hackatoon_oracle / MediFlow — Hackathon ONE G10
-**Versão:** 1.1 — 20/10/2026
+**Versão:** 1.2 — 21/10/2026  
+**Atualização desta versão:** +12 fixtures (67 → 79) cobrindo as decisões A1, A3, A4, A5 e A6 — gravidade do conflito, prioridade e urgência indefinidas e os limites operacionais (10 MB, 20 páginas, PNG, WEBP e texto).
 **Base documental:** `Projeto_oracle.pdf`, `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` e `MediFlow_Especificacao_Funcional_v1.0.pdf`
 **Manifesto executável:** [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv)
 
@@ -15,14 +16,16 @@ Você não precisa de um documento por especialidade médica. Precisa de **um do
 | --- | ---: | --- |
 | **Kit de demonstração** | **12 arquivos** ✅ | Cobre os 3 cenários obrigatórios, os 5 destinos, os 3 formatos e as 8 classes de tipo. É o mínimo defensável para o pitch. |
 | **Kit recomendado** | **57 arquivos** ✅ | Cobre tipos × formatos, ausência de campos, limiar, conflitos, urgência simultânea, qualidade de imagem e negativos técnicos. É o conjunto que eu levaria para a banca. |
-| **Kit completo** | **67 arquivos** ✅ | Acrescenta PDF digitalizado para todos os tipos e os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS). |
-| **Simulações operacionais** | **8 cenários, 0 documentos novos** | Falhas de Gemini e de OCI, testadas por stub/flag reutilizando os documentos acima. |
+| **Kit completo** | **79 arquivos** ✅ | Acrescenta PDF digitalizado para todos os tipos, os 4 casos de diferenciais (OCR, carimbo, tabela de exames, guia TISS) e o bloco Limite (tamanho, páginas, formato e texto). |
+| **Simulações operacionais** | **8 cenários, 0 documentos novos** | Falhas de Gemini e de OCI, testadas por stub/flag reutilizando os documentos acima. Timeout de 60 s e 2 retries (A6). |
 
 > **Mínimo literal dos critérios de aceite (seção 16 da especificação): 8 arquivos.** Três rendições do mesmo conteúdo (texto, PDF e imagem) + cinco variações de campo ausente. Esse número passa na leitura literal, mas não prova os 5 destinos nem os 8 tipos — por isso não recomendo usá-lo como meta.
 
-**Distribuição do kit completo (67):** 19 PDFs digitais, 7 PDFs digitalizados, 16 imagens, 17 textos e 8 arquivos inválidos. Por cenário: 29 de rotina, 7 de urgência, 21 de ambiguidade e 10 de erro.
+**Distribuição do kit completo (79):** PDF digital, PDF digitalizado, imagem (JPG/PNG/WEBP) e texto, mais os arquivos inválidos. Por cenário: rotina, urgência, ambiguidade e erro — a contagem exata está no manifesto e no mapa em PDF, ambos gerados a partir dele.
 
-> **Status: 67 de 67 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`) = 48 arquivos. O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 47 casos funcionais × 4 arquivos + 8 negativos técnicos × 2 = 204 arquivos. O mapa visual dos 67 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+> **Status: 79 de 79 fixtures produzidos.** O kit de demonstração está em [`tests/fixtures/demo/`](../../tests/fixtures/demo/) — 12 casos × (TXT + PDF + JPG + `expected.json`). O restante está em [`tests/fixtures/catalogo/`](../../tests/fixtures/catalogo/) — 65 casos × 4 arquivos + 12 negativos técnicos × 2. O mapa visual dos 79 está em [Mapa_de_Documentos_de_Teste_MediFlow.pdf](Mapa_de_Documentos_de_Teste_MediFlow.pdf).
+>
+> **Quatro arquivos grandes ficam fora do git** (`.gitignore`) e são recriados por `tools/gerar_fixtures_catalogo.py`: `Validacao_ArquivoGrande.pdf` (25 MB), `Limite_Tamanho_10MB.pdf` (10 MB), `Limite_Tamanho_Acima10MB.pdf` (10,5 MB) e `Limite_Texto_Acima10MB.txt` (10,5 MB). Sem o gerador, o verificador avisa — não erra.
 
 ---
 
@@ -33,7 +36,7 @@ Tudo abaixo vem da especificação funcional v1.0 e define as dimensões do cat�
 | Dimensão | Valores | Fonte |
 | --- | --- | --- |
 | **Tipo de documento** | `RECEITUARIO_MEDICO`, `LAUDO_EXAME_LABORATORIAL`, `LAUDO_EXAME_IMAGEM`, `GUIA_PROCEDIMENTO`, `RELATORIO_ALTA_INTERNACAO`, `ATESTADO_MEDICO`, `OUTRO`, `NAO_IDENTIFICADO` | §5.1 |
-| **Formato de entrada** | PDF digital, PDF digitalizado, imagem (JPG/PNG) e texto | RF-02, §3.1 |
+| **Formato de entrada** | PDF digital, PDF digitalizado, imagem (JPG/PNG/WEBP) e texto | RF-02, §3.1, decisão A6 |
 | **Prioridade** | `URGENTE`, `ROTINA`, `NAO_IDENTIFICADA` | §5.2 |
 | **Status** | `RECEBIDO`, `PROCESSANDO`, `PROCESSADO`, `EM_REVISAO`, `ERRO_PROCESSAMENTO`, `ERRO_PERSISTENCIA` | §5.3 |
 | **Destino lógico** | `FILA_URGENCIA_MEDICA`, `FARMACIA_HOSPITALAR`, `AUDITORIA_AUTORIZACOES`, `PRONTUARIO_ELETRONICO`, `FILA_REVISAO_HUMANA` | §5.4 |
@@ -66,13 +69,14 @@ Um mesmo arquivo pode servir a vários **casos de teste** (submissão 202, polli
 | --- | --- | ---: | ---: |
 | **Matriz** | Tipos × formatos | 24 | 24 |
 | **Ausencia** | Campos ausentes (5 que revisam + 3 que não revisam) | 8 | 32 |
-| **Borda** | Fronteira do limiar (0,84 e 0,85) | 2 | 34 |
-| **Conflito** | Conflitos, contradições e alto risco | 5 | 39 |
-| **Simultaneo** | Urgência + ambiguidade simultâneas | 2 | 41 |
-| **Qualidade** | Ilegibilidade e PDFs especiais | 8 | 49 |
-| **Validacao** | Negativos técnicos de entrada | 8 | 57 |
-| **Escaneado** | PDF digitalizado para os 6 tipos restantes | 6 | 63 |
-| **Diferencial** | Itens opcionais | 4 | **67** |
+| **Borda** | Fronteira do limiar (0,84 e 0,85) e de prioridade/urgência indefinidas (A4, A5) | 4 | 36 |
+| **Conflito** | Conflitos, contradições, alto risco e gravidade do conflito (A1) | 7 | 43 |
+| **Simultaneo** | Urgência + ambiguidade simultâneas | 2 | 45 |
+| **Qualidade** | Ilegibilidade e PDFs especiais | 8 | 53 |
+| **Validacao** | Negativos técnicos de entrada | 8 | 61 |
+| **Limite** | Limites operacionais: tamanho, páginas, formato e texto (A6) | 8 | 69 |
+| **Escaneado** | PDF digitalizado para os 6 tipos restantes | 6 | 75 |
+| **Diferencial** | Itens opcionais | 4 | **79** |
 
 ---
 
@@ -87,16 +91,16 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `Matriz_Receituario_Pdf` | RECEITUARIO_MEDICO | PDF | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Receita médica de rotina, 2 medicamentos, paciente e CRM completos, legível. |
-| `Matriz_Receituario_Imagem` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
+| `Matriz_Receituario_Imagem` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de receita com prescrição de alto risco (opioide) e sinal textual de urgência. |
 | `Matriz_Receituario_Texto` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Texto de receita de rotina com medicamento, dose, via e frequência explícitos. |
 | `Matriz_LaudoLaboratorial_Pdf` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Hemograma de rotina com resultados nominais, sem medicamentos. |
 | `Matriz_LaudoLaboratorial_Imagem` | LAUDO_EXAME_LABORATORIAL | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de laudo laboratorial impresso, boa qualidade, rotina. |
 | `Matriz_LaudoLaboratorial_Texto` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo laboratorial com exames realizados e ausência de CID (não exige revisão). |
-| `Matriz_LaudoDeImagem_Pdf` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
-| `Matriz_LaudoDeImagem_Imagem` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
+| `Matriz_LaudoDeImagem_Pdf` | LAUDO_EXAME_IMAGEM | PDF | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Laudo de tomografia com TEP agudo e recomendação de correlação clínica urgente (caso do brief). |
+| `Matriz_LaudoDeImagem_Imagem` | LAUDO_EXAME_IMAGEM | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de laudo de raio-X com achado crítico e recomendação de urgência. |
 | `Matriz_LaudoDeImagem_Texto` | LAUDO_EXAME_IMAGEM | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Texto de laudo de ultrassom de rotina, sem sinais de urgência. |
 | `Matriz_Guia_Pdf` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia de solicitação de ressonância eletiva, diagnóstico e CID explícitos. |
-| `Matriz_Guia_Imagem` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Foto de guia com pedido de urgência e justificativa clínica crítica. |
+| `Matriz_Guia_Imagem` | GUIA_PROCEDIMENTO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Foto de guia com pedido de urgência e justificativa clínica crítica. |
 | `Matriz_Guia_Texto` | GUIA_PROCEDIMENTO | TEXTO | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Texto de guia de procedimento eletivo, sem sinais de risco. |
 | `Matriz_RelatorioDeAlta_Pdf` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de alta completo: diagnóstico, CID, medicações de alta e orientações. |
 | `Matriz_RelatorioDeAlta_Imagem` | RELATORIO_ALTA_INTERNACAO | IMAGEM | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Foto de relatório de internação impresso, rotina e legível. |
@@ -124,14 +128,16 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Ausencia_SomenteMedicamentos` | LAUDO_EXAME_LABORATORIAL | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Laudo sem medicamentos (lista vazia): NÃO exige revisão por si só. |
 | `Ausencia_SomenteExames` | ATESTADO_MEDICO | TEXTO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Atestado sem exames: NÃO exige revisão por si só. |
 
-#### Bloco Borda — limiar de confiança (2)
+#### Bloco Borda — limiar, prioridade e urgência indefinidas (4)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | `Borda_Score_084` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Score combinado forçado em 0,84 (< 0,85): revisão obrigatória. Exige stub de score. |
 | `Borda_Score_085` | RECEITUARIO_MEDICO | TEXTO | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Score combinado exatamente 0,85: NÃO revisa por esse critério isolado. Exige stub de score. |
+| `Borda_Prioridade_NaoIdentificada` | RECEITUARIO_MEDICO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Receita completa e legível em que nada permite definir a prioridade: `NAO_IDENTIFICADA` **é** ambiguidade e gera revisão (decisão A4). É o único gatilho do caso. |
+| `Borda_Urgencia_Indeterminada` | LAUDO_EXAME_LABORATORIAL | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Laudo completo que não permite afirmar nem afastar urgência: `INDETERMINADO` conta como campo incerto e gera revisão (decisão A5). Não é urgência: sem alerta. |
 
-#### Bloco Conflito — contradições e risco (5)
+#### Bloco Conflito — contradições, risco e gravidade (7)
 
 | ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -139,7 +145,9 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Conflito_Dose` | RECEITUARIO_MEDICO | TEXTO | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Dose 10× acima do usual (ex.: losartana 500 mg): sinaliza conflito sem alterar o valor. |
 | `Conflito_Prioridade` | GUIA_PROCEDIMENTO | TEXTO | AMBIGUIDADE | FILA_URGENCIA_MEDICA + FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia marcada como ROTINA no cabeçalho, mas com texto de urgência e sinais críticos. |
 | `Conflito_Dados` | RELATORIO_ALTA_INTERNACAO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Relatório com dois nomes/idades divergentes no cabeçalho e no corpo: contradição interna. |
-| `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | EM_REVISAO | SIM | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
+| `Conflito_AltoRisco` | RECEITUARIO_MEDICO | IMAGEM | URGENCIA | FILA_URGENCIA_MEDICA | PROCESSADO | NAO | Receita de varfarina 10 mg sem texto de urgência: alto risco deve acionar a fila urgente. |
+| `Conflito_Gravidade_Media` | GUIA_PROCEDIMENTO | PDF | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Conflito de gravidade **MÉDIA**: é impeditivo, revisa (A1). Scores forçados em 0,95 — o gatilho é a gravidade, não o score. Sem o caso, nada prova que MÉDIA continua bloqueando. |
+| `Conflito_Gravidade_Baixa` | ATESTADO_MEDICO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Conflito de gravidade **BAIXA** (grafia do nome): registrado em `qualidade.conflitos`, **não** bloqueia (A1). `score_extracao` 0,90 vem da fórmula aprovada: 1 − 0,1 por um conflito BAIXA (A3). |
 
 #### Bloco Simultaneo — urgência + ambiguidade (2)
 
@@ -157,7 +165,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Qualidade_Foto_Cortada` | GUIA_PROCEDIMENTO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Guia com metade da página fora do enquadramento, sem CRM: ausência obrigatória. |
 | `Qualidade_Foto_BaixoContraste` | ATESTADO_MEDICO | IMAGEM | AMBIGUIDADE | FILA_REVISAO_HUMANA | EM_REVISAO | SIM | Atestado com sombra e baixo contraste: campos incertos devem ser sinalizados. |
 | `Qualidade_Pdf_SemTexto` | LAUDO_EXAME_IMAGEM | PDF_DIGITALIZADO | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF escaneado sem camada de texto (apenas imagem): prova o caminho multimodal do PDF digitalizado. |
-| `Qualidade_Pdf_Multipagina` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório com 6+ páginas: testa limite de páginas e custo. Limite ainda pendente na spec. |
+| `Qualidade_Pdf_Multipagina` | RELATORIO_ALTA_INTERNACAO | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de 7 páginas: dentro do limite de 20 páginas (A6). Testa custo e extração em documento longo. |
 | `Qualidade_Pdf_ComSenha` | — | PDF | ERRO | — | ERRO_PROCESSAMENTO | — | PDF protegido por senha: `ERRO_PROCESSAMENTO` + código `PDF_PROTEGIDO`, sem dados extraídos. |
 | `Qualidade_Pdf_Corrompido` | — | PDF | ERRO | — | ERRO_PROCESSAMENTO | — | PDF truncado: `ERRO_PROCESSAMENTO` + código `PDF_CORROMPIDO`, sem dados extraídos. |
 
@@ -171,7 +179,7 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Validacao_EnvelopeVazio` | — | JSON | ERRO | — | 422 CAMPOS_INVALIDOS | NAO | Envelope JSON vazio ou sem campos obrigatórios. |
 | `Validacao_SemConteudo` | — | MULTIPART | ERRO | — | 422 CAMPOS_INVALIDOS | NAO | Requisição sem arquivo e sem documento_texto. |
 | `Validacao_ArquivoZip` | — | ZIP | ERRO | — | 415 FORMATO_NAO_SUPORTADO | NAO | Arquivo .zip: formato não suportado. |
-| `Validacao_ArquivoGrande` | — | ARQUIVO_25MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Arquivo acima do limite configurado. Limite ainda pendente na spec: definir antes. |
+| `Validacao_ArquivoGrande` | — | ARQUIVO_25MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | PDF válido de 25 MB: acima do limite de 10 MB (A6). Fora do git; o gerador recria. |
 | `Validacao_MimeInvalido` | — | PDF_FALSO | ERRO | — | 415 MIME_INVALIDO | NAO | Extensão .pdf com conteúdo real de PNG: inconsistência extensão × MIME. |
 
 #### Bloco Escaneado — PDFs digitalizados dos 6 tipos restantes (6)
@@ -194,6 +202,23 @@ Regra de Ouro: **PDF = PDF digital com camada de texto** (não escaneado). O PDF
 | `Diferencial_HemogramaCompleto` | LAUDO_EXAME_LABORATORIAL | PDF | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Tabela de hemograma com 20 analitos, unidades e valores de referência. |
 | `Diferencial_GuiaTiss` | GUIA_PROCEDIMENTO | PDF | ROTINA | AUDITORIA_AUTORIZACOES | PROCESSADO | NAO | Guia no formato TISS com códigos de procedimento e autorização. |
 
+#### Bloco Limite — limites operacionais (8) · decisão A6 de 21/10/2026
+
+Até aqui o catálogo não tinha **nenhum** caso de tamanho acima do limite nem de documento com mais páginas do que o permitido — os dois únicos casos que chegavam perto (`Validacao_ArquivoGrande` e `Qualidade_Pdf_Multipagina`) diziam "limite pendente na spec". Com o limite fixado em **10 MB e 20 páginas**, o bloco abaixo prova o corte dos dois lados, inclusive na fronteira.
+
+| ID | Tipo | Formato | Cenário | Destino(s) esperado(s) | Status | Revisão | O que testa |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| `Limite_Tamanho_10MB` | ATESTADO_MEDICO | PDF_10MB | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | PDF válido de **exatamente 10 MB** (10.485.760 bytes): no limite, deve ser **aceito**. O tamanho vem de um comentário de preenchimento; o conteúdo é o de um atestado comum. |
+| `Limite_Tamanho_Acima10MB` | — | PDF_10_5MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | PDF válido de **10,5 MB**: 0,5 MB acima do limite. Provam, com o caso anterior, que o corte está em 10 MB — não em "muito maior". |
+| `Limite_Paginas_20` | RELATORIO_ALTA_INTERNACAO | PDF_20PAGINAS | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Relatório de **exatamente 20 páginas**: no limite, deve ser **aceito**. |
+| `Limite_Paginas_21` | — | PDF_21PAGINAS | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Relatório de **21 páginas**: uma acima do limite. Rejeitar antes de qualquer inferência. |
+| `Limite_Formato_Png` | RECEITUARIO_MEDICO | PNG | ROTINA | FARMACIA_HOSPITALAR | PROCESSADO | NAO | Imagem **PNG**: formato da lista aceita. A pasta tem os 3 arquivos padrão + o `.png` sob teste, declarado em `entrada.renditions`. |
+| `Limite_Formato_Webp` | LAUDO_EXAME_IMAGEM | WEBP | ROTINA | PRONTUARIO_ELETRONICO | PROCESSADO | NAO | Imagem **WEBP**: formato da lista aceita. Mesma convenção do caso PNG. |
+| `Limite_Texto_Acima10MB` | — | TEXTO_10_5MB | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | Texto de **10,5 MB** no envelope JSON: o limite de 10 MB vale para `documento_texto`, não só para o upload de arquivo. Fora do git; o gerador recria. |
+| `Limite_Paginas_21_Digitalizado` | — | PDF_21PAGINAS_DIGITALIZADO | ERRO | — | 413 ARQUIVO_MAIOR_QUE_LIMITE | NAO | PDF **digitalizado** (só imagem) de **21 páginas**: a contagem de páginas não pode depender da camada de texto, senão o arquivo passaria por 1 página e seguiria para OCR. |
+
+**Convenção dos casos de formato:** a pasta continua com `{ID}.txt`, `{ID}.pdf`, `{ID}.jpg` e `expected.json`, e ganha o arquivo no formato sob teste. O verificador lê a lista de arquivos esperados de `entrada.renditions`, não do nome da pasta — por isso não há exceção à regra dos 4 arquivos.
+
 ---
 
 ## 6. Simulações operacionais (8 cenários, **sem arquivos neste pacote**)
@@ -202,14 +227,17 @@ Estas falhas não se testam com um documento novo: testam-se com **stub, flag de
 
 | ID | Falha simulada | Resultado esperado | Regra |
 | --- | --- | --- | --- |
-| `Simulacao_GeminiTimeout` | Gemini não responde no timeout | Retry limitado; se persistir, `ERRO_PROCESSAMENTO` (ou `EM_REVISAO` se já houver sinal de risco) | RF-04, §12 |
+| `Simulacao_GeminiTimeout` | Gemini não responde em **60 s** (limite fixado em A6) | **2 retentativas com backoff**; se persistir, `ERRO_PROCESSAMENTO` (ou `EM_REVISAO` se já houver sinal de risco) | RF-04, §12, A6 |
 | `Simulacao_GeminiIndisponivel` | Provedor indisponível (502/503/504) | Erro seguro, sem stack trace; possibilidade de reenvio | RF-04, §10.1 |
 | `Simulacao_GeminiJsonInvalido` | Resposta do modelo não valida no Pydantic | Reparo limitado; se falhar, fallback para revisão/erro | RF-14, §12 |
 | `Simulacao_GeminiCampoInvalido` | Campo desconhecido ou tipo errado na resposta | Não quebrar o consumidor; validar campos obrigatórios e enums | RF-14 |
 | `Simulacao_OciFalhaNoOriginal` | OCI falha ao gravar o original | `ERRO_PERSISTENCIA`; **não** declarar recebimento durável | RF-28/RF-30, §12 |
 | `Simulacao_OciFalhaNoResultado` | OCI falha ao gravar o resultado | `ERRO_PERSISTENCIA`; não marcar sucesso completo | RF-30, §12 |
 | `Simulacao_FalhaNoAlerta` | Falha ao registrar o evento de alerta | Preservar a triagem urgente e registrar a falha do evento | §12 |
-| `Simulacao_RetriesEsgotados` | Retries esgotados | Estado de erro observável + correlação; permitir reenvio | RF-24 |
+| `Simulacao_RetriesEsgotados` | As **2 retentativas** esgotaram | Estado de erro observável + correlação; permitir reenvio | RF-24, A6 |
+| `Simulacao_GeminiRateLimit` | O provedor devolve **429** (limite de requisições) | Respeitar o retry com backoff; se persistir, `ERRO_PROCESSAMENTO` sem stack trace e com reenvio possível | RF-24, §10.1 |
+
+Os códigos **401, 403 e 404** do §10.1 não entram nesta tabela nem viram fixture: autenticação está fora do MVP (decisão A8, §4 e §10.1 da EF) e 404 é roteamento da API, coberto pelo teste da aplicação — não por um documento de entrada.
 
 ---
 
@@ -222,7 +250,7 @@ Se o tempo apertar, produza **estes 12** primeiro. Eles cobrem os 15 critérios 
 | 1 | `Matriz_Receituario_Texto` | Texto é aceito e uma receita de rotina vai para `FARMACIA_HOSPITALAR` |
 | 2 | `Matriz_Receituario_Pdf` | PDF digital é aceito e classificado |
 | 3 | `Matriz_Receituario_Imagem` | Imagem é aceita e um sinal de urgência nunca vira rotina |
-| 4 | `Matriz_LaudoDeImagem_Pdf` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta |
+| 4 | `Matriz_LaudoDeImagem_Pdf` | Urgência explícita gera `FILA_URGENCIA_MEDICA` + alerta, sem revisão humana |
 | 5 | `Matriz_LaudoLaboratorial_Pdf` | Laudo laboratorial de rotina vai para `PRONTUARIO_ELETRONICO` |
 | 6 | `Matriz_Guia_Pdf` | Guia de procedimento vai para `AUDITORIA_AUTORIZACOES` |
 | 7 | `Matriz_RelatorioDeAlta_Pdf` | Relatório de alta é classificado e extraído |
@@ -242,17 +270,17 @@ O documento sozinho não é um teste. Para cada fixture funcional, produza tamb�
 
 | Artefato | Quantidade | Formato |
 | --- | ---: | --- |
-| Documento de entrada | 67 | TXT / PDF / JPG — mais os 8 arquivos inválidos do bloco Validacao |
-| **Saída esperada** (`expected.json`) | 67 | `resposta_esperada` no formato do contrato: tipo, prioridade, destinos, revisão, qualidade e status |
+| Documento de entrada | 79 | TXT / PDF / JPG (+ PNG e WEBP nos casos de formato) — mais os 12 arquivos inválidos dos blocos Validacao e Limite |
+| **Saída esperada** (`expected.json`) | 79 | `resposta_esperada` no formato do contrato: tipo, prioridade, destinos, revisão, qualidade e status |
 | **Manifesto** | 1 | `tests/fixtures/manifest.csv` (este catálogo, em formato de máquina) |
 
 O `expected.json` segue o schema `mediflow.fixture/2`:
 
 | `tipo_de_teste` | Quantos | `resposta_esperada` |
 | --- | ---: | --- |
-| `funcional` | 57 | `TriagemMediFlow` completa |
+| `funcional` | 65 | `TriagemMediFlow` completa |
 | `erro_processamento` | 2 | `TriagemMediFlow` com `status=ERRO_PROCESSAMENTO` e `erro.codigo` |
-| `negativo_tecnico` | 8 | `ErroResposta` (HTTP + código funcional) |
+| `negativo_tecnico` | 12 | `ErroResposta` (HTTP + código funcional) |
 
 O contrato executável é [`app/models.py`](../../app/models.py); a explicação em português é [`CONTRATO_DE_DADOS.md`](CONTRATO_DE_DADOS.md).
 
@@ -280,10 +308,10 @@ A especificação (§15) deixa pontos abertos. Enquanto eles não forem decidido
 
 | Pendência | Impacto nos testes | Recomendação para o time |
 | --- | --- | --- |
-| Limite de tamanho, páginas, MIME, timeout e retry | `Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina` não têm limite para validar | Fixar: 10 MB, 10 páginas, `application/pdf` + `image/jpeg` + `image/png` + `text/plain`, timeout 30 s, 2 retries |
+| Limite de tamanho, páginas, MIME, timeout e retry | ~~`Validacao_ArquivoGrande`, `Qualidade_Pdf_Multipagina` não têm limite para validar~~ | **Resolvido em 21/10/2026 (decisão A6, Anexo A.5 da EF).** 10 MB por arquivo, até 20 páginas, `PDF/JPG/PNG/WEBP/TXT`, timeout de 60 s no Gemini, 2 retentativas com backoff. O limite é inclusivo: 10 MB e 20 páginas passam; 10,5 MB e 21 páginas não. Os casos `Limite_*` cobrem as quatro bordas. |
 | Contrato final do upload (multipart × JSON) | `Validacao_SemConteudo`, `Validacao_EnvelopeVazio`, `Validacao_MimeInvalido` | Aceitar multipart para arquivo e JSON para texto; rejeitar os dois vazios |
 | Regras clínicas de "achado crítico", "medicamento de alto risco" e conflitos | `Conflito_Cid_Diagnostico`, `Conflito_Dose`, `Conflito_AltoRisco` dependem de dicionário aprovado | Criar `rules/cid10.csv` e `rules/medicamentos_alto_risco.csv` como **dados de referência**, não como documentos de teste |
-| **Urgência isolada exige revisão?** | A tabela §8.2 diz "Sim, obrigatória" para urgência; o parágrafo seguinte diz que a revisão é obrigatória **quando coexiste** com ambiguidade/dado ausente/score baixo. A §5.3 inclui "encontrou urgência" em `EM_REVISAO`. O exemplo do `Projeto_oracle.pdf` mostra um caso urgente com `requer_auditoria_humana: false` e status `processado`, o que conflita com a spec. | Padronizar: urgência → `EM_REVISAO` + `FILA_URGENCIA_MEDICA` + alerta; `FILA_REVISAO_HUMANA` só entra quando houver ambiguidade/dado ausente/score baixo. Este catálogo segue a **especificação v1.0** (documento mais recente e normativo), não o exemplo do brief. Registrar a decisão antes de codificar. |
+| **Urgência isolada exige revisão?** | **Resolvido em 21/10/2026.** A §8.2 da EF dizia "revisão obrigatória" para urgência; o exemplo do `Projeto_oracle.pdf` mostra `status: processado` e `requer_auditoria_humana: false`. | **Decisão: seguir o brief.** Urgência isolada → `PROCESSADO`, sem revisão humana, com alerta e um único destino (`FILA_URGENCIA_MEDICA`). `FILA_REVISAO_HUMANA` só entra com ambiguidade — inclusive quando ela coexiste com a urgência (nesse caso, os dois destinos). Contrato e os 79 fixtures já refletem essa decisão; a EF e a Análise de Requisitos serão atualizadas pela equipe. |
 | Autenticação e autorização | `403` e consulta por terceiros não têm contrato | Fora do MVP; se entrar, criar fixtures de acesso negado |
 | Política de retenção | Não afeta o conteúdo, mas afeta o teste de persistência | Definir antes de qualquer dado real (que não deve existir no MVP) |
 | Meta de latência e precisão | depende do primeiro pipeline | Medir e então fixar a meta |
@@ -331,7 +359,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 
 ## 12. Como produzir (fluxo de 6 passos)
 
-> **Os 67 fixtures já estão produzidos.** Para recriar: `python3 tools/gerar_fixtures_demo.py` (12 casos), `python3 tools/gerar_fixtures_catalogo.py` (55 casos) e `python3 tools/gerar_mapa_documentos.py` (este catálogo em PDF).
+> **Os 79 fixtures já estão produzidos.** Para recriar: `python3 tools/gerar_fixtures_demo.py` (12 casos), `python3 tools/gerar_fixtures_catalogo.py` (67 casos: 55 funcionais + 12 negativos técnicos) e `python3 tools/gerar_mapa_documentos.py` (este catálogo em PDF). Depois, `python3 tools/verificar_consistencia.py` e `python3 tests/testar_contrato.py`.
 
 1. **Escolha a fonte**: escreva o conteúdo clínico em `source/{ID}.md`, com dados fictícios e marca d'água.
 2. **Gere as três rendições**: texto puro, PDF digital (com camada de texto) e imagem (foto/scan). Para o PDF digitalizado, gere o PDF a partir de uma imagem, sem camada de texto.
@@ -354,6 +382,9 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 | 6. Submissão 202 + consulta posterior | Qualquer fixture funcional (mesmo `documento_id`) |
 | 7. Evento urgente simulado, sem envio externo | `Matriz_LaudoDeImagem_Pdf`, `Simultaneo_Urgencia_*` |
 | 8. Score < 0,85 revisa; == 0,85 não revisa | `Borda_Score_084`, `Borda_Score_085` |
+| 8a. Prioridade/urgência indefinidas revisam | `Borda_Prioridade_NaoIdentificada`, `Borda_Urgencia_Indeterminada` (A4, A5) |
+| 8b. Conflito: MÉDIA revisa, BAIXA só registra | `Conflito_Gravidade_Media`, `Conflito_Gravidade_Baixa` (A1) |
+| 8c. Limites de tamanho, páginas, formato e texto | `Limite_Tamanho_10MB`, `Limite_Tamanho_Acima10MB`, `Limite_Paginas_20`, `Limite_Paginas_21`, `Limite_Paginas_21_Digitalizado`, `Limite_Formato_Png`, `Limite_Formato_Webp`, `Limite_Texto_Acima10MB` (A6) |
 | 9. Campos ausentes não inferidos | `Ausencia_*`, `Matriz_NaoIdentificado_*` |
 | 10. Persistência no OCI informada | qualquer fixture + simulação de falha do OCI |
 | 11. Histórico ordenado e JSON validado | Qualquer fixture funcional + `GET /historico` |
@@ -371,7 +402,7 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 - **Um caso urgente para cada um dos 8 tipos.** Dois ou três já provam a regra; o resto é custo sem cobertura nova.
 - **Integrações reais** com prontuário, farmácia, operadora, TISS/TUSS, Slack ou e-mail. Os destinos são lógicos/simulados no MVP (§3.2).
 - **Documentos com dados reais ou "anonimizados".** O MVP inteiro usa dados fictícios.
-- **67 arquivos antes de codificar.** Comece pelos 12 do kit de demonstração; o restante entra em paralelo ao desenvolvimento.
+- **79 arquivos antes de codificar.** Comece pelos 12 do kit de demonstração; o restante entra em paralelo ao desenvolvimento.
 
 ---
 
@@ -380,4 +411,4 @@ Como o bloco vem primeiro, ordenar a pasta por nome já agrupa os casos por assu
 - `Projeto_oracle.pdf` — brief do hackathon, formatos, entregáveis e checklist de avaliação.
 - `MediFlow_-_Análise_de_Requisitos_v1.1.pdf` — visão geral, requisitos RF/RNF/RN e decisões do time.
 - `MediFlow_Especificacao_Funcional_v1.0.pdf` — §5 (vocabulário), §6 (fluxo), §7 (RF-01 a RF-30), §8 (regras e tabela de decisão), §9 (modelo de dados), §10 (API), §12 (erros), §16 (critérios de aceite) e §15 (pendências).
-- [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv) — os 67 fixtures em formato de máquina.
+- [`tests/fixtures/manifest.csv`](../../tests/fixtures/manifest.csv) — os 79 fixtures em formato de máquina.
