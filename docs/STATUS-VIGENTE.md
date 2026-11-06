@@ -10,6 +10,14 @@ Coberto: isolamento por perfil (RH nunca recebe corpus `marcelo`; o contexto env
 
 **Limites:** o índice por escopo é único (migração `095` semeia um por chave, `rag_key UNIQUE`), então "índice inativo" é exercitado sobre esse único índice; não há segundo índice concorrente. PGlite serializa consultas — concorrência real, réplica e deadline de banco não são exercitados. Qualidade da resposta, modelo real, embedding e curadoria humana continuam **não** comprovados. Produção **NO-GO**.
 
+### Atualização — fatia 18: ensaio de recuperação — impedimento técnico **medido**
+
+O plano aceita "restore sintético comprovado **ou** impedimento técnico registrado". Medido neste ambiente: `pg_dump`/`pg_restore` ausentes do `PATH`, `docker` ausente, e o pacote `@embedded-postgres/linux-x64` traz **PG 17.9** real mas só `initdb`/`pg_ctl`/`postgres` — **sem** os clientes de dump/restore. Executado o runner: `node scripts/qa-backup-restore-postgres.mjs` → **exit 2**, com `QA_RESTORE_CLIENT_MISSING_OR_INCOMPATIBLE: requires pg_dump and pg_restore version 17 for PostgreSQL 17.9; no database created.`, `QA_PG_TEMP_CLEANED: true` e `QA_RESTORE_TEMP_CLEANED: true`.
+
+O runner **já falha fechado** e fez isso corretamente: recusou **antes** de criar banco, não converteu ausência em verde (exit 2) e limpou os temporários mesmo no caminho de falha. Nada foi corrigido porque nada estava errado. Não instalei cliente de outra versão: o PG é 17.9 e o plano proíbe misturar versão para obter verde.
+
+**Consequência:** a capacidade de recuperação continua **não medida**. O que está provado é apenas que o gate recusa corretamente e limpa. Detalhes e passos de fechamento em `auditoria-2026-11-04/FATIA-18-IMPEDIMENTO.md`. Produção **NO-GO**.
+
 ### Atualização — fatia 09: ciclo staff → cliente do documento do cliente
 
 `tests/cli-staff-client-document-cycle.test.mjs` (13/13, no `test:unit`), sobre a cadeia real de migrações até a `139` (índice único de idempotência por uploader). Exercita as **duas pontas já existentes** — a equipe cria, o cliente lê — sem criar regra.
