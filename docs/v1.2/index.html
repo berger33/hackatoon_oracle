@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>MediFlow - Documentos v1.2</title>
+<style>
+body { font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+       max-width: 860px; margin: 40px auto; padding: 0 22px; color: #1b2430; line-height: 1.55; }
+h1 { color: #0b4f6c; font-size: 28px; margin-bottom: 4px; }
+.sub { color: #5b6b78; margin-top: 0; }
+h2 { color: #0b4f6c; font-size: 19px; margin-top: 30px; border-bottom: 1px solid #b9d4de; padding-bottom: 6px; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0 22px; font-size: 14px; }
+th { background: #0b4f6c; color: white; text-align: left; padding: 9px 10px; }
+td { border: 1px solid #d3e0e6; padding: 9px 10px; }
+a { color: #0b62a4; text-decoration: none; font-weight: 600; }
+a:hover { text-decoration: underline; }
+.note { background: #f0f7fa; border-left: 4px solid #2b8caa; padding: 12px 16px; margin: 20px 0; }
+code { background: #eef2f5; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+ul { padding-left: 20px; }
+</style></head><body>
+<h1>MediFlow - Documentos v1.2</h1>
+<p class="sub">Especificacao Funcional e Analise de Requisitos | Revisao de 05/11/2026 | William (QA &amp; Requirements Lead)</p>
+<div class="note"><strong>Referencia de precedencia:</strong> <code>Projeto_oracle.pdf</code> (documento original do projeto), conforme a secao 2 da EF. Esta revisao realinha os dois documentos ao Brief; nao reduz nenhum requisito obrigatorio dele.</div>
+<h2>Documentos</h2>
+<table><tr><th>Documento</th><th>Leitura</th><th>Download / fonte</th></tr>
+<tr><td><strong>Especificacao Funcional v1.2</strong></td>
+<td><a href="MediFlow_Especificacao_Funcional_v1.2.html">HTML</a> &middot; <a href="MediFlow_Especificacao_Funcional_v1.2.pdf">PDF</a></td>
+<td><a href="MediFlow_Especificacao_Funcional_v1.2.pdf">PDF</a> &middot; <a href="MediFlow_Especificacao_Funcional_v1.2.md">Markdown</a></td></tr>
+<tr><td><strong>Analise de Requisitos v1.2</strong></td>
+<td><a href="MediFlow_Analise_de_Requisitos_v1.2.html">HTML</a> &middot; <a href="MediFlow_Analise_de_Requisitos_v1.2.pdf">PDF</a></td>
+<td><a href="MediFlow_Analise_de_Requisitos_v1.2.pdf">PDF</a> &middot; <a href="MediFlow_Analise_de_Requisitos_v1.2.md">Markdown</a></td></tr>
+<tr><td><strong>Registro de alteracoes v1.2</strong></td>
+<td><a href="REGISTRO_DE_ALTERACOES_v1.2.html">HTML</a> &middot; <a href="REGISTRO_DE_ALTERACOES_v1.2.pdf">PDF</a></td>
+<td><a href="REGISTRO_DE_ALTERACOES_v1.2.md">Markdown</a></td></tr></table>
+<h2>O que mudou</h2>
+<ul>
+<li><strong>D-01</strong> - continuidade entre processos (retomada apos reiniciar a API) registrada como fora do escopo obrigatorio do MVP; RNF-03 delimitado a falhas dentro do mesmo processo.</li>
+<li><strong>D-02</strong> - decisao, destino, alerta e persistencia ficam no resultado estruturado; sem evento proprio no historico no MVP.</li>
+<li><strong>D-03</strong> - integracao ativa com OCI comprovada por escrita/leitura byte a byte no bucket + suite automatizada; E2E por cliente HTTP real no ambiente final e reforco de QA dispensado no MVP.</li>
+<li>202 + consulta por ID identificado como decisao da equipe (EF secao 15, item 6), nao exigencia do Brief; matriz de rastreabilidade com coluna de origem.</li>
+</ul>
+<p><strong>Ressalvas mantidas:</strong> <code>src/api/routes.py</code> nao e mera delegacao (L195-213); a limitacao de restart esta documentada, nao escondida; evidencia vigente da suite = 319 aprovados, 1 ignorado.</p>
+<p><strong>Unica pendencia que nao e do QA:</strong> atualizar o corpo do PR #22 de 304 para 319 aprovados, 1 ignorado.</p>
+</body></html>

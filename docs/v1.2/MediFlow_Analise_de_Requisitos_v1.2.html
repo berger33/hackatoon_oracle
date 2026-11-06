@@ -1,0 +1,962 @@
+<!DOCTYPE html><html lang='pt-BR'><head><meta charset='utf-8'><title>MediFlow - Analise de Requisitos v1.2</title><style>
+@page { size: a4; margin: 1.7cm 1.6cm 1.8cm 1.6cm; }
+body { font-family: Helvetica; font-size: 9.5pt; line-height: 1.42; color: #1b2430; }
+h1 { font-size: 20pt; color: #0b4f6c; margin: 0 0 6pt 0; }
+h2 { font-size: 13.5pt; color: #0b4f6c; margin: 16pt 0 6pt 0;
+     border-bottom: 0.6pt solid #b9d4de; padding-bottom: 3pt; page-break-after: avoid; }
+h3 { font-size: 11pt; color: #125e7d; margin: 11pt 0 4pt 0; page-break-after: avoid; }
+h4 { font-size: 10pt; color: #125e7d; margin: 9pt 0 3pt 0; page-break-after: avoid; }
+p { margin: 0 0 6pt 0; text-align: justify; }
+ul, ol { margin: 0 0 7pt 0; padding-left: 16pt; }
+li { margin-bottom: 2pt; }
+strong { color: #0a3f57; }
+blockquote { background-color: #f0f7fa; border-left: 2.5pt solid #2b8caa;
+             padding: 6pt 9pt; margin: 7pt 0; color: #264653; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt 0; font-size: 8.3pt; }
+th { background-color: #0b4f6c; color: #ffffff; text-align: left;
+     padding: 4pt 5pt; border: 0.4pt solid #7fa8b8; }
+td { padding: 3.5pt 5pt; border: 0.4pt solid #c6d8e0; vertical-align: top; }
+tr { page-break-inside: avoid; }
+code { font-family: Courier; font-size: 8.2pt; color: #8a2b3c; }
+pre { background-color: #f5f6f8; border: 0.4pt solid #d8dde2; padding: 6pt;
+      font-family: Courier; font-size: 7.8pt; line-height: 1.25; margin: 5pt 0 9pt 0;
+      white-space: pre-wrap; }
+pre code { font-size: 7.8pt; color: #24313d; }
+hr { border: 0; border-top: 0.6pt solid #c6d8e0; margin: 12pt 0; }
+a { color: #0b62a4; }
+</style></head><body><h1>MediFlow — Análise de Requisitos</h1>
+<p><strong>Equipe:</strong> Hackathon ONE G10 Equipe 15 | <strong>Versão:</strong> 1.2 | <strong>Data:</strong> 05/11/2026
+<strong>Autor / responsável:</strong> William — QA &amp; Requirements Lead</p>
+<blockquote>
+<p><strong>Como usar este documento:</strong> leia as seções 1 a 4 para entender o projeto; use as seções 5 a 8 como referência durante o desenvolvimento; a seção 12 registra as decisões já tomadas e as que o time ainda precisa tomar; a <strong>seção 14</strong> registra o alinhamento desta versão ao documento original do projeto. Este documento é a base da Especificação Funcional v1.2.</p>
+<p><strong>Revisão de 05/11/2026.</strong> Esta versão realinha a análise ao <code>Projeto_oracle.pdf</code>, que é a <strong>fonte de precedência 1</strong> (Especificação Funcional, seção 2). Três exigências que haviam sido acrescentadas por interpretação da equipe — continuidade entre processos, E2E por cliente HTTP real com OCI no ambiente final e eventos próprios de destino/alerta no histórico — foram reclassificadas como propostas de endurecimento do QA, não como exigências originais do Brief. Nenhum requisito obrigatório do Brief foi reduzido.</p>
+</blockquote>
+<hr />
+<h2>Registro de alterações — v1.1 → v1.2</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Seção</th>
+<th>Redação anterior</th>
+<th>Redação v1.2</th>
+<th>Fundamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-01</td>
+<td>4, 6 (RNF-03), 11, 12, 14</td>
+<td>"Falhas não derrubam o sistema nem perdem documentos" (sem delimitar processo)</td>
+<td>Delimitado ao <strong>mesmo processo de execução</strong>; continuidade entre processos registrada como fora do escopo obrigatório do MVP</td>
+<td>Brief pede tratamento de exceções/fallback, não retomada entre execuções; EF §2</td>
+</tr>
+<tr>
+<td>D-02</td>
+<td>5.5 (RF-26), 8, 12, 14</td>
+<td>"Disponibilizar o histórico de triagem em JSON" sem composição mínima</td>
+<td>Histórico com recebimento, processamento, conclusão/erro e recuperação; decisão, destino, alerta e armazenamento constam do <strong>resultado estruturado</strong></td>
+<td>Brief: "resultados e histórico de triagem em formato JSON estruturado"</td>
+</tr>
+<tr>
+<td>D-03</td>
+<td>4, 10, 12, 14</td>
+<td>Integração ativa com OCI lida como exigência de teste E2E por cliente HTTP real</td>
+<td>Integração ativa comprovada por escrita/leitura byte a byte no bucket + suíte automatizada; E2E é <strong>reforço de QA dispensado no MVP</strong>, com ressalva sobre as rotas</td>
+<td>Brief: "Integração ativa com o OCI Object Storage ... para segregação e armazenamento"</td>
+</tr>
+<tr>
+<td>—</td>
+<td>6 (coluna Origem), 14</td>
+<td><code>RNF-03</code> marcado como "Brief" sem ressalva</td>
+<td>Mantido como Brief, com nota de que a redação "não perdem documentos" é interpretação da equipe delimitada</td>
+<td>EF §2</td>
+</tr>
+<tr>
+<td>—</td>
+<td>12</td>
+<td>Sem registro das decisões de escopo</td>
+<td>Três linhas "Decidido" (D-01, D-02, D-03)</td>
+<td>Rastreabilidade das decisões</td>
+</tr>
+<tr>
+<td>—</td>
+<td>14 (nova)</td>
+<td>—</td>
+<td>Hierarquia de fontes e tabela de conformidade Brief × análise</td>
+<td>EF §2 e §17</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>1. Visão geral</h2>
+<p><strong>O que é o MediFlow.</strong> Um agente de IA que recebe documentos clínicos (receitas, laudos, guias, atestados), descobre sozinho que tipo de documento é, extrai os dados importantes e envia o documento para o setor certo do hospital. Quando o agente não tem certeza, ou quando o caso é urgente, ele avisa uma pessoa.</p>
+<p>A solução MediFlow deve resolver desafios complexos de visão multimodal, extração estruturada de dados clínicos, lógica de decisão condicional e tratamento de casos ambíguos ou urgentes (como dados ilegíveis, prescrições de alto risco ou solicitações de urgência).</p>
+<p><strong>Objetivo do hackathon.</strong> Entregar um MVP (versão mínima funcional) do agente, com demonstração de três cenários: rotina, urgência e caso ambíguo.</p>
+<p><strong>Formações ONE relacionadas.</strong> Indispensáveis: Engenharia de Agentes e Automação e Oracle Cloud Infrastructure (OCI). Reforço: Desarrollo y Orquestación con IA Generativa.</p>
+<p><strong>Stack adotada pelo time.</strong> LLM: Gemini · Orquestração: LangGraph · Validação: Pydantic · Interface: React + FastAPI · Armazenamento: OCI Object Storage.</p>
+<p><strong>Como o agente funciona, em 6 passos</strong></p>
+<ol>
+<li>Receber o documento clínico ou administrativo nos formatos suportados (PDF, imagem, texto ou JSON).</li>
+<li>Classificar o tipo, a especialidade e a prioridade (ex.: Receituário Médico, Laudo de Exame Laboratorial/Imagem, Guia de Solicitação de Procedimento...).</li>
+<li>Extrair entidades e os dados clínicos (paciente, médico, diagnóstico, medicamentos, exames) com altíssima precisão.</li>
+<li>Avaliar a consistência, potenciais conflitos e a nota combinada de confiabilidade (classificação + extração).</li>
+<li>Rotear para o destino correto em casos padrão, ou para revisão humana se houver dúvida (nota combinada &lt; 0.85, por padrão).</li>
+<li>Guardar o documento e a decisão no OCI Object Storage e devolver o resultado em JSON.</li>
+</ol>
+<h2>2. Glossário</h2>
+<table>
+<thead>
+<tr>
+<th>Termo</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP</td>
+<td>Produto mínimo viável: a menor versão que já funciona e cumpre o essencial.</td>
+</tr>
+<tr>
+<td>Agente autônomo</td>
+<td>Programa que toma decisões e executa etapas sozinho, usando uma IA.</td>
+</tr>
+<tr>
+<td>LLM</td>
+<td>Modelo de linguagem que lê e interpreta textos e imagens. No MediFlow, o modelo adotado é o Gemini.</td>
+</tr>
+<tr>
+<td>Multimodal</td>
+<td>Capaz de entender mais de um tipo de entrada, como texto e imagem.</td>
+</tr>
+<tr>
+<td>Human-in-the-Loop (HITL)</td>
+<td>"Humano no circuito": uma pessoa revisa os casos em que a IA não tem certeza.</td>
+</tr>
+<tr>
+<td>Score de confiança</td>
+<td>Nota de 0 a 1 que indica o quanto o sistema confia no próprio resultado.</td>
+</tr>
+<tr>
+<td>Nota combinada</td>
+<td>Nota final de 0 a 1 que junta a confiança da classificação e a da extração. É ela que é comparada com o limiar.</td>
+</tr>
+<tr>
+<td>Limiar de confiança</td>
+<td>Valor mínimo da nota combinada para o documento seguir sem revisão humana. Padrão: 0.85. Abaixo disso, o documento vai obrigatoriamente para a Fila de Revisão Humana.</td>
+</tr>
+<tr>
+<td>Grafo de decisão</td>
+<td>Fluxo com etapas (nós) e caminhos condicionais: se urgente, vai para A; se ambíguo, vai para B.</td>
+</tr>
+<tr>
+<td>LangGraph / n8n</td>
+<td>LangGraph (Python) monta o grafo de decisão do MediFlow. O n8n é uma ferramenta de fluxos visuais, citada apenas nos alertas opcionais (RF-D5).</td>
+</tr>
+<tr>
+<td>Pydantic / JSON</td>
+<td>Biblioteca Python que valida tipos / Formato de texto estruturado para dados.</td>
+</tr>
+<tr>
+<td>React / FastAPI / Streamlit</td>
+<td>React: biblioteca para montar a tela. FastAPI: framework Python para a API. Streamlit: ferramenta Python para painéis rápidos (painel do gestor).</td>
+</tr>
+<tr>
+<td><strong>[v1.2] Continuidade entre processos</strong></td>
+<td>Capacidade de retomar uma triagem após o processo da API ser reiniciado, reconstruindo o índice de consultas a partir do OCI. <strong>Não é exigência do Brief</strong> nesta versão (D-01).</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Partes interessadas</h2>
+<table>
+<thead>
+<tr>
+<th>Papel</th>
+<th>O que precisa do sistema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gestor hospitalar / operadora (cliente)</td>
+<td>Reduzir horas de digitação, erros e glosas; acelerar autorizações; calibrar o limite de confiança para revisão.</td>
+</tr>
+<tr>
+<td>Equipe administrativa</td>
+<td>Documentos já classificados e com os dados extraídos, sem redigitar.</td>
+</tr>
+<tr>
+<td>Auditor clínico</td>
+<td>Fila clara dos casos duvidosos, com o motivo da dúvida, para aprovar ou rejeitar.</td>
+</tr>
+<tr>
+<td>Equipe de plantão médico</td>
+<td>Alerta imediato quando há achado crítico.</td>
+</tr>
+<tr>
+<td>Farmácia e Auditoria de autorizações</td>
+<td>Receber só os documentos do seu tipo, já estruturados.</td>
+</tr>
+<tr>
+<td>Avaliadores do hackathon</td>
+<td>Checklist cumprido, demonstração de 3 cenários e documentação completa.</td>
+</tr>
+<tr>
+<td>Time de desenvolvimento</td>
+<td>Requisitos claros e divisão de trabalho.</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Escopo</h2>
+<h3>Dentro do escopo (MVP obrigatório)</h3>
+<ul>
+<li>Receber documentos em PDF, imagem, texto ou JSON.</li>
+<li>Classificar, extrair, avaliar a confiança e rotear usando LLM multimodal (Gemini).</li>
+<li>Grafo de decisão condicional (LangGraph) com tratamento de urgência e ambiguidade.</li>
+<li>Limiar de confiança padrão de 0.85, guardado em variável de configuração: nota combinada abaixo dele vai obrigatoriamente para revisão humana.</li>
+<li>Persistência no OCI Object Storage (Always Free).</li>
+<li>Interface de triagem em React e API REST em FastAPI, com dados validados por Pydantic.</li>
+<li>Repositório Git, README com diagrama e demonstração de 3 cenários.</li>
+<li>Resultados e histórico de triagem em JSON estruturado.</li>
+</ul>
+<h3>Diferenciais (opcionais, só depois do MVP)</h3>
+<ul>
+<li>Configuração externa pelo gestor (limites, regras e destinos sem mexer no código), começando por um slider interativo no Streamlit para calibrar o limiar de confiança.</li>
+<li>Deploy na OCI Compute (VM Always Free).</li>
+<li>Leitura de receitas manuscritas e laudos escaneados (OCR e visão computacional).</li>
+<li>Painel de auditoria HITL em Streamlit (aprovar/rejeitar com um clique) e Alertas em tempo real.</li>
+</ul>
+<h3>[v1.2] Fora do escopo obrigatório — fronteiras de verificação do MVP</h3>
+<p>As três fronteiras abaixo <strong>não constam do <code>Projeto_oracle.pdf</code></strong>. Foram tratadas em versões anteriores como se fossem exigências do Brief, mas são interpretações acrescentadas por esta análise. Conforme a seção 2 da Especificação Funcional ("quando a análise acrescenta uma restrição ou decisão que não está no brief, ela é identificada como proposta da equipe, não como exigência original do Projeto Oracle"), ficam reclassificadas:</p>
+<table>
+<thead>
+<tr>
+<th>Fronteira</th>
+<th>Situação admitida no MVP</th>
+<th>O que o Brief exige</th>
+<th>Decisão</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Continuidade entre processos</td>
+<td>Índice de triagens, resultado e histórico mantidos em memória no processo da API; sem reconstrução a partir do OCI após reinício. Objetos já gravados no bucket permanecem íntegros.</td>
+<td>Tratamento de exceções e fallback para revisão humana; persistência de documentos e decisões no OCI.</td>
+<td><strong>D-01</strong> — fora do escopo obrigatório; limitação documentada.</td>
+</tr>
+<tr>
+<td>E2E por cliente HTTP real contra bucket no ambiente final</td>
+<td>Integração ativa comprovada por escrita/leitura byte a byte no bucket real e pela suíte automatizada com cliente de teste (319 aprovados, 1 ignorado em 05/11/2026).</td>
+<td>"Integração ativa com o OCI Object Storage (camada Always Free) para segregação e armazenamento".</td>
+<td><strong>D-03</strong> — reforço de QA, dispensado no MVP.</td>
+</tr>
+<tr>
+<td>Eventos próprios de destino, alerta e persistência no histórico</td>
+<td>Esses dados constam do resultado estruturado (seção 8); o histórico cobre recebimento, processamento, conclusão/erro e recuperação.</td>
+<td>"Resultados e histórico de triagem em formato JSON estruturado".</td>
+<td><strong>D-02</strong> — interpretação registrada.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Ressalva sobre D-03:</strong> a dispensa do E2E não autoriza afirmar que as rotas HTTP são mera delegação. <code>src/api/routes.py</code> faz parsing de JSON/multipart, agenda <code>background_tasks</code>, mapeia códigos em <code>_tratar_erro_ingestao</code> e o <code>GET /triagens/{id}</code> dispara a triagem sincronamente (L195-213). Essa lógica é coberta pela suíte; dispensa-se apenas a execução contra o bucket real no ambiente final.</p>
+<p><strong>Natureza das fronteiras:</strong> são propostas de endurecimento do QA para versões futuras, não redução de requisito obrigatório do Brief. Se forem adotadas, devem ser registradas como <strong>nova exigência da equipe</strong> na seção 12.</p>
+<h2>5. Requisitos funcionais</h2>
+<p>Prioridade: <strong>O</strong> = obrigatório (MVP), <strong>D</strong> = diferencial. O símbolo <strong>+</strong> marca requisitos derivados pela análise.</p>
+<h3>5.1 Ingestão</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-01</td>
+<td>Receber documentos por endpoint (FastAPI) ou tela de envio (React).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-02</td>
+<td>Aceitar PDF (digital e digitalizado), imagem e texto/JSON.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-03 +</td>
+<td>Validar formato e campos obrigatórios da entrada, rejeitando com mensagem clara.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-04</td>
+<td>Ler o conteúdo do documento com LLM multimodal (Gemini).</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<h3>5.2 Classificação</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-05</td>
+<td>Identificar a categoria: Receituário Médico, Laudo de Exame Laboratorial/Imagem, Guia, Relatório de Alta/Internação e Atestado Médico.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-06</td>
+<td>Identificar a especialidade médica relacionada ao documento (campo <code>especialidade</code> da saída).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-07</td>
+<td>Classificar o nível de prioridade do documento: no mínimo "Urgente" e "Rotina" (campo <code>nivel_prioridade</code> da saída).</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<h3>5.3 Extração</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-08</td>
+<td>Extrair a identificação do paciente (nome, idade).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-09</td>
+<td>Extrair o profissional solicitante: nome e CRM (formato número-UF).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-10</td>
+<td>Extrair a hipótese diagnóstica ou diagnóstico principal e o CID-10.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-11</td>
+<td>Extrair medicamentos e dosagens, quando houver.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-12</td>
+<td>Extrair os exames solicitados ou realizados.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-13</td>
+<td>Extrair o indicador de urgência.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-14</td>
+<td>Entregar os dados em JSON validado com Pydantic.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-15 +</td>
+<td>Nunca inventar dado ausente: o campo faltante fica vazio e é sinalizado.</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<h3>5.4 Decisão e roteamento</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-16</td>
+<td>Avaliar consistência e conflitos (ex.: CID incompatível com diagnóstico, dose incomum).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-17 / 18</td>
+<td>Calcular a nota combinada de confiabilidade (classificação + extração), de 0 a 1 / Detectar urgências e alto risco.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-19 / 20</td>
+<td>Grafo de decisão (LangGraph) com nós condicionais / Roteamento para as filas específicas.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-21</td>
+<td>Enviar para revisão humana quando houver ambiguidade, dado faltante ou nota combinada &lt; 0.85. O 0.85 é o limiar padrão, lido de uma variável de configuração; abaixo dele o envio para a Fila de Revisão Humana é obrigatório. Nota igual ou maior que 0.85 segue o fluxo normal, se não houver outro motivo de revisão ou urgência.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-22 a 24 +</td>
+<td>Gerar notificação para urgentes, registrar justificativa e tratar exceções com fallback humano.</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<h3>5.5 Resultado e histórico</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-25</td>
+<td>Retornar resposta estruturada (status, dados extraídos, decisão, armazenamento).</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-26</td>
+<td>Disponibilizar o histórico de triagem em JSON. <strong>[v1.2]</strong> No MVP, com eventos de recebimento, processamento, conclusão/erro e recuperação; decisão, destino, alerta e armazenamento constam do resultado estruturado (seção 8), conforme D-02.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-27</td>
+<td>Oferecer interface de triagem (React) e API REST (FastAPI) para visualizar os fluxos.</td>
+<td>O</td>
+</tr>
+</tbody>
+</table>
+<h3>5.6 Armazenamento (OCI) e 5.7 Diferenciais</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requisito</th>
+<th>Prior.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RF-28 a 30</td>
+<td>Salvar no OCI (Always Free), separar buckets por status, e informar caminho na resposta.</td>
+<td>O</td>
+</tr>
+<tr>
+<td>RF-D1</td>
+<td>Configuração externa pelo gestor, sem mexer no código. O limiar de confiança (padrão 0.85) fica em variável de configuração (isso já faz parte do MVP) e o diferencial é o slider interativo no Streamlit para o gestor calibrar esse limite. Regras e destinos customizáveis também entram neste diferencial.</td>
+<td>D</td>
+</tr>
+<tr>
+<td>RF-D2 a D5</td>
+<td>Deploy na OCI Compute, OCR, painel HITL em Streamlit e alertas n8n.</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Requisitos não funcionais</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Categoria</th>
+<th>Requisito</th>
+<th>Origem</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RNF-01</td>
+<td>Precisão</td>
+<td>Extração com altíssima precisão; erro clínico é falha grave.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-02</td>
+<td>Segurança</td>
+<td>Nenhuma urgência tratada como rotina; na dúvida, revisão.</td>
+<td>Derivado</td>
+</tr>
+<tr>
+<td><strong>[v1.2] RNF-03</strong></td>
+<td><strong>Confiabilidade</strong></td>
+<td><strong>Falhas não derrubam o sistema nem perdem documentos dentro do mesmo processo de execução. A continuidade entre processos (retomada após reiniciar a API) não é exigência do Brief e está fora do escopo obrigatório do MVP (seção 4).</strong></td>
+<td><strong>Brief + interpretação da equipe</strong></td>
+</tr>
+<tr>
+<td>RNF-04</td>
+<td>Rastreabilidade</td>
+<td>Toda decisão tem justificativa e fica registrada no histórico.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-05</td>
+<td>Custo</td>
+<td>Usar exclusivamente recursos Always Free da OCI.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-06</td>
+<td>Padronização</td>
+<td>Saídas sempre em JSON válido e tipado (Pydantic).</td>
+<td>Derivado</td>
+</tr>
+<tr>
+<td>RNF-07</td>
+<td>Agilidade</td>
+<td>Resposta rápida para não atrasar casos urgentes.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-08</td>
+<td>Privacidade</td>
+<td>Apenas dados fictícios; nenhuma chave/segredo no Git.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-09</td>
+<td>Manutenção</td>
+<td>Código modular, commits documentados e README atual.</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-10</td>
+<td>Flexibilidade</td>
+<td>Camada de LLM isolada em módulo próprio, para poder trocar o modelo sem refazer o pipeline (o modelo adotado é o Gemini).</td>
+<td>Brief</td>
+</tr>
+<tr>
+<td>RNF-11</td>
+<td>Usabilidade</td>
+<td>Interface simples (tipo, prioridade, destino e justificativa).</td>
+<td>Derivado</td>
+</tr>
+</tbody>
+</table>
+<p><strong>[v1.2] Nota sobre a coluna Origem:</strong> o Brief pede "tratamento de exceções e fallback para revisão humana". A redação "não perdem documentos" é interpretação desta análise e, conforme a seção 2 da Especificação Funcional, não pode ser estendida a uma exigência de continuidade entre processos que o Brief não formula. A conversão em verificação está delimitada na EF v1.2, seção 14 (RNF-03).</p>
+<h2>7. Regras de negócio</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Regra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RN-01</td>
+<td>Casos padrão (sem ambiguidade, sem urgência e com nota combinada &gt;= 0.85) seguem direto ao destino, sem intervenção humana.</td>
+</tr>
+<tr>
+<td>RN-02</td>
+<td>Documento ambíguo, ilegível, inconsistente ou com nota combinada &lt; 0.85 (limiar padrão) vai obrigatoriamente para a Fila de Revisão Humana.</td>
+</tr>
+<tr>
+<td>RN-03</td>
+<td>Achado crítico ou prescrição de alto risco vai para a Fila de Urgência Médica com alerta.</td>
+</tr>
+<tr>
+<td>RN-04</td>
+<td>Todo documento é salvo no OCI conforme seu status (recebido, processado, auditoria).</td>
+</tr>
+<tr>
+<td>RN-05</td>
+<td>Toda decisão de roteamento traz uma justificativa estruturada.</td>
+</tr>
+<tr>
+<td>RN-06</td>
+<td>Somente recursos Always Free da OCI podem ser usados.</td>
+</tr>
+<tr>
+<td>RN-07 +</td>
+<td>Cada documento tem um <code>documento_id</code> único gerado pelo sistema.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Roteamento proposto</strong></p>
+<table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Destino sugerido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Achado crítico ou urgência</td>
+<td>Fila de Urgência Médica, com alerta</td>
+</tr>
+<tr>
+<td>Receituário de rotina</td>
+<td>Farmácia Hospitalar</td>
+</tr>
+<tr>
+<td>Guia de solicitação de procedimento</td>
+<td>Auditoria de Autorizações</td>
+</tr>
+<tr>
+<td>Laudos, relatórios de alta e atestados de rotina</td>
+<td>Prontuário Eletrônico do Paciente</td>
+</tr>
+<tr>
+<td>Ambiguidade, dado faltante ou nota combinada &lt; 0.85</td>
+<td>Fila de Revisão Humana</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Dados de entrada e saída (visão geral)</h2>
+<p><strong>Entrada</strong></p>
+<table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Descrição</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>documento_id</code></td>
+<td>Identificador único do documento</td>
+<td><code>DOC-CLIN-2026-8942</code></td>
+</tr>
+<tr>
+<td><code>tipo_arquivo</code></td>
+<td>Formato do arquivo</td>
+<td><code>PDF</code></td>
+</tr>
+<tr>
+<td><code>documento_texto</code></td>
+<td>Texto do documento</td>
+<td>Texto do laudo...</td>
+</tr>
+<tr>
+<td><code>canal_origem</code></td>
+<td>Setor de onde o documento veio</td>
+<td><code>Pronto_Socorro</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Saída</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bloco</th>
+<th>Campos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>status</code></td>
+<td>Situação do processamento (ex.: processado, em_auditoria)</td>
+</tr>
+<tr>
+<td><code>documento_id</code></td>
+<td>Mesmo identificador da entrada</td>
+</tr>
+<tr>
+<td><code>classificacao</code></td>
+<td><code>tipo_documento</code>, <code>especialidade</code>, <code>nivel_prioridade</code>, <code>score_confianca</code> (nota combinada, comparada com o limiar 0.85)</td>
+</tr>
+<tr>
+<td><code>dados_extraidos</code></td>
+<td>paciente (nome, idade); medico (nome, crm); <code>diagnostico_principal</code>; <code>cid</code></td>
+</tr>
+<tr>
+<td><code>decisao_roteamento</code></td>
+<td><code>destino_principal</code>, <code>requer_auditoria_humana</code>, <code>justificativa</code>, <code>notificacao</code></td>
+</tr>
+<tr>
+<td><code>armazenamento_oci</code></td>
+<td><code>bucket</code>, <code>caminho_objeto</code>, <code>status_backup</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Atenção:</strong> o exemplo do brief original não mostra campos para medicamentos, dosagens, exames solicitados, urgência detalhada, score de extração nem conflitos, mas o texto exige essas informações. Esses campos devem constar na Especificação Funcional final.</p>
+<p><strong>[v1.2]</strong> No MVP, os blocos <code>decisao_roteamento</code> e <code>armazenamento_oci</code> são <strong>o registro de decisão, destino, alerta e persistência</strong>. O Brief pede apenas que resultados e histórico estejam em JSON estruturado; não exige eventos de histórico duplicando esses campos (D-02). Ver EF v1.2, seções 9.2 e 13.</p>
+<h2>9. Tecnologias</h2>
+<table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Opções permitidas pelo brief</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM</td>
+<td>Google Gemini (curso), OpenAI, Claude</td>
+<td>Decidido: Gemini</td>
+</tr>
+<tr>
+<td>Orquestração</td>
+<td>LangGraph, n8n, Python puro, CrewAI</td>
+<td>Decidido: LangGraph</td>
+</tr>
+<tr>
+<td>Validação de dados</td>
+<td>Pydantic ou JSON Schema</td>
+<td>Decidido: Pydantic</td>
+</tr>
+<tr>
+<td>Interface ou API</td>
+<td>Streamlit, FastAPI, Flask, n8n, Node.js</td>
+<td>Decidido: React (interface) + FastAPI (API)</td>
+</tr>
+<tr>
+<td>Painel do gestor (diferencial)</td>
+<td>Streamlit</td>
+<td>Slider do limiar (RF-D1) e painel HITL (RF-D4)</td>
+</tr>
+<tr>
+<td>Armazenamento</td>
+<td>OCI Object Storage (Always Free)</td>
+<td>Obrigatório</td>
+</tr>
+<tr>
+<td>Hospedagem</td>
+<td>OCI Compute (VM Always Free)</td>
+<td>Opcional</td>
+</tr>
+<tr>
+<td>Versionamento</td>
+<td>Git e GitHub</td>
+<td>Obrigatório</td>
+</tr>
+</tbody>
+</table>
+<h2>10. Entregáveis e critérios de aceite</h2>
+<p><strong>Entregáveis:</strong> Repositório Git com commits bem documentados; README com arquitetura e diagrama de decisão; Notebook/Módulos do pipeline; e Aplicação com endpoint/tela.</p>
+<p><strong>Demonstração obrigatória (3 cenários)</strong></p>
+<ol>
+<li>Fluxo padrão aprovado, sem intervenção humana.</li>
+<li>Caso com prioridade de urgência médica.</li>
+<li>Caso ambíguo direcionado para auditoria humana.</li>
+</ol>
+<p><strong>[v1.2] Evidência de integração ativa com o OCI (checklist do Brief):</strong> gravação e leitura byte a byte de documento original, resultado e histórico no bucket real (<code>scripts/testar_historico_oci.py</code>, L142 e L184-186), além da suíte automatizada com cliente de teste e OCI simulado (319 aprovados, 1 ignorado em 05/11/2026). A execução ponta a ponta por cliente HTTP real contra o bucket no ambiente final é <strong>reforço de QA, não exigência do Brief</strong>, e fica dispensada no MVP (D-03). A ressalva sobre a lógica própria de <code>src/api/routes.py</code> está registrada na seção 4.</p>
+<p><strong>[v1.2] Registro de volumetria:</strong> contagens de testes divergentes em documentos e corpos de PR (245, 208, 304, 306, 317, 319) são registros históricos de momentos diferentes da suíte, não um único total. A evidência vigente para o PR #22 em 05/11/2026 é <strong>319 aprovados, 1 ignorado</strong>; o corpo do PR deve ser atualizado a partir de 304.</p>
+<h2>11. Restrições, premissas e riscos</h2>
+<p><strong>Restrições:</strong> usar só OCI Always Free; prazo de 5 semanas. <strong>Premissas:</strong> documentos fictícios em testes; filas simuladas.</p>
+<table>
+<thead>
+<tr>
+<th>Risco</th>
+<th>Impacto</th>
+<th>Mitigação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Erros do LLM (dado inventado)</td>
+<td>Dado clínico incorreto</td>
+<td>Validação Pydantic, score e revisão humana.</td>
+</tr>
+<tr>
+<td>Urgência não detectada</td>
+<td>Risco grave ao paciente</td>
+<td>Regras explícitas além do LLM.</td>
+</tr>
+<tr>
+<td>Respostas do LLM instáveis</td>
+<td>Inconsistências</td>
+<td>Testes de consistência (QA William).</td>
+</tr>
+<tr>
+<td>Conflitos de código da equipe</td>
+<td>Retrabalho</td>
+<td>Frentes claras e Pull Requests pequenos.</td>
+</tr>
+<tr>
+<td>Escopo grande para 5 semanas</td>
+<td>MVP incompleto</td>
+<td>Priorizar núcleo; diferenciais por último.</td>
+</tr>
+<tr>
+<td>Chaves de API expostas</td>
+<td>Falha de segurança</td>
+<td>Usar <code>.gitignore</code> e <code>.env</code>; não commitar segredos.</td>
+</tr>
+<tr>
+<td><strong>[v1.2] Estado de triagem em memória</strong></td>
+<td><strong>Após reiniciar a API, consultas por <code>documento_id</code> não são recuperadas; os objetos no OCI permanecem íntegros.</strong></td>
+<td><strong>Fora do escopo obrigatório do Brief (D-01). Registrar a limitação no README e no cartão de aceite; não declarar "RNF-03 100%". Evolução futura: reconstruir o índice a partir dos objetos do bucket.</strong></td>
+</tr>
+<tr>
+<td><strong>[v1.2] Interpretação de requisito como exigência do Brief</strong></td>
+<td><strong>Cobrança indevida de implementação e bloqueio de aceite.</strong></td>
+<td><strong>Aplicar a seção 2 da EF: marcar origem (Brief / Derivado / Decisão da equipe) e registrar toda restrição acrescentada.</strong></td>
+</tr>
+</tbody>
+</table>
+<h2>12. Decisões do time e pontos em aberto</h2>
+<table>
+<thead>
+<tr>
+<th>Decisão</th>
+<th>Situação</th>
+<th>Detalhe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM principal</td>
+<td>Decidido</td>
+<td>Gemini.</td>
+</tr>
+<tr>
+<td>Orquestração</td>
+<td>Decidido</td>
+<td>LangGraph.</td>
+</tr>
+<tr>
+<td>Interface e API</td>
+<td>Decidido</td>
+<td>React para a tela de triagem e FastAPI para a API. Streamlit fica só no painel do gestor (diferencial).</td>
+</tr>
+<tr>
+<td>Validação de dados</td>
+<td>Decidido</td>
+<td>Pydantic.</td>
+</tr>
+<tr>
+<td>Limiar de confiança para revisão</td>
+<td>Decidido</td>
+<td>Padrão de 0.85, em variável de configuração. Nota combinada &lt; 0.85 vai obrigatoriamente para a Fila de Revisão Humana. Slider no Streamlit para o gestor calibrar (RF-D1).</td>
+</tr>
+<tr>
+<td><strong>[v1.2] D-01 — Continuidade entre processos</strong></td>
+<td><strong>Decidido</strong></td>
+<td><strong>Retomada de triagens após reiniciar a API não é exigência do Brief; fora do escopo obrigatório do MVP. RNF-03 delimitado a falhas dentro do mesmo processo. Limitação documentada no README e no cartão de aceite.</strong></td>
+</tr>
+<tr>
+<td><strong>[v1.2] D-02 — Composição do histórico</strong></td>
+<td><strong>Decidido</strong></td>
+<td><strong>No MVP, decisão, destino, alerta e persistência constam do resultado estruturado; o histórico cobre recebimento, processamento, conclusão/erro e recuperação. Sem evento próprio de destino/alerta em <code>EventoHistorico</code>.</strong></td>
+</tr>
+<tr>
+<td><strong>[v1.2] D-03 — Verificação da integração OCI</strong></td>
+<td><strong>Decidido</strong></td>
+<td><strong>Integração ativa comprovada por escrita/leitura byte a byte no bucket real + suíte automatizada. E2E por cliente HTTP real no ambiente final é reforço de QA, dispensado no MVP, com ressalva sobre <code>src/api/routes.py</code>.</strong></td>
+</tr>
+<tr>
+<td>Fórmula da nota combinada</td>
+<td>A definir</td>
+<td>Sugestão inicial: usar a menor entre a nota de classificação e a de extração (postura conservadora, alinhada ao RNF-02). Ajustar após testes.</td>
+</tr>
+<tr>
+<td>Urgência e ambiguidade simultâneas</td>
+<td>A definir</td>
+<td>Sugestão inicial: urgência prevalece e o caso alerta E pede revisão.</td>
+</tr>
+<tr>
+<td>Níveis de prioridade exatos</td>
+<td>A definir</td>
+<td>No mínimo "Urgente" e "Rotina".</td>
+</tr>
+<tr>
+<td>Tempo-alvo de resposta</td>
+<td>A definir</td>
+<td>A definir após o primeiro pipeline rodar.</td>
+</tr>
+</tbody>
+</table>
+<h2>13. Próximos passos</h2>
+<ol>
+<li>Revisar e validar este documento em equipe (principalmente as seções 12 e 14).</li>
+<li>Elaborar a Especificação Funcional, detalhando cada campo, payload e tratamento de erro.</li>
+<li>Dividir as frentes de trabalho e abrir Issues estruturadas no GitHub.</li>
+<li>Usar o Plano de Testes (<code>tests/PLANO_DE_TESTES.md</code>) para balizar o desenvolvimento.</li>
+<li><strong>[v1.2]</strong> Publicar EF v1.2 e Análise v1.2 na pasta de referência e atualizar o corpo do PR #22 de 304 para 319 aprovados, 1 ignorado.</li>
+</ol>
+<h2>14. [v1.2] Alinhamento ao documento original do projeto</h2>
+<h3>14.1 Hierarquia de fontes</h3>
+<p>A Especificação Funcional, seção 2, já define a precedência e a regra de interpretação:</p>
+<ol>
+<li><code>Projeto_oracle.pdf</code> — define objetivo, escopo do hackathon, capacidades e entregáveis mínimos. <strong>Fonte 1, referência que o projeto precisa manter de acordo.</strong></li>
+<li>Esta Análise de Requisitos — organiza o entendimento da equipe, propõe requisitos e registra decisões tomadas e pendentes. <strong>Documento derivado, de autoria e responsabilidade do QA &amp; Requirements Lead.</strong></li>
+<li>Especificação Funcional — detalha comportamento para implementação.</li>
+</ol>
+<blockquote>
+<p>"Quando a análise acrescenta uma restrição ou decisão que não está no brief, ela é identificada como proposta da equipe, não como exigência original do Projeto Oracle."</p>
+</blockquote>
+<p>Reforços: a matriz de rastreabilidade da EF (seção 17) tem todas as linhas ancoradas em <code>Brief: ...</code>; a única linha de origem diversa é <code>Análise: requisitos derivados/decisões</code>. Esta análise mantém a coluna <code>Origem</code> com <code>Brief</code> e <code>Derivado</code>, e o símbolo <code>+</code> para requisitos derivados.</p>
+<h3>14.2 O que o Brief exige</h3>
+<table>
+<thead>
+<tr>
+<th>Exigência</th>
+<th>Onde no Brief</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resultados e histórico de triagem em formato JSON estruturado; persistência de documentos e decisões integrada ao OCI Object Storage</td>
+<td>p.2</td>
+</tr>
+<tr>
+<td>Tratamento de exceções e fallback para revisão humana quando o score de confiança for baixo</td>
+<td>p.3</td>
+</tr>
+<tr>
+<td>OCI Object Storage como requisito obrigatório do MVP, com buckets segregados por status</td>
+<td>p.3</td>
+</tr>
+<tr>
+<td>Integração ativa com o OCI (Always Free) para segregação e armazenamento</td>
+<td>p.5, Checklist de Avaliação</td>
+</tr>
+<tr>
+<td>README com arquitetura, diagrama do fluxo e instruções; demonstração de 3 casos (padrão aprovado, urgência médica, ambíguo para auditoria humana)</td>
+<td>p.3 e p.5</td>
+</tr>
+<tr>
+<td>Recursos opcionais/diferenciais (deploy OCI Compute, OCR, painel HITL, alertas em tempo real, configuração customizável)</td>
+<td>p.3 e p.5</td>
+</tr>
+</tbody>
+</table>
+<p><strong>O Brief não exige:</strong> <code>202 Accepted</code> com consulta posterior por ID (decisão 6 da seção 15 da EF; o exemplo de saída do Brief é síncrono), retomada de processamento após reinício da API, validação E2E por cliente HTTP real contra o bucket no ambiente final, nem eventos de destino/alerta/persistência dentro do histórico.</p>
+<h3>14.3 Tabela de conformidade</h3>
+<table>
+<thead>
+<tr>
+<th>Decisão</th>
+<th>Análise v1.1 / EF v1.1</th>
+<th>Brief</th>
+<th>v1.2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-01</td>
+<td>"Falhas não derrubam o sistema nem perdem documentos"</td>
+<td>Tratamento de exceções + fallback</td>
+<td>Delimitado ao mesmo processo; continuidade entre processos fora do escopo obrigatório</td>
+</tr>
+<tr>
+<td>D-02</td>
+<td>Histórico sem composição mínima explícita; leitura do §13 da EF como eventos de decisão/destino/alerta/persistência</td>
+<td>"Resultados e histórico em JSON estruturado"</td>
+<td>Resultado estruturado registra decisão/destino/alerta/persistência; histórico registra eventos de processo</td>
+</tr>
+<tr>
+<td>D-03</td>
+<td>"Integração ativa com OCI" lida como E2E das rotas HTTP com bucket real</td>
+<td>"Integração ativa ... para segregação e armazenamento"</td>
+<td>Comprovada por escrita/leitura no bucket + suíte; E2E = reforço de QA dispensado</td>
+</tr>
+</tbody>
+</table>
+<h3>14.4 Efeito no aceite</h3>
+<p>Com D-01 a D-03 registrados, o aceite do cartão 09 se apoia na <strong>fonte 1</strong>: o critério de aceite 6 é decisão da equipe e está atendido; o RNF-03 está atendido no escopo do MVP com a fronteira documentada; a integração ativa com o OCI está comprovada com bucket real. Não resta pendência normativa de implementação; resta apenas a atualização do corpo do PR #22 de <strong>304</strong> para <strong>319 aprovados, 1 ignorado</strong>, que é registro de evidência da autora do PR.</p>
+<p><strong>Registro de revisão:</strong> 05/11/2026 — alinhamento ao <code>Projeto_oracle.pdf</code> conforme a seção 2 da Especificação Funcional; sem alteração de escopo obrigatório do Brief.</p></body></html>

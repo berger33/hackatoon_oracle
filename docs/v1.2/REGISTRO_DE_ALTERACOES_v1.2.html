@@ -1,0 +1,163 @@
+<!DOCTYPE html><html lang='pt-BR'><head><meta charset='utf-8'><title>Registro de Alteracoes v1.2</title><style>
+@page { size: a4; margin: 1.7cm 1.6cm 1.8cm 1.6cm; }
+body { font-family: Helvetica; font-size: 9.5pt; line-height: 1.42; color: #1b2430; }
+h1 { font-size: 20pt; color: #0b4f6c; margin: 0 0 6pt 0; }
+h2 { font-size: 13.5pt; color: #0b4f6c; margin: 16pt 0 6pt 0;
+     border-bottom: 0.6pt solid #b9d4de; padding-bottom: 3pt; page-break-after: avoid; }
+h3 { font-size: 11pt; color: #125e7d; margin: 11pt 0 4pt 0; page-break-after: avoid; }
+h4 { font-size: 10pt; color: #125e7d; margin: 9pt 0 3pt 0; page-break-after: avoid; }
+p { margin: 0 0 6pt 0; text-align: justify; }
+ul, ol { margin: 0 0 7pt 0; padding-left: 16pt; }
+li { margin-bottom: 2pt; }
+strong { color: #0a3f57; }
+blockquote { background-color: #f0f7fa; border-left: 2.5pt solid #2b8caa;
+             padding: 6pt 9pt; margin: 7pt 0; color: #264653; }
+table { border-collapse: collapse; width: 100%; margin: 6pt 0 10pt 0; font-size: 8.3pt; }
+th { background-color: #0b4f6c; color: #ffffff; text-align: left;
+     padding: 4pt 5pt; border: 0.4pt solid #7fa8b8; }
+td { padding: 3.5pt 5pt; border: 0.4pt solid #c6d8e0; vertical-align: top; }
+tr { page-break-inside: avoid; }
+code { font-family: Courier; font-size: 8.2pt; color: #8a2b3c; }
+pre { background-color: #f5f6f8; border: 0.4pt solid #d8dde2; padding: 6pt;
+      font-family: Courier; font-size: 7.8pt; line-height: 1.25; margin: 5pt 0 9pt 0;
+      white-space: pre-wrap; }
+pre code { font-size: 7.8pt; color: #24313d; }
+hr { border: 0; border-top: 0.6pt solid #c6d8e0; margin: 12pt 0; }
+a { color: #0b62a4; }
+</style></head><body><h1>Registro de alterações — EF v1.2 e Análise de Requisitos v1.2</h1>
+<p><strong>Data:</strong> 05/11/2026
+<strong>Responsável:</strong> William — QA &amp; Requirements Lead (autor e responsável por ambos os documentos)
+<strong>Referência de precedência:</strong> <code>Projeto_oracle.pdf</code> (documento original do projeto), conforme EF seção 2.
+<strong>Status:</strong> alterações aplicadas e publicadas nesta pasta.</p>
+<hr />
+<h2>1. Fundamento</h2>
+<p>A Especificação Funcional, na própria <strong>seção 2 "Fontes e precedência"</strong>, estabelece:</p>
+<ol>
+<li><code>Projeto_oracle.pdf</code> — define objetivo, escopo do hackathon, capacidades e entregáveis mínimos.</li>
+<li>Análise de Requisitos — organiza o entendimento da equipe, <strong>propõe requisitos</strong> e registra decisões.</li>
+<li>Especificação Funcional — <strong>detalha comportamento</strong> para implementação.</li>
+</ol>
+<blockquote>
+<p>"Quando a análise acrescenta uma restrição ou decisão que não está no brief, ela é identificada como proposta da equipe, não como exigência original do Projeto Oracle."</p>
+</blockquote>
+<p>Reforços: EF seção 17 (matriz toda ancorada em <code>Brief: ...</code>), EF seção 18 (referências), Análise seção 6 (coluna <code>Origem</code> = Brief / Derivado) e <code>README.md</code> do time (<code>William | QA &amp; Requirements Lead | Especificação Funcional &amp; Suíte de Testes Pytest</code>).</p>
+<p><strong>Conclusão:</strong> EF e Análise são documentos derivados, de autoria do QA Lead e editáveis por ele. O Brief é a fonte 1 e a referência a manter de acordo. As alterações abaixo são de <strong>conformidade com o Brief</strong>, não exceções ou flexibilizações.</p>
+<h2>2. O que o Brief exige e o que não exige</h2>
+<table>
+<thead>
+<tr>
+<th>Brief exige</th>
+<th>Brief não exige</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Resultados e histórico de triagem em JSON estruturado</td>
+<td><code>202 Accepted</code> + consulta posterior por ID (é decisão 6 da EF seção 15; o exemplo do Brief é síncrono)</td>
+</tr>
+<tr>
+<td>Persistência de documentos e decisões no OCI Object Storage Always Free</td>
+<td>Retomada de processamento após reiniciar a API</td>
+</tr>
+<tr>
+<td>Tratamento de exceções e fallback para revisão humana</td>
+<td>Validação E2E por cliente HTTP real contra o bucket no ambiente final</td>
+</tr>
+<tr>
+<td>Integração ativa com OCI para segregação e armazenamento</td>
+<td>Eventos de destino/alerta/persistência dentro do histórico</td>
+</tr>
+<tr>
+<td>README com arquitetura/diagrama e 3 cenários de demonstração</td>
+<td>Composição específica dos eventos de histórico</td>
+</tr>
+<tr>
+<td>Recursos opcionais/diferenciais explicitamente listados</td>
+<td>Continuidade entre processos (sequer listada como opcional)</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Decisões aplicadas</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Decisão</th>
+<th>Onde foi aplicado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>D-01</strong></td>
+<td>Continuidade entre processos (retomada após reiniciar a API) fora do escopo obrigatório do MVP. RNF-03 delimitado a falhas dentro do mesmo processo, com status e retry observáveis. Limitação documentada; sem "RNF-03 100%".</td>
+<td>EF: 3.2.4, 12 (nova linha), 14 (RNF-03), 15 item 10, 16 item 15, 17. Análise: 2 (glossário), 4, 6 (RNF-03), 11 (risco), 12, 14.</td>
+</tr>
+<tr>
+<td><strong>D-02</strong></td>
+<td>Decisão, destino, alerta e persistência constam do resultado estruturado (EF seção 9.2); histórico cobre recebimento/início/conclusão/erro/recuperação. Sem campo novo em <code>EventoHistorico</code>.</td>
+<td>EF: 9.2, 13, 14 (RNF-04), 15 item 11, 16 item 11. Análise: 5.5 (RF-26), 8, 12, 14.</td>
+</tr>
+<tr>
+<td><strong>D-03</strong></td>
+<td>Integração ativa com OCI comprovada por escrita/leitura byte a byte no bucket real + suíte automatizada. E2E por cliente HTTP real no ambiente final é reforço de QA, dispensado no MVP.</td>
+<td>EF: 3.2.4, 15 item 12, 16 item 10. Análise: 4, 10, 12, 14.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>202 + consulta por ID identificado como decisão da equipe, não exigência do Brief.</td>
+<td>EF: 10, 15 item 6, 16 item 6, 17. Análise: 14.2.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Matriz de rastreabilidade com coluna de origem e linha "Decisões de escopo da equipe".</td>
+<td>EF: 17.</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Registro de volumetria de testes (245 / 208 / 304 / 306 / 317 / 319 são marcos diferentes; vigente = 319 aprovados, 1 ignorado).</td>
+<td>Análise: 10.</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Ressalvas registradas (não removidas)</h2>
+<ul>
+<li><strong><code>src/api/routes.py</code> não é mera delegação:</strong> parsing de JSON/multipart, <code>background_tasks</code>, <code>_tratar_erro_ingestao</code> e <code>GET /triagens/{id}</code> disparando <code>executar_triagem</code> sincronamente (L195-213). A dispensa do E2E não apaga essa lógica, que é coberta pela suíte com cliente de teste.</li>
+<li><strong>Limitação real de restart:</strong> índice de triagens, resultado e histórico consultável ficam em memória; após reinício, consultas por ID não são reconstruídas a partir do OCI. Objetos gravados no bucket permanecem íntegros. Registrada, não escondida.</li>
+<li><strong>Evidência de OCI real:</strong> <code>scripts/testar_historico_oci.py</code> L142 (<code>TriagemService(storage=storage)</code>) e L184-186 (<code>ler_bytes</code>), com original, resultado e histórico. Sem HTTP.</li>
+<li><strong>Evidência de suíte:</strong> PR #22 <code>57025fe</code>, 319 aprovados / 1 ignorado (05/11/2026).</li>
+<li><strong>D-01/D-02/D-03 são propostas de endurecimento para versões futuras</strong>, não redução de requisito obrigatório. Se adotadas, devem entrar como nova exigência da equipe.</li>
+</ul>
+<h2>5. O que NÃO foi alterado</h2>
+<ul>
+<li>Nenhum requisito funcional RF-01 a RF-30, nenhuma regra RN-01 a RN-07, nenhum valor controlado, limiar 0.85, fórmula da nota combinada, três cenários de demonstração ou restrição de Always Free.</li>
+<li>Nenhum arquivo do repositório de implementação <code>No-Country-simulation/g10-brasil-equipe-15_mediflow</code> foi modificado.</li>
+<li><strong>Pendência que permanece com a autora do PR #22:</strong> atualizar o corpo do PR de <strong>304</strong> para <strong>319 aprovados, 1 ignorado</strong> (registro de evidência, não decisão normativa).</li>
+</ul>
+<h2>6. Arquivos desta pasta</h2>
+<table>
+<thead>
+<tr>
+<th>Arquivo</th>
+<th>Formato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MediFlow_Especificacao_Funcional_v1.2.md</code> / <code>.html</code> / <code>.pdf</code></td>
+<td>Especificação Funcional v1.2</td>
+</tr>
+<tr>
+<td><code>MediFlow_Analise_de_Requisitos_v1.2.md</code> / <code>.html</code> / <code>.pdf</code></td>
+<td>Análise de Requisitos v1.2</td>
+</tr>
+<tr>
+<td><code>REGISTRO_DE_ALTERACOES_v1.2.md</code></td>
+<td>Este registro</td>
+</tr>
+<tr>
+<td><code>index.html</code></td>
+<td>Índice com links diretos para todos os formatos</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nota de versão:</strong> por decisão do autor, ambos os documentos saem como <strong>v1.2</strong> nesta revisão de 05/11/2026. A EF publicada anteriormente era v1.0 (18/10/2026); a numeração v1.2 consolida o alinhamento ao Brief.</p></body></html>
