@@ -29,10 +29,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // workflow, suba o piso na mesma PR — o número é o contrato, não uma estimativa.
 const PISO = {
   workflows: 60,
-  testes_no_disco: 252,
-  testes_cobertos_por_workflow: 250,
-  testes_cobertos_pelo_test_unit: 184,
-  runners_em_scripts: 115,
+  testes_no_disco: 253,
+  testes_cobertos_por_workflow: 251,
+  testes_cobertos_pelo_test_unit: 185,
+  runners_em_scripts: 116,
 };
 
 // Órfãos reais, com a razão de cada um. Nenhum é "provável esquecimento": os
@@ -60,6 +60,7 @@ const ORFAOS_SCRIPTS = {
   'test:ux-pro-09e-pu4': 'forma local do step de CI, que chama a variante `:browser`',
   'test:ux-pro-09e-pu6': 'focal já coberto pelo `test:unit`; a forma npm não é chamada',
   'test:ux-pro-10b-keyboard': 'forma local do focal, já coberto pelo `test:unit`',
+  'qa:preflight': 'verificação de configuração do destino; roda antes de instalar/subir, quando houver destino aprovado',
 };
 
 const mapaVersionado = async () => JSON.parse(await readFile(path.join(root, MAPA), 'utf8'));

@@ -8,16 +8,16 @@
  },
  "totais": {
   "workflows": 60,
-  "scripts_package": 111,
-  "testes_no_disco": 252,
-  "runners_em_scripts": 115,
-  "testes_cobertos_por_workflow": 250,
-  "testes_cobertos_via_test_unit": 184,
-  "testes_cobertos_pelo_test_unit": 184,
+  "scripts_package": 112,
+  "testes_no_disco": 253,
+  "runners_em_scripts": 116,
+  "testes_cobertos_por_workflow": 251,
+  "testes_cobertos_via_test_unit": 185,
+  "testes_cobertos_pelo_test_unit": 185,
   "testes_sem_workflow_nem_test_unit": 2,
   "runners_sem_workflow_nem_script": 14,
   "runners_importados_como_helper": 14,
-  "scripts_de_teste_sem_workflow": 9
+  "scripts_de_teste_sem_workflow": 10
  },
  "workflows": [
   {
@@ -105,7 +105,7 @@
     "test:ux-pro-09e-pu4:browser",
     "typecheck"
    ],
-   "testes": 196,
+   "testes": 197,
    "runners": 8
   },
   {
@@ -1173,6 +1173,7 @@
   "scripts/ux-pro-10b-browser-evidence.mjs"
  ],
  "scripts_de_teste_sem_workflow": [
+  "qa:preflight",
   "qa:ux-pro-04-pendencias-browser",
   "qa:ux-pro-04-reports-browser",
   "test:integration",
@@ -2398,6 +2399,16 @@
     "ux-satisfaction-delivery.yml",
     "ux-supplier-delivery.yml",
     "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-preflight.test.mjs",
+   "workflows": [
+    "ci.yml"
    ],
    "workflows_via_test_unit": [
     "ci.yml"
@@ -4479,6 +4490,13 @@
    ],
    "npm_scripts": [
     "test:plt12-incidents:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-preflight.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "qa:preflight"
    ]
   },
   {

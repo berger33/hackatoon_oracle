@@ -101,6 +101,21 @@ npm run build
 
 Os gates de PostgreSQL descartável têm requisitos próprios e recusam URLs herdadas. Nunca reutilizar a configuração real para rodá-los.
 
+### 5.1. Pré-validação antes de subir o ambiente (fatia 17)
+
+Antes de instalar ou iniciar em um destino, rode a verificação somente leitura:
+
+```bash
+npm run qa:preflight                    # perfil local (padrão)
+npm run qa:preflight -- --profile=producao
+npm run qa:preflight -- --json          # saída para máquina
+npm run qa:preflight -- --strict        # trata aviso como bloqueio
+```
+
+Ela confere, sem imprimir valor de segredo e sem abrir conexão com banco remoto: `DATABASE_URL` (formato, protocolo, host adequado ao perfil), presença e forma de `SITE_ADMIN_SESSION_SECRET`/`EMPLOYEE_SESSION_SECRET` (mínimo 32) e de `CLIENT_MFA_ENCRYPTION_KEY` (32 bytes base64url canônico), `PUBLIC_BASE_URL`, SMTP pelo **mesmo validador da fila**, bootstrap legado desativado, `BIND_HOST`, diretórios privados fora de `public/` (com `--init` para criar em 0700), continuidade do ledger de migrações e resposta do `/api/health/ready` em loopback. Exit `0` liberado, `1` bloqueado.
+
+**Limites:** pré-validação não aplica migração, não faz backup/restore, não prova entrega de e-mail e não substitui healthcheck nem aceite de produção. Ela transforma erro de configuração em mensagem acionável antes da operação — nada além disso.
+
 ### 6. SMTP: conexão não é entrega
 
 - Configurar `MAIL_*`, não `SMTP_*`. Lead também requer `LEADS_NOTIFY_EMAIL`; links de cliente requerem `PUBLIC_BASE_URL` correto.
