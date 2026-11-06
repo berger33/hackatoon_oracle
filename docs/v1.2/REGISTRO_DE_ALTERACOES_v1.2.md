@@ -4,6 +4,7 @@
 **Responsável:** William — QA & Requirements Lead (autor e responsável por ambos os documentos)
 **Referência de precedência:** `Projeto_oracle.pdf` (documento original do projeto), conforme EF seção 2.
 **Status:** alterações aplicadas e publicadas nesta pasta.
+**Bases reais:** EF v1.1 (05/11/2026, 19 páginas) e Análise v1.1 (8 páginas, Anexo de 21/10/2026), ambas no Drive da equipe.
 
 ---
 
@@ -53,7 +54,8 @@ Reforços: EF seção 17 (matriz toda ancorada em `Brief: ...`), EF seção 18 (
 
 ## 5. O que NÃO foi alterado
 
-- Nenhum requisito funcional RF-01 a RF-30, nenhuma regra RN-01 a RN-07, nenhum valor controlado, limiar 0.85, fórmula da nota combinada, três cenários de demonstração ou restrição de Always Free.
+- **Nenhuma decisão da v1.1 foi revertida.** Em especial: RN-08/ADR-001 (urgência isolada não gera revisão e mantém `PROCESSADO`), a tabela de decisão 8.2, RF-13/RF-21, os códigos 422 `PDF_CORROMPIDO`/`PDF_PROTEGIDO`, a conversão de falha de grafo em `ERRO_PROCESSAMENTO` persistido, o critério de aceite 3 com e sem ambiguidade, a coerência com o Contrato de Dados v1.0 (R1-R8 e A1-A5) e o Anexo de decisões de 21/10/2026 da Análise (fórmula da nota combinada, níveis de prioridade, tempo-alvo, conflito impeditivo e vocabulário).
+- Nenhum requisito funcional RF-01 a RF-30, nenhuma regra RN-01 a RN-08, nenhum valor controlado, limiar 0.85, três cenários de demonstração ou restrição de Always Free.
 - Nenhum arquivo do repositório de implementação `No-Country-simulation/g10-brasil-equipe-15_mediflow` foi modificado.
 - **Pendência que permanece com a autora do PR #22:** atualizar o corpo do PR de **304** para **319 aprovados, 1 ignorado** (registro de evidência, não decisão normativa).
 
@@ -66,4 +68,4 @@ Reforços: EF seção 17 (matriz toda ancorada em `Brief: ...`), EF seção 18 (
 | `REGISTRO_DE_ALTERACOES_v1.2.md` | Este registro |
 | `index.html` | Índice com links diretos para todos os formatos |
 
-**Nota de versão:** por decisão do autor, ambos os documentos saem como **v1.2** nesta revisão de 05/11/2026. A EF publicada anteriormente era v1.0 (18/10/2026); a numeração v1.2 consolida o alinhamento ao Brief.
+**Nota de versão:** ambos os documentos saem como **v1.2** nesta revisão de 05/11/2026. As bases reais são a **EF v1.1** (05/11/2026, 19 páginas, com RN-08/ADR-001 e seção 19 de registro de mudanças) e a **Análise de Requisitos v1.1** (16/10/2026, 8 páginas, com Anexo de decisões de 21/10/2026), ambas na pasta `Documentação` do Drive da equipe.

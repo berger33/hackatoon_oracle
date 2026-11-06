@@ -28,8 +28,8 @@ a { color: #0b62a4; }
 <p><strong>Equipe:</strong> Hackathon ONE G10 Equipe 15 | <strong>Versão:</strong> 1.2 | <strong>Data:</strong> 05/11/2026
 <strong>Autor / responsável:</strong> William — QA &amp; Requirements Lead</p>
 <blockquote>
-<p><strong>Como usar este documento:</strong> leia as seções 1 a 4 para entender o projeto; use as seções 5 a 8 como referência durante o desenvolvimento; a seção 12 registra as decisões já tomadas e as que o time ainda precisa tomar; a <strong>seção 14</strong> registra o alinhamento desta versão ao documento original do projeto. Este documento é a base da Especificação Funcional v1.2.</p>
-<p><strong>Revisão de 05/11/2026.</strong> Esta versão realinha a análise ao <code>Projeto_oracle.pdf</code>, que é a <strong>fonte de precedência 1</strong> (Especificação Funcional, seção 2). Três exigências que haviam sido acrescentadas por interpretação da equipe — continuidade entre processos, E2E por cliente HTTP real com OCI no ambiente final e eventos próprios de destino/alerta no histórico — foram reclassificadas como propostas de endurecimento do QA, não como exigências originais do Brief. Nenhum requisito obrigatório do Brief foi reduzido.</p>
+<p><strong>Como usar este documento:</strong> leia as seções 1 a 4 para entender o projeto; use as seções 5 a 8 como referência durante o desenvolvimento; a seção 12 registra as decisões já tomadas; o <strong>Anexo (seção 13.1)</strong> consolida as decisões de 21/10/2026; a <strong>seção 14</strong> registra o alinhamento desta versão ao documento original do projeto. Este documento é a base da Especificação Funcional v1.2.</p>
+<p><strong>Revisão de 05/11/2026.</strong> Esta versão parte da <strong>Análise v1.1 (8 páginas, com Anexo de decisões de 21/10/2026)</strong> e preserva integralmente o Anexo, a regra de urgência isolada, a fórmula da nota combinada e as demais decisões fechadas. Realinha a análise ao <code>Projeto_oracle.pdf</code>, que é a <strong>fonte de precedência 1</strong> (Especificação Funcional, seção 2). Três exigências que haviam sido acrescentadas por interpretação da equipe — continuidade entre processos, E2E por cliente HTTP real com OCI no ambiente final e eventos próprios de destino/alerta no histórico — foram reclassificadas como propostas de endurecimento do QA, não como exigências originais do Brief. Nenhum requisito obrigatório do Brief e nenhuma decisão da v1.1 foi reduzida ou revertida.</p>
 </blockquote>
 <hr />
 <h2>Registro de alterações — v1.1 → v1.2</h2>
@@ -85,6 +85,13 @@ a { color: #0b62a4; }
 <td>—</td>
 <td>Hierarquia de fontes e tabela de conformidade Brief × análise</td>
 <td>EF §2 e §17</td>
+</tr>
+<tr>
+<td>—</td>
+<td>5.1 (RF-02), 7 (RN-01/RN-02), 12, 13.1 (Anexo)</td>
+<td>Análise v1.1 real (8 páginas, Anexo de 21/10/2026)</td>
+<td><strong>Preservada integralmente</strong>; nenhuma decisão fechada foi reaberta</td>
+<td>Base de revisão</td>
 </tr>
 </tbody>
 </table>
@@ -278,7 +285,7 @@ a { color: #0b62a4; }
 </tr>
 <tr>
 <td>RF-02</td>
-<td>Aceitar PDF (digital e digitalizado), imagem e texto/JSON.</td>
+<td>Aceitar PDF (digital e digitalizado), imagem e texto; <strong>JSON é o envelope da requisição</strong>, não formato de documento.</td>
 <td>O</td>
 </tr>
 <tr>
@@ -554,11 +561,11 @@ a { color: #0b62a4; }
 <tbody>
 <tr>
 <td>RN-01</td>
-<td>Casos padrão (sem ambiguidade, sem urgência e com nota combinada &gt;= 0.85) seguem direto ao destino, sem intervenção humana.</td>
+<td>Casos padrão (sem ambiguidade e com nota combinada de 0.85 ou mais) seguem direto ao destino, sem intervenção humana.</td>
 </tr>
 <tr>
 <td>RN-02</td>
-<td>Documento ambíguo, ilegível, inconsistente ou com nota combinada &lt; 0.85 (limiar padrão) vai obrigatoriamente para a Fila de Revisão Humana.</td>
+<td>Documento ambíguo, ilegível, inconsistente, <strong>com prioridade ou urgência indeterminada</strong>, ou com nota combinada &lt; 0.85 (limiar padrão) vai obrigatoriamente para a Fila de Revisão Humana.</td>
 </tr>
 <tr>
 <td>RN-03</td>
@@ -613,6 +620,7 @@ a { color: #0b62a4; }
 </tr>
 </tbody>
 </table>
+<p><strong>Urgência com ambiguidade:</strong> o caso vai para as duas filas (Urgência Médica e Revisão Humana) e gera alerta (EF v1.2, seções 8.2 e 15). <strong>Urgência isolada</strong> vai apenas para a Fila de Urgência Médica com alerta, sem revisão humana (RN-08/ADR-001, EF seção 8.3).</p>
 <h2>8. Dados de entrada e saída (visão geral)</h2>
 <p><strong>Entrada</strong></p>
 <table>
@@ -850,23 +858,33 @@ a { color: #0b62a4; }
 </tr>
 <tr>
 <td>Fórmula da nota combinada</td>
-<td>A definir</td>
-<td>Sugestão inicial: usar a menor entre a nota de classificação e a de extração (postura conservadora, alinhada ao RNF-02). Ajustar após testes.</td>
+<td>Decidido (21/10/2026)</td>
+<td>Mínimo entre a nota de classificação e a de extração (postura conservadora, alinhada ao RNF-02).</td>
 </tr>
 <tr>
 <td>Urgência e ambiguidade simultâneas</td>
-<td>A definir</td>
-<td>Sugestão inicial: urgência prevalece e o caso alerta E pede revisão.</td>
+<td>Decidido (21/10/2026)</td>
+<td>Urgência vai para a Fila de Urgência Médica com alerta <strong>e não gera revisão humana por si só</strong>; com ambiguidade, o caso vai para as duas filas e gera alerta.</td>
 </tr>
 <tr>
 <td>Níveis de prioridade exatos</td>
-<td>A definir</td>
-<td>No mínimo "Urgente" e "Rotina".</td>
+<td>Decidido (21/10/2026)</td>
+<td><code>URGENTE</code>, <code>ROTINA</code> e <code>NAO_IDENTIFICADA</code>. Prioridade ou urgência indeterminadas levam à revisão humana.</td>
 </tr>
 <tr>
 <td>Tempo-alvo de resposta</td>
-<td>A definir</td>
-<td>A definir após o primeiro pipeline rodar.</td>
+<td>Decidido (21/10/2026)</td>
+<td>Sem meta numérica no MVP; a latência é medida por etapa e o aceite é o conjunto de casos aprovados.</td>
+</tr>
+<tr>
+<td>Conflito impeditivo</td>
+<td>Decidido (21/10/2026)</td>
+<td>Gravidade ALTA ou MÉDIA; gravidade BAIXA é registrada e não bloqueia. Dicionário clínico fechado no Anexo A.2 da EF.</td>
+</tr>
+<tr>
+<td>Vocabulário</td>
+<td>Decidido (21/10/2026)</td>
+<td>Status em maiúsculas (<code>PROCESSADO</code>, <code>EM_REVISAO</code>) e JSON como envelope da requisição, não como formato de documento.</td>
 </tr>
 </tbody>
 </table>
@@ -878,6 +896,18 @@ a { color: #0b62a4; }
 <li>Usar o Plano de Testes (<code>tests/PLANO_DE_TESTES.md</code>) para balizar o desenvolvimento.</li>
 <li><strong>[v1.2]</strong> Publicar EF v1.2 e Análise v1.2 na pasta de referência e atualizar o corpo do PR #22 de 304 para 319 aprovados, 1 ignorado.</li>
 </ol>
+<h3>13.1 Anexo — Decisões registradas em 21/10/2026 (preservado da v1.1)</h3>
+<p>As linhas que estavam como "A definir" na seção 12 foram fechadas nesta versão, junto com a regra de urgência. O detalhamento de cada decisão está no Anexo A da Especificação Funcional v1.0 e na seção 8.3 da EF v1.2.</p>
+<ul>
+<li><strong>Urgência:</strong> vai para a Fila de Urgência Médica com alerta e <strong>não gera revisão humana por si só</strong>. Revisão é consequência de ambiguidade.</li>
+<li><strong>Urgência com ambiguidade:</strong> o caso vai para as duas filas (Urgência Médica e Revisão Humana) e gera alerta.</li>
+<li><strong>Fórmula da nota combinada:</strong> mínimo entre a nota de classificação e a de extração.</li>
+<li><strong>Níveis de prioridade:</strong> <code>URGENTE</code>, <code>ROTINA</code> e <code>NAO_IDENTIFICADA</code>. Prioridade ou urgência indeterminadas levam à revisão humana.</li>
+<li><strong>Tempo-alvo:</strong> sem meta numérica no MVP; a latência é medida por etapa e o aceite é o conjunto de casos aprovados.</li>
+<li><strong>Conflito impeditivo:</strong> gravidade ALTA ou MÉDIA; gravidade BAIXA é registrada e não bloqueia. Dicionário clínico fechado no Anexo A.2 da EF.</li>
+<li><strong>Vocabulário:</strong> status em maiúsculas (<code>PROCESSADO</code>, <code>EM_REVISAO</code>) e JSON como envelope da requisição, não como formato de documento.</li>
+</ul>
+<p><strong>[v1.2]</strong> Nenhuma dessas decisões foi reaberta ou alterada pela revisão de alinhamento ao Brief.</p>
 <h2>14. [v1.2] Alinhamento ao documento original do projeto</h2>
 <h3>14.1 Hierarquia de fontes</h3>
 <p>A Especificação Funcional, seção 2, já define a precedência e a regra de interpretação:</p>
@@ -959,4 +989,5 @@ a { color: #0b62a4; }
 </table>
 <h3>14.4 Efeito no aceite</h3>
 <p>Com D-01 a D-03 registrados, o aceite do cartão 09 se apoia na <strong>fonte 1</strong>: o critério de aceite 6 é decisão da equipe e está atendido; o RNF-03 está atendido no escopo do MVP com a fronteira documentada; a integração ativa com o OCI está comprovada com bucket real. Não resta pendência normativa de implementação; resta apenas a atualização do corpo do PR #22 de <strong>304</strong> para <strong>319 aprovados, 1 ignorado</strong>, que é registro de evidência da autora do PR.</p>
+<p><strong>[v1.2] Preservação da v1.1:</strong> a regra de urgência isolada (RN-08/ADR-001), o Anexo de decisões de 21/10/2026 (seção 13.1), a coerência com o Contrato de Dados da Triagem v1.0 e todas as decisões fechadas na seção 12 foram mantidos. A revisão D-01/D-02/D-03 não reverte nenhuma delas.</p>
 <p><strong>Registro de revisão:</strong> 05/11/2026 — alinhamento ao <code>Projeto_oracle.pdf</code> conforme a seção 2 da Especificação Funcional; sem alteração de escopo obrigatório do Brief.</p></body></html>

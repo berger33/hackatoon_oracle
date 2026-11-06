@@ -3,9 +3,9 @@
 **Equipe:** Hackathon ONE G10 Equipe 15 | **Versão:** 1.2 | **Data:** 05/11/2026
 **Autor / responsável:** William — QA & Requirements Lead
 
-> **Como usar este documento:** leia as seções 1 a 4 para entender o projeto; use as seções 5 a 8 como referência durante o desenvolvimento; a seção 12 registra as decisões já tomadas e as que o time ainda precisa tomar; a **seção 14** registra o alinhamento desta versão ao documento original do projeto. Este documento é a base da Especificação Funcional v1.2.
+> **Como usar este documento:** leia as seções 1 a 4 para entender o projeto; use as seções 5 a 8 como referência durante o desenvolvimento; a seção 12 registra as decisões já tomadas; o **Anexo (seção 13.1)** consolida as decisões de 21/10/2026; a **seção 14** registra o alinhamento desta versão ao documento original do projeto. Este documento é a base da Especificação Funcional v1.2.
 
-> **Revisão de 05/11/2026.** Esta versão realinha a análise ao `Projeto_oracle.pdf`, que é a **fonte de precedência 1** (Especificação Funcional, seção 2). Três exigências que haviam sido acrescentadas por interpretação da equipe — continuidade entre processos, E2E por cliente HTTP real com OCI no ambiente final e eventos próprios de destino/alerta no histórico — foram reclassificadas como propostas de endurecimento do QA, não como exigências originais do Brief. Nenhum requisito obrigatório do Brief foi reduzido.
+> **Revisão de 05/11/2026.** Esta versão parte da **Análise v1.1 (8 páginas, com Anexo de decisões de 21/10/2026)** e preserva integralmente o Anexo, a regra de urgência isolada, a fórmula da nota combinada e as demais decisões fechadas. Realinha a análise ao `Projeto_oracle.pdf`, que é a **fonte de precedência 1** (Especificação Funcional, seção 2). Três exigências que haviam sido acrescentadas por interpretação da equipe — continuidade entre processos, E2E por cliente HTTP real com OCI no ambiente final e eventos próprios de destino/alerta no histórico — foram reclassificadas como propostas de endurecimento do QA, não como exigências originais do Brief. Nenhum requisito obrigatório do Brief e nenhuma decisão da v1.1 foi reduzida ou revertida.
 
 ---
 
@@ -19,6 +19,7 @@
 | — | 6 (coluna Origem), 14 | `RNF-03` marcado como "Brief" sem ressalva | Mantido como Brief, com nota de que a redação "não perdem documentos" é interpretação da equipe delimitada | EF §2 |
 | — | 12 | Sem registro das decisões de escopo | Três linhas "Decidido" (D-01, D-02, D-03) | Rastreabilidade das decisões |
 | — | 14 (nova) | — | Hierarquia de fontes e tabela de conformidade Brief × análise | EF §2 e §17 |
+| — | 5.1 (RF-02), 7 (RN-01/RN-02), 12, 13.1 (Anexo) | Análise v1.1 real (8 páginas, Anexo de 21/10/2026) | **Preservada integralmente**; nenhuma decisão fechada foi reaberta | Base de revisão |
 
 ---
 
@@ -116,7 +117,7 @@ Prioridade: **O** = obrigatório (MVP), **D** = diferencial. O símbolo **+** ma
 | ID | Requisito | Prior. |
 | --- | --- | --- |
 | RF-01 | Receber documentos por endpoint (FastAPI) ou tela de envio (React). | O |
-| RF-02 | Aceitar PDF (digital e digitalizado), imagem e texto/JSON. | O |
+| RF-02 | Aceitar PDF (digital e digitalizado), imagem e texto; **JSON é o envelope da requisição**, não formato de documento. | O |
 | RF-03 + | Validar formato e campos obrigatórios da entrada, rejeitando com mensagem clara. | O |
 | RF-04 | Ler o conteúdo do documento com LLM multimodal (Gemini). | O |
 
@@ -189,8 +190,8 @@ Prioridade: **O** = obrigatório (MVP), **D** = diferencial. O símbolo **+** ma
 
 | ID | Regra |
 | --- | --- |
-| RN-01 | Casos padrão (sem ambiguidade, sem urgência e com nota combinada >= 0.85) seguem direto ao destino, sem intervenção humana. |
-| RN-02 | Documento ambíguo, ilegível, inconsistente ou com nota combinada < 0.85 (limiar padrão) vai obrigatoriamente para a Fila de Revisão Humana. |
+| RN-01 | Casos padrão (sem ambiguidade e com nota combinada de 0.85 ou mais) seguem direto ao destino, sem intervenção humana. |
+| RN-02 | Documento ambíguo, ilegível, inconsistente, **com prioridade ou urgência indeterminada**, ou com nota combinada < 0.85 (limiar padrão) vai obrigatoriamente para a Fila de Revisão Humana. |
 | RN-03 | Achado crítico ou prescrição de alto risco vai para a Fila de Urgência Médica com alerta. |
 | RN-04 | Todo documento é salvo no OCI conforme seu status (recebido, processado, auditoria). |
 | RN-05 | Toda decisão de roteamento traz uma justificativa estruturada. |
@@ -206,6 +207,8 @@ Prioridade: **O** = obrigatório (MVP), **D** = diferencial. O símbolo **+** ma
 | Guia de solicitação de procedimento | Auditoria de Autorizações |
 | Laudos, relatórios de alta e atestados de rotina | Prontuário Eletrônico do Paciente |
 | Ambiguidade, dado faltante ou nota combinada < 0.85 | Fila de Revisão Humana |
+
+**Urgência com ambiguidade:** o caso vai para as duas filas (Urgência Médica e Revisão Humana) e gera alerta (EF v1.2, seções 8.2 e 15). **Urgência isolada** vai apenas para a Fila de Urgência Médica com alerta, sem revisão humana (RN-08/ADR-001, EF seção 8.3).
 
 ## 8. Dados de entrada e saída (visão geral)
 
@@ -287,10 +290,12 @@ Prioridade: **O** = obrigatório (MVP), **D** = diferencial. O símbolo **+** ma
 | **[v1.2] D-01 — Continuidade entre processos** | **Decidido** | **Retomada de triagens após reiniciar a API não é exigência do Brief; fora do escopo obrigatório do MVP. RNF-03 delimitado a falhas dentro do mesmo processo. Limitação documentada no README e no cartão de aceite.** |
 | **[v1.2] D-02 — Composição do histórico** | **Decidido** | **No MVP, decisão, destino, alerta e persistência constam do resultado estruturado; o histórico cobre recebimento, processamento, conclusão/erro e recuperação. Sem evento próprio de destino/alerta em `EventoHistorico`.** |
 | **[v1.2] D-03 — Verificação da integração OCI** | **Decidido** | **Integração ativa comprovada por escrita/leitura byte a byte no bucket real + suíte automatizada. E2E por cliente HTTP real no ambiente final é reforço de QA, dispensado no MVP, com ressalva sobre `src/api/routes.py`.** |
-| Fórmula da nota combinada | A definir | Sugestão inicial: usar a menor entre a nota de classificação e a de extração (postura conservadora, alinhada ao RNF-02). Ajustar após testes. |
-| Urgência e ambiguidade simultâneas | A definir | Sugestão inicial: urgência prevalece e o caso alerta E pede revisão. |
-| Níveis de prioridade exatos | A definir | No mínimo "Urgente" e "Rotina". |
-| Tempo-alvo de resposta | A definir | A definir após o primeiro pipeline rodar. |
+| Fórmula da nota combinada | Decidido (21/10/2026) | Mínimo entre a nota de classificação e a de extração (postura conservadora, alinhada ao RNF-02). |
+| Urgência e ambiguidade simultâneas | Decidido (21/10/2026) | Urgência vai para a Fila de Urgência Médica com alerta **e não gera revisão humana por si só**; com ambiguidade, o caso vai para as duas filas e gera alerta. |
+| Níveis de prioridade exatos | Decidido (21/10/2026) | `URGENTE`, `ROTINA` e `NAO_IDENTIFICADA`. Prioridade ou urgência indeterminadas levam à revisão humana. |
+| Tempo-alvo de resposta | Decidido (21/10/2026) | Sem meta numérica no MVP; a latência é medida por etapa e o aceite é o conjunto de casos aprovados. |
+| Conflito impeditivo | Decidido (21/10/2026) | Gravidade ALTA ou MÉDIA; gravidade BAIXA é registrada e não bloqueia. Dicionário clínico fechado no Anexo A.2 da EF. |
+| Vocabulário | Decidido (21/10/2026) | Status em maiúsculas (`PROCESSADO`, `EM_REVISAO`) e JSON como envelope da requisição, não como formato de documento. |
 
 ## 13. Próximos passos
 
@@ -299,6 +304,20 @@ Prioridade: **O** = obrigatório (MVP), **D** = diferencial. O símbolo **+** ma
 3. Dividir as frentes de trabalho e abrir Issues estruturadas no GitHub.
 4. Usar o Plano de Testes (`tests/PLANO_DE_TESTES.md`) para balizar o desenvolvimento.
 5. **[v1.2]** Publicar EF v1.2 e Análise v1.2 na pasta de referência e atualizar o corpo do PR #22 de 304 para 319 aprovados, 1 ignorado.
+
+### 13.1 Anexo — Decisões registradas em 21/10/2026 (preservado da v1.1)
+
+As linhas que estavam como "A definir" na seção 12 foram fechadas nesta versão, junto com a regra de urgência. O detalhamento de cada decisão está no Anexo A da Especificação Funcional v1.0 e na seção 8.3 da EF v1.2.
+
+- **Urgência:** vai para a Fila de Urgência Médica com alerta e **não gera revisão humana por si só**. Revisão é consequência de ambiguidade.
+- **Urgência com ambiguidade:** o caso vai para as duas filas (Urgência Médica e Revisão Humana) e gera alerta.
+- **Fórmula da nota combinada:** mínimo entre a nota de classificação e a de extração.
+- **Níveis de prioridade:** `URGENTE`, `ROTINA` e `NAO_IDENTIFICADA`. Prioridade ou urgência indeterminadas levam à revisão humana.
+- **Tempo-alvo:** sem meta numérica no MVP; a latência é medida por etapa e o aceite é o conjunto de casos aprovados.
+- **Conflito impeditivo:** gravidade ALTA ou MÉDIA; gravidade BAIXA é registrada e não bloqueia. Dicionário clínico fechado no Anexo A.2 da EF.
+- **Vocabulário:** status em maiúsculas (`PROCESSADO`, `EM_REVISAO`) e JSON como envelope da requisição, não como formato de documento.
+
+**[v1.2]** Nenhuma dessas decisões foi reaberta ou alterada pela revisão de alinhamento ao Brief.
 
 ## 14. [v1.2] Alinhamento ao documento original do projeto
 
@@ -338,5 +357,7 @@ Reforços: a matriz de rastreabilidade da EF (seção 17) tem todas as linhas an
 ### 14.4 Efeito no aceite
 
 Com D-01 a D-03 registrados, o aceite do cartão 09 se apoia na **fonte 1**: o critério de aceite 6 é decisão da equipe e está atendido; o RNF-03 está atendido no escopo do MVP com a fronteira documentada; a integração ativa com o OCI está comprovada com bucket real. Não resta pendência normativa de implementação; resta apenas a atualização do corpo do PR #22 de **304** para **319 aprovados, 1 ignorado**, que é registro de evidência da autora do PR.
+
+**[v1.2] Preservação da v1.1:** a regra de urgência isolada (RN-08/ADR-001), o Anexo de decisões de 21/10/2026 (seção 13.1), a coerência com o Contrato de Dados da Triagem v1.0 e todas as decisões fechadas na seção 12 foram mantidos. A revisão D-01/D-02/D-03 não reverte nenhuma delas.
 
 **Registro de revisão:** 05/11/2026 — alinhamento ao `Projeto_oracle.pdf` conforme a seção 2 da Especificação Funcional; sem alteração de escopo obrigatório do Brief.

@@ -25,13 +25,13 @@ pre code { font-size: 7.8pt; color: #24313d; }
 hr { border: 0; border-top: 0.6pt solid #c6d8e0; margin: 12pt 0; }
 a { color: #0b62a4; }
 </style></head><body><h1>MediFlow — Especificação Funcional</h1>
-<p><strong>Versão 1.2</strong> — escopo obrigatório e diferenciais esclarecidos; alinhamento ao documento original do projeto
+<p><strong>Versão 1.2</strong> — ADR-001/RN-08 preservados da v1.1; alinhamento ao documento original do projeto
 <strong>Data:</strong> 05/11/2026
-<strong>Base documental:</strong> <code>Projeto_oracle.pdf</code> (fonte de precedência 1) e <code>MediFlow_Analise_de_Requisitos_v1.2.md</code>
-<strong>Estado:</strong> decisões de escopo e verificação D-01, D-02 e D-03 registradas na seção 15; sem alteração de escopo obrigatório do Brief.
+<strong>Base documental:</strong> <code>Projeto_oracle.pdf</code> (fonte de precedência 1), <code>MediFlow_Analise_de_Requisitos_v1.2.md</code> e Contrato de Dados da Triagem v1.0 (<code>docs/testes/CONTRATO_DE_DADOS.md</code>)
+<strong>Estado:</strong> regra RN-08/ADR-001 (urgência isolada) mantida integralmente; decisões de escopo e verificação D-01, D-02 e D-03 registradas na seção 15; sem alteração de escopo obrigatório do Brief.
 <strong>Autor / responsável:</strong> William — QA &amp; Requirements Lead</p>
 <blockquote>
-<p><strong>Revisão de 05/11/2026.</strong> Aplicando a precedência definida na própria seção 2, esta versão realinha a especificação ao <code>Projeto_oracle.pdf</code>. As seções 3.2.4, 10, 12, 13, 14, 15, 16, 17 e 18 foram ajustadas para retirar exigências que a Análise de Requisitos v1.1 havia acrescentado sem amparo no Brief. Não se trata de flexibilizar o projeto: trata-se de identificar corretamente o que é exigência original e o que é proposta da equipe.</p>
+<p><strong>Revisão de 05/11/2026.</strong> Esta versão parte da <strong>EF v1.1 (05/11/2026, 19 páginas)</strong> e preserva integralmente a regra RN-08/ADR-001 (urgência isolada não gera revisão humana) e todas as demais decisões da v1.1. Aplicando a precedência definida na própria seção 2, realinha a especificação ao <code>Projeto_oracle.pdf</code>: as seções 3.2.4, 10, 12, 13, 14, 15, 16, 17, 18 e 19 foram ajustadas para retirar exigências que a análise havia acrescentado sem amparo no Brief. Não se trata de flexibilizar o projeto: trata-se de identificar corretamente o que é exigência original e o que é proposta da equipe.</p>
 </blockquote>
 <hr />
 <h2>Registro de alterações — v1.1 → v1.2</h2>
@@ -83,10 +83,17 @@ a { color: #0b62a4; }
 </tr>
 <tr>
 <td>—</td>
-<td>18</td>
+<td>18, 19</td>
 <td>Referência à Análise v1.1</td>
-<td>Referência à Análise v1.2 e registro de revisão</td>
+<td>Referência à Análise v1.2, Contrato de Dados e registro de mudanças</td>
 <td>Consistência de versões</td>
+</tr>
+<tr>
+<td>—</td>
+<td>2, 5.3, 7 (RF-13, RF-21), 8.2, 8.3, 9.2, 10.1, 12, 15, 16, 17, 18</td>
+<td>EF v1.1 (05/11/2026) com RN-08/ADR-001</td>
+<td><strong>Preservada integralmente</strong>; nenhuma decisão da v1.1 foi revertida</td>
+<td>Base de revisão</td>
 </tr>
 </tbody>
 </table>
@@ -100,7 +107,7 @@ a { color: #0b62a4; }
 <li>Vocabulário e valores controlados</li>
 <li>Fluxo funcional ponta a ponta</li>
 <li>Requisitos funcionais detalhados (RF-01 a RF-30)</li>
-<li>Regras de negócio e precedência</li>
+<li>Regras de negócio e precedência (8.3 RN-08 / ADR-001)</li>
 <li>Modelo de dados funcional</li>
 <li>API REST proposta</li>
 <li>Requisitos de interface</li>
@@ -111,6 +118,7 @@ a { color: #0b62a4; }
 <li>Critérios de aceite do MVP</li>
 <li>Matriz de rastreabilidade resumida</li>
 <li>Referências usadas</li>
+<li>Registro de mudanças (v1.0 para v1.1; v1.1 para v1.2)</li>
 </ol>
 <hr />
 <h2>1. Objetivo e resultado esperado</h2>
@@ -120,6 +128,7 @@ a { color: #0b62a4; }
 <ol>
 <li><code>Projeto_oracle.pdf</code>: define objetivo, escopo do hackathon, capacidades e entregáveis mínimos.</li>
 <li><code>MediFlow_Analise_de_Requisitos_v1.2.md</code>: organiza o entendimento da equipe, propõe requisitos e registra decisões tomadas e pendentes.</li>
+<li>Contrato de Dados da Triagem v1.0 (<code>docs/testes/CONTRATO_DE_DADOS.md</code>): vocabulário, regras R1-R8 e anexo de decisões clínicas A1-A5 implementados em <code>src/schemas/clinical.py</code>. Esta especificação e o contrato devem permanecer coerentes; divergência é defeito de um dos dois e deve ser resolvida antes do aceite.</li>
 <li>Esta especificação: detalha comportamento para implementação. Definições não confirmadas aparecem como pendentes e não devem ser tratadas como decisões aprovadas.</li>
 </ol>
 <blockquote>
@@ -256,7 +265,7 @@ a { color: #0b62a4; }
 </tr>
 <tr>
 <td><code>EM_REVISAO</code></td>
-<td>A análise terminou, mas encontrou urgência, ambiguidade, conflito, score abaixo do limite ou ausência de um campo obrigatório. O caso entra na fila lógica; no MVP, um auditor não aprova nem corrige o documento pela interface.</td>
+<td>A análise terminou, mas encontrou ambiguidade, ilegibilidade, conflito impeditivo, score abaixo do limite ou ausência de um campo obrigatório. O caso entra na fila lógica; no MVP, um auditor não aprova nem corrige o documento pela interface. <strong>Urgência isolada não é motivo de revisão (RN-08, seção 8.3).</strong></td>
 </tr>
 <tr>
 <td><code>ERRO_PROCESSAMENTO</code></td>
@@ -296,7 +305,7 @@ a { color: #0b62a4; }
 <p><strong>RF-10 — Extrair diagnóstico e CID-10.</strong> Extrair hipótese/diagnóstico principal e CID explicitamente presente. Distinguir <code>cid_extraido</code> de acordo com o documento de CIDs fornecido para consulta. Não sugerir CID ausente nem apresentar inferência como extração. Se não houver CID, usar <code>null</code> e sinalizar ausência.</p>
 <p><strong>RF-11 — Extrair medicamentos e doses.</strong> Retornar lista, possivelmente vazia, com nome, concentração, dose, via, frequência e duração quando cada item estiver explicitamente disponível. Cada atributo ausente fica <code>null</code>. A lista vazia deve distinguir "nenhum identificado" de "leitura falhou" por meio de sinalizadores de extração. A medicação será comparada com a farmacopeia para validar nome e dosagem da medicação.</p>
 <p><strong>RF-12 — Extrair exames.</strong> Retornar exames solicitados e exames realizados em listas separadas, com nome e detalhes explícitos. Não deduzir exames a partir do diagnóstico.</p>
-<p><strong>RF-13 — Identificar urgência.</strong> Retornar indicador booleano/estado (sim, nao, indeterminado), sinais encontrados, motivo e referência ao conteúdo. Não declarar <code>nao</code> se o documento estiver ilegível ou a análise não tiver sido concluída; nesse caso usar <code>indeterminado</code>.</p>
+<p><strong>RF-13 — Identificar urgência.</strong> Retornar indicador booleano/estado (sim, nao, indeterminado), sinais encontrados, motivo e referência ao conteúdo. Não declarar <code>nao</code> se o documento estiver ilegível ou a análise não tiver sido concluída; nesse caso usar <code>indeterminado</code>. <strong>[v1.1, preservado]</strong> O indicador descreve o sinal clínico encontrado; <strong>não decide sozinho o roteamento nem a revisão</strong> — essas decisões seguem as regras da seção 8 e a RN-08.</p>
 <p><strong>RF-14 — Validar saída estruturada.</strong> Validar todo resultado por modelos Pydantic versionados. Campo desconhecido não deve quebrar o consumidor; campos obrigatórios do envelope, enumerações e tipos devem ser validados. Falha de validação deve acionar tratamento de erro/fallback e ficar registrada.</p>
 <p><strong>RF-15 — Preservar ausência e origem.</strong> Não preencher dado clínico ausente. Cada campo extraído deve permitir distinguir valor explícito, ausente e incerto. Usar <code>null</code> para ausência, mais <code>campos_ausentes</code> e <code>campos_incerto</code>; guardar trecho de evidência quando existir. Campos ausentes que forem obrigatórios conforme RF-21 geram revisão humana. Não guardar explicação interna do modelo como se fosse prova.</p>
 <p><strong>RF-16 — Avaliar consistência e conflitos.</strong> Executar verificações determinísticas previstas e registrar conflito, campos envolvidos, gravidade e justificativa. No MVP, exemplos incluem conflito explícito entre CID e diagnóstico quando há regra definida, dose suspeita sinalizada (sem alterar dose), campos contraditórios e discrepância entre prioridade e sinais textuais. Regras clínicas específicas precisam ser aprovadas/fornecidas pela equipe; o sistema não deve inventar tabela clínica.</p>
@@ -304,7 +313,7 @@ a { color: #0b62a4; }
 <p><strong>RF-18 — Calcular confiança de extração e combinada.</strong> Retornar scores de extração e combinado no intervalo [0,1], com fórmula configurável/documentada. O limiar padrão é 0.85, vindo de variável de configuração. A fórmula aprovada é <code>min(score_confianca_classificacao, score_extracao)</code>. Comparação: combinado &lt; limiar envia para revisão; combinado &gt;= limiar apenas permite fluxo automático se nenhuma outra regra exigir revisão/urgência.</p>
 <p><strong>RF-19 — Orquestrar decisão.</strong> Executar nós condicionais no LangGraph ou mecanismo equivalente aprovado, produzindo resultado reprodutível a partir dos mesmos sinais/regras. A decisão registra versão do grafo/regras e timestamps relevantes.</p>
 <p><strong>RF-20 — Rotear.</strong> Selecionar destino lógico segundo tipo, prioridade, sinais de risco, ambiguidade, confiança e regras da seção 8. O destino não equivale a transmissão para sistema externo no MVP.</p>
-<p><strong>RF-21 — Revisão humana.</strong> Enviar à <code>FILA_REVISAO_HUMANA</code> se houver ambiguidade, ilegibilidade, conflito impeditivo, score combinado abaixo do limiar ou ausência de qualquer campo obrigatório: nome do paciente, idade, nome do médico solicitante, CRM ou diagnóstico/hipótese diagnóstica. CID-10, medicamentos e exames ausentes não acionam esta regra por si sós. Caso também exista urgência, encaminhar simultaneamente à fila urgente e registrar evento de alerta simulado. A fila é lógica; aprovar/rejeitar/corrigir por auditor humano está fora do MVP. A decisão deve informar código/motivo da revisão.</p>
+<p><strong>RF-21 — Revisão humana.</strong> Enviar à <code>FILA_REVISAO_HUMANA</code> se houver ambiguidade, ilegibilidade, conflito impeditivo, score combinado abaixo do limiar ou ausência de qualquer campo obrigatório: nome do paciente, idade, nome do médico solicitante, CRM ou diagnóstico/hipótese diagnóstica. CID-10, medicamentos e exames ausentes não acionam esta regra por si sós. <strong>[v1.1, preservado]</strong> <strong>Urgência isolada não aciona a fila de revisão</strong>: o caso segue para <code>FILA_URGENCIA_MEDICA</code> com alerta e permanece em <code>PROCESSADO</code> (RN-08, seção 8.3). <strong>Urgência com ambiguidade</strong> vai para as duas filas (<code>FILA_URGENCIA_MEDICA</code> e <code>FILA_REVISAO_HUMANA</code>) e gera alerta. A fila é lógica; aprovar/rejeitar/corrigir por auditor humano está fora do MVP. A decisão deve informar código/motivo da revisão.</p>
 <p><strong>RF-22 — Notificar urgência.</strong> Gerar evento de notificação para casos urgentes/críticos, com identificador, prioridade, destino/canal lógico, motivo, timestamp e resultado de geração. No MVP, registrar evento de alerta simulado no resultado e exibi-lo na interface/log. Não enviar e-mail, Slack ou outro alerta externo e não afirmar entrega externa.</p>
 <p><strong>RF-23 — Justificar decisões.</strong> Toda decisão inclui justificativa estruturada, códigos de regra acionados e sinais considerados. Deve ser concisa, rastreável e sem alegar certeza clínica não suportada.</p>
 <p><strong>RF-24 — Fallback e exceções.</strong> Falha de leitura, modelo, validação, grafo, notificação ou storage gera status/código apropriado. Para risco ou incerteza clínica, fallback é revisão humana; se a persistência não estiver disponível, reter estado de erro e não afirmar documento armazenado. Detalhes e retries na seção 12.</p>
@@ -337,9 +346,9 @@ a { color: #0b62a4; }
 </thead>
 <tbody>
 <tr>
-<td>Urgência/achado crítico</td>
+<td>Urgência/achado crítico <strong>isolado</strong></td>
 <td><code>FILA_URGENCIA_MEDICA</code></td>
-<td>Sim, obrigatória</td>
+<td><strong>Não</strong> (RN-08)</td>
 <td>Sim, evento obrigatório</td>
 </tr>
 <tr>
@@ -380,7 +389,11 @@ a { color: #0b62a4; }
 </tr>
 </tbody>
 </table>
-<p>Urgência e alto risco sempre geram encaminhamento à fila urgente e alerta. Quando coexistirem com ambiguidade, dado obrigatório ausente, conflito impeditivo ou score baixo, a revisão humana também é obrigatória. O payload registra os dois destinos/ações, sem reduzir a decisão a um destino único.</p>
+<p>Urgência e alto risco sempre geram encaminhamento à fila urgente e alerta. <strong>[v1.1, preservado]</strong> A urgência isolada <strong>não</strong> implica revisão humana; quando coexistir com ambiguidade, dado obrigatório ausente, conflito impeditivo ou score baixo, a revisão também é obrigatória e o payload registra os dois destinos/ações, sem reduzir a decisão a um destino único. O campo <code>requer_auditoria_humana</code> indica a entrada na fila lógica de revisão, não a presença de urgência.</p>
+<h3>8.3 [v1.1, preservado] Regra confirmada nesta versão (ADR-001 / RN-08)</h3>
+<p><strong>RN-08 — Urgência isolada.</strong> Achado crítico ou urgência sem ambiguidade, ilegibilidade, conflito impeditivo, score abaixo do limiar ou campo obrigatório ausente é encaminhado exclusivamente à <code>FILA_URGENCIA_MEDICA</code>, com evento de alerta simulado, e <strong>mantém o status <code>PROCESSADO</code></strong>. Não entra na <code>FILA_REVISAO_HUMANA</code> e não marca <code>requer_auditoria_humana = true</code> apenas por ser urgente.</p>
+<p><strong>Base documental:</strong> decisão registrada na EF v1.1 (05/11/2026), coerente com o Contrato de Dados da Triagem v1.0 (regras R1-R8 e anexo A1-A5) e com o Anexo de decisões de 21/10/2026 da Análise de Requisitos. A regra RN-02 e o RF-21 continuam válidos para os demais motivos de revisão.</p>
+<p><strong>[v1.2]</strong> Esta regra é decisão da equipe já consolidada e <strong>não foi alterada</strong> pela revisão de alinhamento ao Brief.</p>
 <h2>9. Modelo de dados funcional</h2>
 <h3>9.1 Requisição de triagem</h3>
 <pre><code class="language-json">{
@@ -437,7 +450,7 @@ a { color: #0b62a4; }
   &quot;versao_esquema&quot;: &quot;1.0&quot;
 }
 </code></pre>
-<p>Exemplo ilustrativo de contrato, não define dados reais nem confirma decisões pendentes. Valores clínicos devem vir do documento fictício da demonstração. O exemplo do projeto usa <code>cid_sugerido</code>; este contrato evita misturar sugestão com extração até validação.</p>
+<p>Exemplo ilustrativo de contrato, não define dados reais nem confirma decisões pendentes. Valores clínicos devem vir do documento fictício da demonstração. O exemplo do projeto usa <code>cid_sugerido</code>; este contrato evita misturar sugestão com extração até validação. <strong>[v1.1, preservado]</strong> O exemplo retrata o <strong>caso de duas filas</strong> (urgência com ambiguidade): <code>destinos</code> contém <code>FILA_URGENCIA_MEDICA</code> e <code>FILA_REVISAO_HUMANA</code>. Não representa o caso de urgência isolada, que pela RN-08 tem destino único e <code>requer_auditoria_humana = false</code>.</p>
 <p><strong>[v1.2]</strong> Conforme D-02, os blocos <code>decisao_roteamento</code> (<code>.destinos</code>, <code>.justificativa</code>, <code>.notificacao</code>) e <code>armazenamento_oci</code> são <strong>o registro de decisão, destino, alerta e persistência</strong> exigido pelo Brief. Não é necessário duplicá-los como eventos do histórico no MVP.</p>
 <h3>9.3 Histórico</h3>
 <p>Cada evento deve conter <code>evento_id</code>, <code>documento_id</code>, <code>tipo_evento</code>, <code>criado_em</code>, <code>ator</code> (sistema/usuário), <code>status_anterior</code>, <code>status_novo</code>, <code>motivo</code>, <code>versao_esquema</code> e correlação da requisição. Correções humanas devem preservar valor anterior, valor corrigido, autor e justificativa; não sobrescrever silenciosamente o resultado original.</p>
@@ -521,8 +534,8 @@ a { color: #0b62a4; }
 </tr>
 <tr>
 <td>422</td>
-<td><code>CAMPOS_INVALIDOS</code></td>
-<td>Campos ausentes/inválidos na requisição.</td>
+<td><code>CAMPOS_INVALIDOS</code>, <code>PDF_CORROMPIDO</code>, <code>PDF_PROTEGIDO</code></td>
+<td>Campos ausentes/inválidos na requisição; PDF ilegível por corrompimento ou proteção por senha.</td>
 </tr>
 <tr>
 <td>429</td>
@@ -541,6 +554,7 @@ a { color: #0b62a4; }
 </tr>
 </tbody>
 </table>
+<p><strong>[v1.1, preservado]</strong> <code>PDF_CORROMPIDO</code> e <code>PDF_PROTEGIDO</code> são <strong>rejeição na borda</strong>, antes de o documento ser aceito: não geram <code>documento_id</code>, não iniciam inferência e não devem ser confundidos com <code>ERRO_PROCESSAMENTO</code>, que é falha de análise já aceita e persistida.</p>
 <h2>11. Requisitos de interface</h2>
 <ol>
 <li>Tela de envio com seleção de arquivo ou entrada de texto, campo de origem e ação clara de enviar.</li>
@@ -612,6 +626,11 @@ a { color: #0b62a4; }
 <td>Erro interno</td>
 <td>Registrar identificador de correlação e detalhe técnico restrito.</td>
 <td>Mensagem externa segura.</td>
+</tr>
+<tr>
+<td><strong>[v1.1, preservado] Falha de grafo/análise após o documento já aceito</strong></td>
+<td>Converter em <code>ERRO_PROCESSAMENTO</code> <strong>persistido</strong>, com mensagem segura, sem reexecutar a análise na consulta e sem declarar sucesso.</td>
+<td><code>ERRO_PROCESSAMENTO</code> consultável por ID.</td>
 </tr>
 <tr>
 <td><strong>[v1.2] Reinício do processo da API</strong></td>
@@ -713,9 +732,10 @@ a { color: #0b62a4; }
 <li>Fila humana: fila lógica sem aprovação/rejeição/correção interativa no MVP.</li>
 <li>Alertas: evento simulado sem integração externa.</li>
 <li>Critérios clínicos: somente critérios explícitos, determinísticos e aprovados pela equipe; o modelo não define livremente risco alto ou conflito.</li>
+<li><strong>[v1.1, preservado] Urgência isolada (ADR-001 / RN-08):</strong> vai para a Fila de Urgência Médica com alerta, <strong>não gera revisão humana por si só</strong> e mantém o status <code>PROCESSADO</code>. Revisão é consequência de ambiguidade, ilegibilidade, conflito impeditivo, score baixo ou campo obrigatório ausente. Ver seção 8.3.</li>
 </ol>
 <p><strong>[v1.2] Decisões de escopo e verificação registradas pelo QA &amp; Requirements Lead em 05/11/2026</strong> (aplicação da seção 2; sem alteração de escopo obrigatório do Brief):</p>
-<ol start="10">
+<ol start="11">
 <li><strong>D-01 — Continuidade entre processos.</strong> A retomada de triagens após reiniciar a API não é exigência do <code>Projeto_oracle.pdf</code> e fica <strong>fora do escopo obrigatório do MVP</strong>. O RNF-03 aplica-se a falhas dentro do mesmo processo, com status, retry e reaproveitamento de objetos observáveis. A limitação deve ser documentada no README e no cartão de aceite; não se deve registrar "RNF-03 100%". Ver seções 3.2.4, 12, 14 e 16.</li>
 <li><strong>D-02 — Composição do histórico.</strong> A seção 13 é atendida, no MVP, pelo resultado estruturado (seção 9.2) para decisão, destino, alerta e persistência, e pelo histórico para recebimento/início/conclusão/erro/recuperação. Não se exige campo de destino nem evento próprio de alerta em <code>EventoHistorico</code>. Ver seções 13 e 16, item 11.</li>
 <li><strong>D-03 — Verificação da integração OCI.</strong> A "integração ativa com o OCI" exigida pelo Brief está comprovada por gravação/leitura byte a byte de original, resultado e histórico no bucket real (<code>scripts/testar_historico_oci.py</code>, L142 e L184-186) e pela suíte automatizada com cliente de teste e OCI simulado (319 aprovados, 1 ignorado em 05/11/2026). O teste E2E por cliente HTTP real contra o bucket no ambiente final é <strong>reforço de QA, dispensado no MVP</strong>. Fica consignada a ressalva de que <code>src/api/routes.py</code> não é mera delegação (parsing, <code>background_tasks</code>, <code>_tratar_erro_ingestao</code>, <code>GET /triagens/{id}</code> em L195-213). Ver seções 3.2.4 e 16, item 10.</li>
@@ -733,7 +753,7 @@ a { color: #0b62a4; }
 <ol>
 <li>Enviar texto e pelo menos um PDF e uma imagem aceitos, com resultado ou erro de validação coerente.</li>
 <li>Documento padrão fictício: classificado, campos estruturados, sem sinal de urgência, score suficiente e destino lógico de rotina correto.</li>
-<li>Documento urgente fictício: prioridade/sinal urgente detectado, destino de urgência e evento de alerta registrado; nunca encaminhado somente como rotina.</li>
+<li>Documento urgente fictício: prioridade/sinal urgente detectado, destino de urgência e evento de alerta registrado; nunca encaminhado somente como rotina. <strong>[v1.1, preservado]</strong> Sem ambiguidade, o caso permanece em <code>PROCESSADO</code> e <strong>não</strong> entra na fila de revisão (RN-08); com ambiguidade, vai para as duas filas e gera alerta.</li>
 <li>Documento ambíguo/ilegível fictício: revisão humana indicada, justificativa e campos incertos preservados, sem dado inventado.</li>
 <li>Ausência de nome/idade do paciente, nome/CRM do solicitante ou diagnóstico: revisão obrigatória; ausência de CID-10 isoladamente não exige revisão.</li>
 <li>Submissão da API retorna 202 com ID e consulta posterior mostra estados e resultado final. <strong>[v1.2]</strong> Critério decorrente da decisão 6 da seção 15 (proposta da equipe), não de exigência do Brief.</li>
@@ -793,6 +813,11 @@ a { color: #0b62a4; }
 <td>5, 8, 14, 15</td>
 </tr>
 <tr>
+<td>Contrato de Dados v1.0: regras R1-R8 e anexo A1-A5</td>
+<td>Equipe (contrato)</td>
+<td>5.3, 7 (RF-18, RF-21), 8.2, 8.3</td>
+</tr>
+<tr>
 <td><strong>[v1.2] Decisões de escopo da equipe (sem exigência correspondente no Brief)</strong></td>
 <td><strong>Equipe (proposta, conforme seção 2)</strong></td>
 <td><strong>3.2.4, 10, 12, 13, 14 (RNF-03), 15 (D-01 a D-03), 16 (itens 6, 10, 11, 15)</strong></td>
@@ -809,8 +834,116 @@ a { color: #0b62a4; }
 <ul>
 <li><code>Projeto_oracle.pdf</code> — <strong>fonte de precedência 1</strong>; documento original do projeto, referência que esta especificação deve manter de acordo.</li>
 <li><code>MediFlow_Analise_de_Requisitos_v1.2.md</code> — entendimento da equipe e decisões.</li>
+<li>Contrato de Dados da Triagem v1.0 (<code>docs/testes/CONTRATO_DE_DADOS.md</code>) — vocabulário, regras R1-R8 e anexo de decisões clínicas A1-A5.</li>
+<li><code>MediFlow_Especificacao_Funcional_v1.1.pdf</code> (05/11/2026) — versão imediatamente anterior, com RN-08/ADR-001 preservada nesta v1.2.</li>
 <li>Repositório de implementação: <code>No-Country-simulation/g10-brasil-equipe-15_mediflow</code> (código, PRs e suíte de testes).</li>
 <li>Evidências consideradas na revisão: PR #22 (<code>57025fe</code>), PR #23 (<code>438c8ff</code>), PR #25 (<code>ea78974</code>), <code>scripts/testar_historico_oci.py</code>, <code>src/api/routes.py</code>, <code>src/api/schemas.py</code>, <code>src/api/service.py</code>.</li>
 </ul>
 <p>Ambos os documentos de referência podem ser acessados pelo Google Drive na pasta de referência da equipe.</p>
+<h2>19. Registro de mudanças</h2>
+<h3>19.1 v1.0 (18/10/2026) para v1.1 (05/11/2026) — preservado</h3>
+<table>
+<thead>
+<tr>
+<th>Seção</th>
+<th>v1.0</th>
+<th>v1.1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.3 Status</td>
+<td><code>EM_REVISAO</code> listava urgência entre os motivos de revisão</td>
+<td>Remove urgência; mantém ambiguidade, ilegibilidade, conflito impeditivo, score baixo e campo obrigatório ausente</td>
+</tr>
+<tr>
+<td>7 RF-13</td>
+<td>Não dizia o alcance do indicador de urgência</td>
+<td>Explicitado que o indicador descreve o sinal clínico e não decide sozinho roteamento nem revisão</td>
+</tr>
+<tr>
+<td>7 RF-21</td>
+<td>Não distinguia urgência isolada de urgência com ambiguidade</td>
+<td>Urgência isolada não aciona a fila de revisão e mantém <code>PROCESSADO</code></td>
+</tr>
+<tr>
+<td>8.2 Tabela de decisão</td>
+<td>Urgência/achado crítico com revisão obrigatória</td>
+<td>Urgência isolada sem revisão; nova linha para urgência com ambiguidade; nota sobre <code>requer_auditoria_humana</code></td>
+</tr>
+<tr>
+<td>8.3</td>
+<td>Inexistente</td>
+<td>Nova regra RN-08 com a decisão formal (ADR-001) e sua base documental</td>
+</tr>
+<tr>
+<td>9.2 Resposta de triagem</td>
+<td>Exemplo sem indicação do caso retratado</td>
+<td>Nota esclarecendo que o exemplo é o caso de duas filas</td>
+</tr>
+<tr>
+<td>10.1 Erros HTTP</td>
+<td>422 apenas com <code>CAMPOS_INVALIDOS</code></td>
+<td>Acrescenta <code>PDF_CORROMPIDO</code> e <code>PDF_PROTEGIDO</code>, com nota separando rejeição na borda de <code>ERRO_PROCESSAMENTO</code></td>
+</tr>
+<tr>
+<td>12 Recuperação</td>
+<td>Não tratava falha de grafo já aceita</td>
+<td>Linha convertendo falha de grafo/análise em <code>ERRO_PROCESSAMENTO</code> persistido</td>
+</tr>
+<tr>
+<td>15 Decisões</td>
+<td>9 decisões confirmadas</td>
+<td>Acrescenta a decisão 10 (urgência isolada)</td>
+</tr>
+<tr>
+<td>16 Critério 3</td>
+<td>Exigia destino de urgência e alerta</td>
+<td>Explicitado o resultado esperado com e sem ambiguidade</td>
+</tr>
+<tr>
+<td>17 Rastreabilidade</td>
+<td>Não citava o Contrato de Dados</td>
+<td>Linha de rastreabilidade para R1-R8 e A1-A5</td>
+</tr>
+<tr>
+<td>2 Fontes</td>
+<td>Três fontes</td>
+<td>Acrescenta o Contrato de Dados como fonte de vocabulário e regras</td>
+</tr>
+</tbody>
+</table>
+<h3>19.2 v1.1 para v1.2 (05/11/2026) — esta revisão</h3>
+<table>
+<thead>
+<tr>
+<th>Decisão</th>
+<th>Seções</th>
+<th>Efeito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>D-01</td>
+<td>3.2.4, 12, 14, 15, 16, 17, 19</td>
+<td>Continuidade entre processos fora do escopo obrigatório; RNF-03 delimitado ao mesmo processo</td>
+</tr>
+<tr>
+<td>D-02</td>
+<td>9.2, 13, 14, 15, 16, 17</td>
+<td>Decisão/destino/alerta/persistência no resultado estruturado; histórico sem evento próprio no MVP</td>
+</tr>
+<tr>
+<td>D-03</td>
+<td>3.2.4, 15, 16</td>
+<td>E2E por cliente HTTP real é reforço de QA dispensado; integração OCI comprovada no bucket</td>
+</tr>
+<tr>
+<td>—</td>
+<td>10, 15, 16, 17</td>
+<td>202 + consulta por ID identificado como decisão da equipe, não exigência do Brief; matriz com coluna de origem</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Nenhuma decisão da v1.1 foi revertida</strong>, em especial RN-08/ADR-001 (urgência isolada), o Anexo de decisões de 21/10/2026 e a coerência com o Contrato de Dados v1.0.</p>
 <p><strong>Registro de revisão:</strong> 05/11/2026 — alinhamento ao <code>Projeto_oracle.pdf</code> conforme a seção 2 (Fontes e precedência); sem alteração de escopo obrigatório do Brief.</p></body></html>
