@@ -29,9 +29,9 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // workflow, suba o piso na mesma PR — o número é o contrato, não uma estimativa.
 const PISO = {
   workflows: 60,
-  testes_no_disco: 253,
-  testes_cobertos_por_workflow: 251,
-  testes_cobertos_pelo_test_unit: 185,
+  testes_no_disco: 254,
+  testes_cobertos_por_workflow: 252,
+  testes_cobertos_pelo_test_unit: 186,
   runners_em_scripts: 116,
 };
 

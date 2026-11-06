@@ -57,7 +57,7 @@
     ],
     "aceiteHumanoRegistrado": 0,
     "reauditoriasIntegraisExecutadas": 0,
-    "arquivosVarridos": 1750,
+    "arquivosVarridos": 1751,
     "limitacoes": [
       "\"mencionado em gate\" NÃO é prova de jornada nem de aceite",
       "a fotografia de 04/10 é histórica e não foi revalidada por papel",
@@ -3814,6 +3814,7 @@
       "arquivos_gate": [
         "tests/cli02-client-contacts-ui.test.mjs",
         "tests/client-space.integration.test.mjs",
+        "tests/security-scope-ab-downloads.test.mjs",
         "tests/ux-pro-00-inventory.test.mjs"
       ],
       "arquivos_documento": [
@@ -3831,7 +3832,7 @@
         "src/app/admin/ti/CliClient.tsx",
         "src/server/cli-api.mjs"
       ],
-      "ocorrencias_gate": 7,
+      "ocorrencias_gate": 9,
       "ocorrencias_documento": 20,
       "ocorrencias_codigo": 4,
       "aceite_humano": "nao_registrado",

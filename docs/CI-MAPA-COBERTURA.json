@@ -9,11 +9,11 @@
  "totais": {
   "workflows": 60,
   "scripts_package": 112,
-  "testes_no_disco": 253,
+  "testes_no_disco": 254,
   "runners_em_scripts": 116,
-  "testes_cobertos_por_workflow": 251,
-  "testes_cobertos_via_test_unit": 185,
-  "testes_cobertos_pelo_test_unit": 185,
+  "testes_cobertos_por_workflow": 252,
+  "testes_cobertos_via_test_unit": 186,
+  "testes_cobertos_pelo_test_unit": 186,
   "testes_sem_workflow_nem_test_unit": 2,
   "runners_sem_workflow_nem_script": 14,
   "runners_importados_como_helper": 14,
@@ -105,7 +105,7 @@
     "test:ux-pro-09e-pu4:browser",
     "typecheck"
    ],
-   "testes": 197,
+   "testes": 198,
    "runners": 8
   },
   {
@@ -2486,6 +2486,16 @@
    "workflows": [
     "ci.yml",
     "plat01-dispatch.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/security-scope-ab-downloads.test.mjs",
+   "workflows": [
+    "ci.yml"
    ],
    "workflows_via_test_unit": [
     "ci.yml"
