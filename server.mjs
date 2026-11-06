@@ -33,6 +33,7 @@ import { createAdminRbacApi } from "./src/server/admin-rbac-api.mjs";
 import { createAdminAuditApi } from "./src/server/admin-audit-api.mjs";
 import { createNotificationQueue } from "./src/server/notification-queue.mjs";
 import { createAdminNotificationsApi } from "./src/server/admin-notifications-api.mjs";
+import { createAdminMailer, describeAdminMailerState } from "./src/server/admin-mailer.mjs";
 import { createIntegrationsApi, INTEGRATION_ROUTE_SUBPATHS } from "./src/server/integrations-api.mjs";
 import { createServiceCatalogApi } from "./src/server/service-catalog-api.mjs";
 import { createFaqApi } from "./src/server/faq-api.mjs";
@@ -1219,6 +1220,24 @@ const adminAuditApi = createAdminAuditApi({
   clientIp,
 });
 
+// Fatia 07 — transporte da fila administrativa.
+//
+// Antes: `mailer: null` fixo, então nenhum caminho levava `MAIL_*` até esta
+// fila (N7): com caixa local, a notificação ficava em `local_outbox`; sem ela,
+// acumulava tentativas até `dead`. Agora o transporte é criado A PARTIR de
+// `MAIL_*`, com as mesmas regras que o caminho de lead já usava (porta 587,
+// TLS implícito em 465/`MAIL_SECURE=true`, usuário e senha juntos).
+//
+// Fail-closed preservado: sem host/remetente, ou com configuração parcial/
+// inválida, `createAdminMailer` devolve `null` — exatamente o valor anterior —
+// e a fila continua no comportamento vigente (caixa local, nunca `sent`).
+// Nada aqui envia e-mail no carregamento do módulo: o transporte só é usado
+// quando um operador autorizado processa a fila.
+const adminMailer = createAdminMailer({ createTransport: options => nodemailer.createTransport(options) });
+if (adminMailer) {
+  console.log("admin notification transport ready", describeAdminMailerState());
+}
+
 const adminNotificationsApi = createAdminNotificationsApi({
   json,
   readJson,
@@ -1226,7 +1245,7 @@ const adminNotificationsApi = createAdminNotificationsApi({
   getPool,
   readAdminSession: readSession,
   notificationQueue,
-  mailer: null, // will be set if nodemailer configured; for now null, process will mark not_configured
+  mailer: adminMailer,
 });
 
 const integrationsApi = createIntegrationsApi({

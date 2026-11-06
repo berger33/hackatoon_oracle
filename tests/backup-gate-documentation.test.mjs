@@ -60,17 +60,28 @@ test('runbook: indexação exige as duas condições, sem ativação no exemplo'
   assert.equal(isIndexingReleased({ NEXT_PUBLIC_ENV: 'production', NEXT_PUBLIC_ALLOW_INDEX: 'true' }), true);
 });
 
-test('runbook: documenta SMTP verify sem prometer envio da fila ainda desconectada', async () => {
+test('runbook: documenta SMTP verify e o transporte da fila já ligado, sem prometer entrega', async () => {
   const content = await readFile(gate, 'utf8');
   const integration = await source('src/server/integrations-api.mjs');
   const server = await source('server.mjs');
   assert.match(integration, /await transporter\.verify\(\)/);
   assert.match(content, /não envia mensagem/);
   assert.match(content, /entrega separadamente/);
-  // Gate transitório: a fatia de conexão da fila deverá reconciliar este contrato.
-  assert.match(server, /mailer: null/);
-  assert.match(content, /mailer: null/);
-  assert.match(content, /configurar `MAIL_HOST` não conecta/);
+
+  // Fatia 07: o contrato transitório ("fila desconectada", `mailer: null` fixo)
+  // foi cumprido. A guarda passa a exigir o estado novo: o transporte é criado
+  // a partir de MAIL_* e continua fail-closed quando a configuração falta.
+  // O que não pode voltar é a INJEÇÃO fixa no contrato da API, não a menção
+  // histórica em comentário. A injeção é a linha `mailer:` seguida de null.
+  assert.doesNotMatch(server, /^\s*mailer:\s*null\b/m,
+    'o servidor não pode voltar a injetar null fixo: era a ausência de ligação que matava a fila (N7)');
+  assert.match(server, /createAdminMailer\(/);
+  assert.match(server, /mailer: adminMailer/);
+  assert.match(content, /fila administrativa/i);
+  assert.match(content, /fail-closed|nunca transita para `sent`|não prova recebimento/i,
+    'o runbook precisa seguir declarando o limite do transporte');
+  assert.doesNotMatch(content, /configurar `MAIL_HOST` não conecta/,
+    'o runbook não pode repetir a limitação que deixou de existir');
 });
 
 test('runbook: migrador, compose existente e checklist não usam procedimento obsoleto', async () => {

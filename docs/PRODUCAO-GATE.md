@@ -32,7 +32,7 @@ Os requisitos D-01..D-13 e de homologação continuam sendo decisões/evidência
 | `EMPLOYEE_DOCS_DIR` | Documentos privados do funcionário; padrão `.data/employee-documents`. Incluir no inventário real de backup. |
 | `BIND_HOST`, `PORT` | Servidor. Exemplo usa `127.0.0.1:3000`; código sem `BIND_HOST` usa `0.0.0.0`. Não depender de fallback para restringir exposição. |
 | `TRUST_PROXY` | Somente `true` quando proxy confiável sobrescreve cabeçalhos encaminhados e acesso direto ao backend está protegido. Controla protocolo/host/IP confiados. |
-| `MAIL_HOST`, `MAIL_PORT`, `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASSWORD`, `MAIL_FROM` | SMTP nos caminhos que o utilizam. Porta padrão 587; TLS implícito quando `MAIL_SECURE=true` ou porta 465. Usuário e senha são usados juntos; provisionar conforme o fornecedor. |
+| `MAIL_HOST`, `MAIL_PORT`, `MAIL_SECURE`, `MAIL_USER`, `MAIL_PASSWORD`, `MAIL_FROM` | SMTP nos caminhos que o utilizam: lead, links de autenticação do cliente e, desde a fatia 07, a **fila administrativa**. Porta padrão 587; TLS implícito quando `MAIL_SECURE=true` ou porta 465. Usuário e senha são usados juntos; provisionar conforme o fornecedor. Configuração parcial é recusada (não existe meio-transporte); sem host e remetente, a fila mantém a caixa local. |
 | `LEADS_NOTIFY_EMAIL` | Destinatário dos avisos de lead; necessário além de host/remetente para esse caminho. |
 | `OLLAMA_ENABLED`, `OLLAMA_BASE_URL`, `OLLAMA_MODEL` | RAG real: opt-in com `true`, URL padrão local e modelo padrão `qwen3:1.7b`. Modelo instalado não prova base publicada nem autorização de fontes. |
 | `HERE_API_KEY` | Geocodificação reversa opcional; chave apenas no servidor, com consentimento individual exigido pelo fluxo do funcionário. |
@@ -106,7 +106,9 @@ Os gates de PostgreSQL descartável têm requisitos próprios e recusam URLs her
 - Configurar `MAIL_*`, não `SMTP_*`. Lead também requer `LEADS_NOTIFY_EMAIL`; links de cliente requerem `PUBLIC_BASE_URL` correto.
 - `/api/admin/integrations/:id/test` é uma ação autenticada de verificação: no provedor SMTP chama `transporter.verify()`, atualiza o registro e **não envia mensagem**. Pode realizar conexão externa e exige autorização. Status `configured`/`last_success_at` prova somente o teste daquele caminho naquele instante.
 - Confirmar entrega separadamente para lead e autenticação do cliente, usando destinatários de teste autorizados, sem dados reais desnecessários e com recebimento verificado.
-- **Fila administrativa: bloqueada nesta base.** `server.mjs` injeta `mailer: null`; configurar `MAIL_HOST` não conecta esse transporte. A fatia 07 fará a ligação e os testes locais; até lá, não prometer nem registrar envio dessa fila como concluído.
+- **Fila administrativa: transporte ligado, entrega não comprovada.** Desde a fatia 07, `server.mjs` cria o transporte com `createAdminMailer(...)` a partir de `MAIL_*` (antes era `mailer: null` fixo). O comportamento é **fail-closed**: sem `MAIL_HOST`/`MAIL_FROM`, ou com configuração parcial/inválida, não há transporte e a notificação continua na caixa local — nunca em `sent`. Com transporte, a fila só marca `sent` quando o provedor aceita o destinatário; recusa ou ausência de prova viram `failed`/`dead`, com motivo em `last_error`.
+
+  O que isso **não** prova: recebimento no provedor escolhido, reputação de domínio, entrega real a destinatários externos ou operação de produção. As provas da fatia 07 são locais (SMTP de captura em loopback e PostgreSQL descartável). Antes de prometer aviso por e-mail, verificar entrega de ponta a ponta com destinatário de teste autorizado.
 - Sem provedor, declarar `not_configured` em vez de sucesso fictício. Teste capturado localmente não equivale a recebimento no provedor real.
 
 ### 7. Identidade institucional, privacidade e LGPD
