@@ -9,11 +9,11 @@
  "totais": {
   "workflows": 60,
   "scripts_package": 112,
-  "testes_no_disco": 254,
+  "testes_no_disco": 255,
   "runners_em_scripts": 116,
-  "testes_cobertos_por_workflow": 252,
-  "testes_cobertos_via_test_unit": 186,
-  "testes_cobertos_pelo_test_unit": 186,
+  "testes_cobertos_por_workflow": 253,
+  "testes_cobertos_via_test_unit": 187,
+  "testes_cobertos_pelo_test_unit": 187,
   "testes_sem_workflow_nem_test_unit": 2,
   "runners_sem_workflow_nem_script": 14,
   "runners_importados_como_helper": 14,
@@ -105,7 +105,7 @@
     "test:ux-pro-09e-pu4:browser",
     "typecheck"
    ],
-   "testes": 198,
+   "testes": 199,
    "runners": 8
   },
   {
@@ -1258,6 +1258,16 @@
    "workflows": [
     "ci.yml",
     "fech-01-rag-widget-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ai-rag-scope-real-db.test.mjs",
+   "workflows": [
+    "ci.yml"
    ],
    "workflows_via_test_unit": [
     "ci.yml"
