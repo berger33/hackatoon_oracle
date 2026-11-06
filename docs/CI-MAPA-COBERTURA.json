@@ -1,0 +1,4921 @@
+{
+ "schema": "ci-mapa-cobertura/1",
+ "gerado_por": "scripts/ci-coverage-map.mjs",
+ "fontes": {
+  "workflows": ".github/workflows/*.yml",
+  "scripts": "package.json#scripts",
+  "testes": "tests/*.test.mjs"
+ },
+ "totais": {
+  "workflows": 60,
+  "scripts_package": 111,
+  "testes_no_disco": 252,
+  "runners_em_scripts": 115,
+  "testes_cobertos_por_workflow": 250,
+  "testes_cobertos_via_test_unit": 184,
+  "testes_cobertos_pelo_test_unit": 184,
+  "testes_sem_workflow_nem_test_unit": 2,
+  "runners_sem_workflow_nem_script": 14,
+  "runners_importados_como_helper": 14,
+  "scripts_de_teste_sem_workflow": 9
+ },
+ "workflows": [
+  {
+   "arquivo": "admin-entry-delivery.yml",
+   "nome": "F01 admin entry delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:admin-entry:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:admin-entry:pg"
+   ],
+   "testes": 2,
+   "runners": 3
+  },
+  {
+   "arquivo": "backup-restore-delivery.yml",
+   "nome": "PostgreSQL 17 backup and restore gates",
+   "gatilhos": [
+    "pull_request",
+    "push",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [],
+   "scripts_via_loop": [
+    "test:backup-restore:pg",
+    "test:backup-restore:pg:cli-objects",
+    "test:backup-restore:pg:cli-partial",
+    "test:backup-restore:pg:clusters",
+    "test:backup-restore:pg:files",
+    "test:backup-restore:pg:http",
+    "test:backup-restore:pg:inventory",
+    "test:backup-restore:pg:signed"
+   ],
+   "scripts_efetivos": [
+    "test:backup-restore:pg",
+    "test:backup-restore:pg:cli-objects",
+    "test:backup-restore:pg:cli-partial",
+    "test:backup-restore:pg:clusters",
+    "test:backup-restore:pg:files",
+    "test:backup-restore:pg:http",
+    "test:backup-restore:pg:inventory",
+    "test:backup-restore:pg:signed"
+   ],
+   "testes": 1,
+   "runners": 1
+  },
+  {
+   "arquivo": "ci.yml",
+   "nome": "QA baseline",
+   "gatilhos": [
+    "pull_request",
+    "push"
+   ],
+   "scripts_literais": [
+    "build",
+    "reaudit:sec",
+    "test",
+    "test:cli-v2:pg",
+    "test:demo-local:pg",
+    "test:durable-scheduler:pg",
+    "test:pg-supervisor:pg",
+    "test:pglite-schema",
+    "test:rag",
+    "test:tenant:pg",
+    "test:ux-pro-09e-pu4:browser",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "build",
+    "reaudit:sec",
+    "test",
+    "test:cli-v2:pg",
+    "test:demo-local:pg",
+    "test:durable-scheduler:pg",
+    "test:pg-supervisor:pg",
+    "test:pglite-schema",
+    "test:rag",
+    "test:tenant:pg",
+    "test:unit",
+    "test:ux-pro-09e-pu4:browser",
+    "typecheck"
+   ],
+   "testes": 196,
+   "runners": 8
+  },
+  {
+   "arquivo": "ext02-delivery.yml",
+   "nome": "EXT-02 third parties delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext02-third-parties:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext02-third-parties:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ext03-delivery.yml",
+   "nome": "EXT-03 biddings delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext03-biddings:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext03-biddings:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ext04-delivery.yml",
+   "nome": "EXT-04 suppliers delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext04-suppliers:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext04-suppliers:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 3,
+   "runners": 5
+  },
+  {
+   "arquivo": "ext05-delivery.yml",
+   "nome": "EXT-05 quality delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext05-quality:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext05-quality:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "ext06-delivery.yml",
+   "nome": "EXT-06 satisfaction delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext06-satisfaction:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext06-satisfaction:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "ext07-delivery.yml",
+   "nome": "EXT-07 compliance delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext07-compliance:pg",
+    "test:migrations:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext07-compliance:pg",
+    "test:migrations:pg",
+    "typecheck"
+   ],
+   "testes": 4,
+   "runners": 5
+  },
+  {
+   "arquivo": "ext08-delivery.yml",
+   "nome": "EXT-08 knowledge delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext08-knowledge:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext08-knowledge:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ext11-delivery.yml",
+   "nome": "EXT-11 analytics delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext11-analytics:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext11-analytics:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ext12-delivery.yml",
+   "nome": "EXT-12 visual delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext12-visual:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext12-visual:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ext13-delivery.yml",
+   "nome": "EXT-13 reports delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext13-reports:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext13-reports:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ext14-delivery.yml",
+   "nome": "EXT-14 intel delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext14-intel:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext14-intel:pg"
+   ],
+   "testes": 4,
+   "runners": 4
+  },
+  {
+   "arquivo": "ext15-delivery.yml",
+   "nome": "EXT-15 emergency delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext15-emergency:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext15-emergency:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "f03-finance-lead-delivery.yml",
+   "nome": "F03 finance and lead disposable delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:f03-contas-baixa-relatorio:pg",
+    "test:f03-lead-to-implementation:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:f03-contas-baixa-relatorio:pg",
+    "test:f03-lead-to-implementation:pg"
+   ],
+   "testes": 3,
+   "runners": 5
+  },
+  {
+   "arquivo": "f03-ticket-employee-delivery.yml",
+   "nome": "F03 ticket and employee disposable delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:f03-client-ticket-acceptance:pg",
+    "test:f03-employee-request-rh-return:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:f03-client-ticket-acceptance:pg",
+    "test:f03-employee-request-rh-return:pg"
+   ],
+   "testes": 3,
+   "runners": 5
+  },
+  {
+   "arquivo": "fech-01-rag-widget-delivery.yml",
+   "nome": "FECH-01 assistentes privados e contrato do widget",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "build",
+    "test:ai-rag-widget:pg",
+    "test:rag",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "build",
+    "test:ai-rag-widget:pg",
+    "test:rag",
+    "typecheck"
+   ],
+   "testes": 6,
+   "runners": 4
+  },
+  {
+   "arquivo": "l02-l03-delivery.yml",
+   "nome": "L02 L03 disposable delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l02-delivery:pg",
+    "test:l03-delivery:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l02-delivery:pg",
+    "test:l03-delivery:pg"
+   ],
+   "testes": 4,
+   "runners": 4
+  },
+  {
+   "arquivo": "l04-delivery.yml",
+   "nome": "L04 CRM delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l04-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l04-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "l05-delivery.yml",
+   "nome": "L05 Contract delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l05-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l05-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "l06-delivery.yml",
+   "nome": "L06 Operations delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l06-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l06-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "l07-delivery.yml",
+   "nome": "L07 Finance delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l07-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l07-delivery:pg",
+    "test:migrations:pg"
+   ],
+   "testes": 2,
+   "runners": 5
+  },
+  {
+   "arquivo": "l08-delivery.yml",
+   "nome": "L08 client portal delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:l08-delivery:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:l08-delivery:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "pendencies-delivery.yml",
+   "nome": "Internal pendencies delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:pendencies:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:pendencies:pg"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "plat01-dispatch.yml",
+   "nome": "PLAT-01 dispatch hardening",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [],
+   "testes": 7,
+   "runners": 2
+  },
+  {
+   "arquivo": "plt-jornadas-delivery.yml",
+   "nome": "PLT jornadas delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:plt01-access-review-coverage:pg",
+    "test:plt06-observability:pg",
+    "test:plt09-privacy:pg",
+    "test:plt12-incidents:pg"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:plt01-access-review-coverage:pg",
+    "test:plt06-observability:pg",
+    "test:plt09-privacy:pg",
+    "test:plt12-incidents:pg"
+   ],
+   "testes": 10,
+   "runners": 6
+  },
+  {
+   "arquivo": "ux-adm-delivery.yml",
+   "nome": "UX painel do Marcelo delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-adm:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-adm:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-analytics-delivery.yml",
+   "nome": "UX analytics delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-analytics:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-analytics:pg",
+    "typecheck"
+   ],
+   "testes": 16,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-asset-delivery.yml",
+   "nome": "UX asset delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ux-asset:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-asset:pg",
+    "typecheck"
+   ],
+   "testes": 2,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-bidding-delivery.yml",
+   "nome": "UX-08 Licitações",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-bidding:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-bidding:pg",
+    "typecheck"
+   ],
+   "testes": 4,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-client-admin-delivery.yml",
+   "nome": "UX clientes (admin) delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-client-admin:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-client-admin:pg",
+    "typecheck"
+   ],
+   "testes": 2,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-compliance-delivery.yml",
+   "nome": "UX compliance delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-compliance:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-compliance:pg",
+    "typecheck"
+   ],
+   "testes": 17,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-continuity-client-delivery.yml",
+   "nome": "UX-11 continuidade cliente delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ext10-continuity:pg",
+    "test:ux-continuity-client:pg",
+    "test:ux-continuity:pg",
+    "typecheck",
+    "ux:evidence"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext10-continuity:pg",
+    "test:ux-continuity-client:pg",
+    "test:ux-continuity:pg",
+    "typecheck",
+    "ux:evidence"
+   ],
+   "testes": 7,
+   "runners": 6
+  },
+  {
+   "arquivo": "ux-continuity-delivery.yml",
+   "nome": "UX-11 continuidade delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ext10-continuity:pg",
+    "test:ux-continuity:pg",
+    "typecheck",
+    "ux:evidence"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext10-continuity:pg",
+    "test:ux-continuity:pg",
+    "typecheck",
+    "ux:evidence"
+   ],
+   "testes": 7,
+   "runners": 6
+  },
+  {
+   "arquivo": "ux-contract-delivery.yml",
+   "nome": "UX contratos delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-contract:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-contract:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-crm-delivery.yml",
+   "nome": "UX CRM delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-crm:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-crm:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-emergency-delivery.yml",
+   "nome": "UX emergency delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ux-emergency:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-emergency:pg",
+    "typecheck"
+   ],
+   "testes": 5,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-expansion-delivery.yml",
+   "nome": "UX-10 expansao delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ext09-expansion:pg",
+    "test:ux-expansion:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext09-expansion:pg",
+    "test:ux-expansion:pg",
+    "typecheck"
+   ],
+   "testes": 17,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-finance-delivery.yml",
+   "nome": "UX financeiro delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-finance:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-finance:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-fleet-delivery.yml",
+   "nome": "UX fleet delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-fleet:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-fleet:pg",
+    "typecheck"
+   ],
+   "testes": 15,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-hr-delivery.yml",
+   "nome": "UX RH delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-hr:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-hr:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-intel-delivery.yml",
+   "nome": "UX inteligência comercial delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-intel:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-intel:pg",
+    "typecheck"
+   ],
+   "testes": 18,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-knowledge-delivery.yml",
+   "nome": "UX conhecimento delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-knowledge:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-knowledge:pg",
+    "typecheck"
+   ],
+   "testes": 16,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-layout-previews-a11y-delivery.yml",
+   "nome": "UX-PRO-10B previas - teclado zoom e cor",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 6,
+   "runners": 7
+  },
+  {
+   "arquivo": "ux-ops-delivery.yml",
+   "nome": "UX operacao delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-ops:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-ops:pg",
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 3
+  },
+  {
+   "arquivo": "ux-portal-delivery.yml",
+   "nome": "UX portais do funcionario e do cliente delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-portal:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-portal:pg",
+    "typecheck"
+   ],
+   "testes": 5,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-07d2-delivery.yml",
+   "nome": "UX-PRO-07D-2 ciencia de escala",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-07e1-delivery.yml",
+   "nome": "UX-PRO-07E-1 leitura honesta financeiro",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-07e2-alvo-delivery.yml",
+   "nome": "UX-PRO-07E-2-ALVO alvo de toque financeiro (fin11-retry e fin10-retry)",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-07e2-delivery.yml",
+   "nome": "UX-PRO-07E-2 leitura honesta financeiro (oito superficies)",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 3,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-07f1-delivery.yml",
+   "nome": "UX-PRO-07F-1 datas e fuso financeiro",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 4,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-pro-e6-delivery.yml",
+   "nome": "UX-PRO-E6 main unico por documento",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 4,
+   "runners": 1
+  },
+  {
+   "arquivo": "ux-public-routes-delivery.yml",
+   "nome": "E6 rotas publicas - grupo 1 (servicos/segmentos/conteudos/faq)",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 5,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-public-routes-group2-delivery.yml",
+   "nome": "E6 rotas publicas - grupo 2 (conversao)",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 5,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-public-routes-group3-delivery.yml",
+   "nome": "E6 rotas publicas - grupo 3 (raiz e previas)",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "typecheck"
+   ],
+   "testes": 6,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-quality-delivery.yml",
+   "nome": "UX quality delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-quality:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-quality:pg",
+    "typecheck"
+   ],
+   "testes": 15,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-satisfaction-delivery.yml",
+   "nome": "UX satisfaction delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ux-satisfaction:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ux-satisfaction:pg",
+    "typecheck"
+   ],
+   "testes": 17,
+   "runners": 4
+  },
+  {
+   "arquivo": "ux-supplier-delivery.yml",
+   "nome": "UX-09 fornecedores delivery",
+   "gatilhos": [
+    "pull_request",
+    "workflow_dispatch"
+   ],
+   "scripts_literais": [
+    "test:ext04-suppliers:pg",
+    "test:ux-supplier:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext04-suppliers:pg",
+    "test:ux-supplier:pg",
+    "typecheck"
+   ],
+   "testes": 17,
+   "runners": 5
+  },
+  {
+   "arquivo": "ux-third-party-delivery.yml",
+   "nome": "UX third party delivery",
+   "gatilhos": [
+    "pull_request"
+   ],
+   "scripts_literais": [
+    "test:ext02-third-parties:pg",
+    "test:ux-third-party:pg",
+    "typecheck"
+   ],
+   "scripts_via_loop": [],
+   "scripts_efetivos": [
+    "test:ext02-third-parties:pg",
+    "test:ux-third-party:pg",
+    "typecheck"
+   ],
+   "testes": 16,
+   "runners": 5
+  }
+ ],
+ "testes_fora_de_workflow_e_test_unit": [
+  "tests/lead-flow.integration.test.mjs",
+  "tests/ux-pro-09e-7-text-overflow.test.mjs"
+ ],
+ "runners_sem_workflow_nem_script": [
+  "scripts/audit-ui-inventory.mjs",
+  "scripts/ci-coverage-map.mjs",
+  "scripts/e15-route-catalog.mjs",
+  "scripts/e18-apply-palette-a.mjs",
+  "scripts/e18-palette-contact-sheet.mjs",
+  "scripts/e18-palette-live-preview.mjs",
+  "scripts/e18-palette-options.mjs",
+  "scripts/e18-palette-preview.mjs",
+  "scripts/qa-time-clock-local-http.mjs",
+  "scripts/requisitos-222-inventory.mjs",
+  "scripts/requisitos-sec-evidence-run.mjs",
+  "scripts/reset-demo-credentials.mjs",
+  "scripts/ux-pro-03-ti-inventory.mjs",
+  "scripts/ux00-inventory.mjs"
+ ],
+ "runners_importados_como_helper": [
+  "scripts/local-demo-showcase.mjs",
+  "scripts/qa-backup-coverage-inventory.mjs",
+  "scripts/qa-cli-v2-local-provider.mjs",
+  "scripts/qa-cli-v2-restore-point-reconcile.mjs",
+  "scripts/qa-cli-v2-transfer.mjs",
+  "scripts/qa-detached-manifest-signature.mjs",
+  "scripts/qa-homologacao-local.mjs",
+  "scripts/qa-restored-document-http.mjs",
+  "scripts/qa-storage-contracts.mjs",
+  "scripts/qa-synthetic-file-bundle.mjs",
+  "scripts/ux-pro-00-keyboard-evidence.mjs",
+  "scripts/ux-pro-08d-measurements.mjs",
+  "scripts/ux-pro-09e-7-verify-evidence.mjs",
+  "scripts/ux-pro-10b-browser-evidence.mjs"
+ ],
+ "scripts_de_teste_sem_workflow": [
+  "qa:ux-pro-04-pendencias-browser",
+  "qa:ux-pro-04-reports-browser",
+  "test:integration",
+  "test:staff-auth:pg",
+  "test:ux-pro-04-reports",
+  "test:ux-pro-09e-7",
+  "test:ux-pro-09e-pu4",
+  "test:ux-pro-09e-pu6",
+  "test:ux-pro-10b-keyboard"
+ ],
+ "scripts_de_teste_chamados_por": {},
+ "cobertura_testes": [
+  {
+   "teste": "tests/admin-entry.integration.test.mjs",
+   "workflows": [
+    "admin-entry-delivery.yml",
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/admin-entry.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/admin-mail-transport.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/admin-navigation.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/admin-page-gates.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/admin-status-preview.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ai-rag-public-scope.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ai-rag-real-scope.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "fech-01-rag-widget-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ai-rag-widget.integration.test.mjs",
+   "workflows": [
+    "fech-01-rag-widget-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ai-rag.integration.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "fech-01-rag-widget-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/backup-api-fail-closed.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/backup-gate-documentation.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/backup-restore-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/backup-synthetic-file-bundle.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ci-coverage-map.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli-v2-pglite-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli-v2.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/cli02-client-contacts-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli03-contract-published-details-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli10-service-request.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli11-satisfaction-portal.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-satisfaction-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli12-renewal-communications.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli13-portal-access-modes.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli14-account-security.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli15-employee-complaint.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-access.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/client-auth-core.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-manual-approval-guards.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-offline-recovery.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-security-routes-fail-closed.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-security.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/client-space-core.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-space-fail-closed.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "l08-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/client-space.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/demo-snapshot-guards.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e15-route-catalog.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e16-durable-scheduler.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/e16-durable-scheduler.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e17-uuid-validation.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e18-palette-a-applied.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e19-generated-files-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e3-e4-ai-canonical.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e7-pglite-schema.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e9-gates-estabilidade.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/e9-portal-stable-read-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/employee-time-clock.focal.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext-compliance-scheduler.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext07-delivery.yml",
+    "plat01-dispatch.yml",
+    "ux-compliance-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext01-fleet.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-fleet-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext02-third-parties.integration.test.mjs",
+   "workflows": [
+    "ext02-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext02-third-parties.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext02-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext03-biddings.integration.test.mjs",
+   "workflows": [
+    "ext03-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext03-biddings.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext03-delivery.yml",
+    "ux-bidding-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext04-suppliers.integration.test.mjs",
+   "workflows": [
+    "ext04-delivery.yml",
+    "ux-supplier-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext04-suppliers.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext04-delivery.yml",
+    "ux-supplier-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext05-quality.integration.test.mjs",
+   "workflows": [
+    "ext05-delivery.yml",
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext05-quality.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-quality-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext06-satisfaction.integration.test.mjs",
+   "workflows": [
+    "ext06-delivery.yml",
+    "ux-satisfaction-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext06-satisfaction.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-satisfaction-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext07-compliance.integration.test.mjs",
+   "workflows": [
+    "ext07-delivery.yml",
+    "ux-compliance-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext07-compliance.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext07-delivery.yml",
+    "plat01-dispatch.yml",
+    "ux-compliance-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext08-knowledge.integration.test.mjs",
+   "workflows": [
+    "ext08-delivery.yml",
+    "ux-knowledge-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext08-knowledge.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext08-delivery.yml",
+    "plat01-dispatch.yml",
+    "ux-knowledge-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext09-expansion.integration.test.mjs",
+   "workflows": [
+    "ux-expansion-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext09-expansion.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plat01-dispatch.yml",
+    "ux-expansion-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext10-continuity.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext10-continuity.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext11-analytics.integration.test.mjs",
+   "workflows": [
+    "ext11-delivery.yml",
+    "ux-analytics-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext11-analytics.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext11-delivery.yml",
+    "ux-analytics-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext12-visual.integration.test.mjs",
+   "workflows": [
+    "ext12-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext12-visual.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext12-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext13-reports.integration.test.mjs",
+   "workflows": [
+    "ext13-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext13-reports.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext13-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext14-intel.integration.test.mjs",
+   "workflows": [
+    "ext14-delivery.yml",
+    "ux-intel-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext14-intel.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext14-delivery.yml",
+    "ux-intel-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ext15-emergency.integration.test.mjs",
+   "workflows": [
+    "ext15-delivery.yml",
+    "ux-emergency-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ext15-emergency.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext15-delivery.yml",
+    "ux-emergency-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/f03-client-ticket-acceptance.integration.test.mjs",
+   "workflows": [
+    "f03-ticket-employee-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/f03-contas-baixa-relatorio.integration.test.mjs",
+   "workflows": [
+    "f03-finance-lead-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/f03-employee-request-rh-return.integration.test.mjs",
+   "workflows": [
+    "f03-ticket-employee-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/f03-lead-to-implementation.integration.test.mjs",
+   "workflows": [
+    "f03-finance-lead-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/generated-files-hygiene.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext14-delivery.yml",
+    "fech-01-rag-widget-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-portal-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/l02-delivery.integration.test.mjs",
+   "workflows": [
+    "l02-l03-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l03-delivery.integration.test.mjs",
+   "workflows": [
+    "l02-l03-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l03-security.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "l02-l03-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/l04-delivery.integration.test.mjs",
+   "workflows": [
+    "l04-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l05-delivery.integration.test.mjs",
+   "workflows": [
+    "l05-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l06-delivery.integration.test.mjs",
+   "workflows": [
+    "l06-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l07-delivery.integration.test.mjs",
+   "workflows": [
+    "l07-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/l08-delivery.integration.test.mjs",
+   "workflows": [
+    "l08-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/lead-flow.integration.test.mjs",
+   "workflows": [],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/local-demo-guards.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/marcelo-rh-access.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/observability-pg-recursion.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ops-pendencies.integration.test.mjs",
+   "workflows": [
+    "pendencies-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ops-pendencies.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "pendencies-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/package-artifacts.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/plt-gates-wired.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/plt01-access-review-coverage.integration.test.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/plt01-access-review-coverage.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/plt06-observability-read-contract.integration.test.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/plt06-observability-read-contract.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/plt09-privacy-contract.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/plt09-privacy.integration.test.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/plt12-incident-response.integration.test.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/plt12-incident-response.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plt-jornadas-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/public-lead-validation.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-backup-coverage-inventory.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-cli-v2-local-provider.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-cli-v2-object-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-cli-v2-object-pg.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/qa-cli-v2-restore-point-reconcile.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-cli-v2-transfer.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-detached-manifest-signature.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-evidence-report.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plat01-dispatch.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-homologacao-safety.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-pg-supervisor.test.mjs",
+   "workflows": [
+    "admin-entry-delivery.yml",
+    "backup-restore-delivery.yml",
+    "ci.yml",
+    "ext02-delivery.yml",
+    "ext03-delivery.yml",
+    "ext04-delivery.yml",
+    "ext05-delivery.yml",
+    "ext06-delivery.yml",
+    "ext07-delivery.yml",
+    "ext08-delivery.yml",
+    "ext11-delivery.yml",
+    "ext12-delivery.yml",
+    "ext13-delivery.yml",
+    "ext14-delivery.yml",
+    "ext15-delivery.yml",
+    "f03-finance-lead-delivery.yml",
+    "f03-ticket-employee-delivery.yml",
+    "fech-01-rag-widget-delivery.yml",
+    "l02-l03-delivery.yml",
+    "l04-delivery.yml",
+    "l05-delivery.yml",
+    "l06-delivery.yml",
+    "l07-delivery.yml",
+    "l08-delivery.yml",
+    "pendencies-delivery.yml",
+    "plt-jornadas-delivery.yml",
+    "ux-adm-delivery.yml",
+    "ux-analytics-delivery.yml",
+    "ux-asset-delivery.yml",
+    "ux-bidding-delivery.yml",
+    "ux-client-admin-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-contract-delivery.yml",
+    "ux-crm-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-finance-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-hr-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-ops-delivery.yml",
+    "ux-portal-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-public-tap-audit.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/qa-storage-contracts.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/rag-widget-contract.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "fech-01-rag-widget-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/requisitos-222-inventory.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/requisitos-sec-reaudit.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/route-dispatch-guard.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plat01-dispatch.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/route-dispatch.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "plat01-dispatch.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/seo-technical.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/service-catalog.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/site-appearance.focal.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/staff-auth-hardening.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/staff-auth.integration.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/staff-session-await-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ui-surface-locale.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-adm-panel.integration.test.mjs",
+   "workflows": [
+    "ux-adm-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-adm-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-adm-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-analytics-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-analytics-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-analytics-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-asset-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-asset-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-bidding-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-bidding-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-bidding-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-bidding-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-client-admin-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-client-admin-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-compliance-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-compliance-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-compliance-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-continuity-client-portal-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-continuity-client-portal.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-continuity-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-continuity-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-contract-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-contract-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-contract-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-contract-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-crm-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-crm-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-crm-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-crm-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-emergency-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-emergency-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-expansion-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-expansion-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-expansion-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-expansion-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-finance-dates.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-pro-07f1-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-finance-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-finance-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-finance-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-finance-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-fleet-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-fleet-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-fleet-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-hr-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-hr-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-hr-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-hr-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-intel-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-intel-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-intel-workspace.integration.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-intel-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-knowledge-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-knowledge-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-knowledge-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-pro-e6-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-ops-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-ops-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-ops-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-ops-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-e6-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-portal-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-portal-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-portal-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-portal-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-pro-00-inventory.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-00-precision.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-pro-03-audit-observability-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-backup-catalog-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-catalog-equipment-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-commercial-estimates-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-fin-cadastros-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-rag-source-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-rbac-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-rh-reclamacoes-compartilhadas.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-adm-painel-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-ai-rag-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-budget-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-cli-financeiro-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-cli-v2-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-cms-conteudo-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-config-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-dependencies-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-emp-pwa-faq-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-env-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-healthcheck-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-incidents-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-integration-logs-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-integrations-catalogo-ui.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-portal-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-lgpd-requests-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-maintenance-docs-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-mensuracao-origem-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-monitoramento-ext-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-notifications-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-preferencias-notificacao-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-privacy-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-pub-faq-assistida-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-reaudit.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-reclamacoes-colaboradores-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-retention-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-seo-dominios-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-03-ti-theme-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-04-pendencias-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-04-relatorios-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-05-documentos-leitura-rh-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-05-folha-holerite-leitura-rh-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-05-ponto-rh-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-06-cli13-fila-acesso-estados.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-06-comercial-vistoria-estados.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-06-fila-pedidos-estados.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-06-metricas-origem-estados.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-08c-appearance.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-08d-evidence.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-09e-7-text-overflow.test.mjs",
+   "workflows": [],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-pro-09e-pu4-hermeticidade.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-09e-pu4.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-09e-pu6.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-09e-public-site.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-10b-contrast-inventory.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-layout-previews-a11y-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-10b-keyboard-focal.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-10b-previas-medicoes.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-layout-previews-a11y-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-10b-visuals-guard.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e2-action-dialog.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e2-c1-field-labels.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e3-crm-dates.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e3-ops-dates.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e5-table-scroll.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e6-c1-single-main.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-e6-single-main.integration.test.mjs",
+   "workflows": [
+    "ux-pro-e6-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-pro-e6-single-main.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-pro-e6-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-agenda-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-chamados-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-contratos-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-documentos-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-reclamacoes-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-relatorios-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-renovacao-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-satisfacao-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-pro-id3-solicitacoes-leitura-ui.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-public-routes-gate.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-public-routes-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-public-routes-group2-gate.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-public-routes-group2-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-public-routes-group3-gate.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-public-routes.integration.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-quality-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-quality-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-quality-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-satisfaction-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-satisfaction-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-satisfaction-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-supplier-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-supplier-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-supplier-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-supplier-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  },
+  {
+   "teste": "tests/ux-third-party-vocabulary.test.mjs",
+   "workflows": [
+    "ci.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/ux-third-party-workspace.integration.test.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "workflows_via_test_unit": [],
+   "no_test_unit": false
+  }
+ ],
+ "cobertura_runners": [
+  {
+   "runner": "scripts/audit-ui-inventory.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ci-coverage-map.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/demo-offline-snapshot.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "demo:local:backup",
+    "demo:local:backup:verify",
+    "demo:local:restore:copy"
+   ]
+  },
+  {
+   "runner": "scripts/e15-route-catalog.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/e18-apply-palette-a.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/e18-palette-contact-sheet.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/e18-palette-live-preview.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/e18-palette-options.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/e18-palette-preview.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/local-demo-seed.mjs",
+   "workflows": [
+    "f03-finance-lead-delivery.yml",
+    "f03-ticket-employee-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/local-demo-showcase.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/local-demo.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "demo:local:init",
+    "demo:local:start"
+   ]
+  },
+  {
+   "runner": "scripts/migrate-site-visual.mjs",
+   "workflows": [
+    "admin-entry-delivery.yml",
+    "ext02-delivery.yml",
+    "ext03-delivery.yml",
+    "ext04-delivery.yml",
+    "ext05-delivery.yml",
+    "ext06-delivery.yml",
+    "ext07-delivery.yml",
+    "ext08-delivery.yml",
+    "ext11-delivery.yml",
+    "ext12-delivery.yml",
+    "ext13-delivery.yml",
+    "ext14-delivery.yml",
+    "ext15-delivery.yml",
+    "f03-finance-lead-delivery.yml",
+    "f03-ticket-employee-delivery.yml",
+    "fech-01-rag-widget-delivery.yml",
+    "l02-l03-delivery.yml",
+    "l04-delivery.yml",
+    "l05-delivery.yml",
+    "l06-delivery.yml",
+    "l07-delivery.yml",
+    "l08-delivery.yml",
+    "pendencies-delivery.yml",
+    "plt-jornadas-delivery.yml",
+    "ux-adm-delivery.yml",
+    "ux-analytics-delivery.yml",
+    "ux-asset-delivery.yml",
+    "ux-bidding-delivery.yml",
+    "ux-client-admin-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-contract-delivery.yml",
+    "ux-crm-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-finance-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-hr-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-ops-delivery.yml",
+    "ux-portal-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "npm_scripts": [
+    "db:migrate"
+   ]
+  },
+  {
+   "runner": "scripts/qa-admin-entry-postgres.mjs",
+   "workflows": [
+    "admin-entry-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:admin-entry:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ai-rag-widget-postgres.mjs",
+   "workflows": [
+    "fech-01-rag-widget-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ai-rag-widget:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-backup-coverage-inventory.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-backup-restore-postgres.mjs",
+   "workflows": [
+    "backup-restore-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:backup-restore:pg",
+    "test:backup-restore:pg:cli-objects",
+    "test:backup-restore:pg:cli-partial",
+    "test:backup-restore:pg:clusters",
+    "test:backup-restore:pg:files",
+    "test:backup-restore:pg:http",
+    "test:backup-restore:pg:inventory",
+    "test:backup-restore:pg:signed"
+   ]
+  },
+  {
+   "runner": "scripts/qa-cli-v2-local-provider.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-cli-v2-postgres.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:cli-v2:pg",
+    "test:cli-v2:pg:objects"
+   ]
+  },
+  {
+   "runner": "scripts/qa-cli-v2-restore-point-reconcile.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-cli-v2-transfer.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-detached-manifest-signature.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-durable-scheduler-postgres.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:durable-scheduler:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-evidence-report.mjs",
+   "workflows": [
+    "plat01-dispatch.yml"
+   ],
+   "npm_scripts": [
+    "qa:evidence"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext02-third-parties-postgres.mjs",
+   "workflows": [
+    "ext02-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext02-third-parties:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext03-biddings-postgres.mjs",
+   "workflows": [
+    "ext03-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext03-biddings:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext04-suppliers-postgres.mjs",
+   "workflows": [
+    "ext04-delivery.yml",
+    "ux-supplier-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext04-suppliers:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext05-quality-postgres.mjs",
+   "workflows": [
+    "ext05-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext05-quality:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext06-satisfaction-postgres.mjs",
+   "workflows": [
+    "ext06-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext06-satisfaction:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext07-compliance-postgres.mjs",
+   "workflows": [
+    "ext07-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext07-compliance:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext08-knowledge-postgres.mjs",
+   "workflows": [
+    "ext08-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext08-knowledge:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext09-expansion-postgres.mjs",
+   "workflows": [
+    "ux-expansion-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext09-expansion:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext10-continuity-postgres.mjs",
+   "workflows": [
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext10-continuity:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext11-analytics-postgres.mjs",
+   "workflows": [
+    "ext11-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext11-analytics:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext12-visual-postgres.mjs",
+   "workflows": [
+    "ext12-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext12-visual:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext13-reports-postgres.mjs",
+   "workflows": [
+    "ext13-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext13-reports:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext14-intel-postgres.mjs",
+   "workflows": [
+    "ext14-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext14-intel:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ext15-emergency-postgres.mjs",
+   "workflows": [
+    "ext15-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ext15-emergency:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-f03-client-ticket-acceptance-postgres.mjs",
+   "workflows": [
+    "f03-ticket-employee-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:f03-client-ticket-acceptance:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-f03-contas-baixa-relatorio-postgres.mjs",
+   "workflows": [
+    "f03-finance-lead-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:f03-contas-baixa-relatorio:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-f03-employee-request-rh-return-postgres.mjs",
+   "workflows": [
+    "f03-ticket-employee-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:f03-employee-request-rh-return:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-f03-lead-to-implementation-postgres.mjs",
+   "workflows": [
+    "f03-finance-lead-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:f03-lead-to-implementation:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-generated-files-guard.mjs",
+   "workflows": [
+    "admin-entry-delivery.yml",
+    "ext02-delivery.yml",
+    "ext03-delivery.yml",
+    "ext04-delivery.yml",
+    "ext05-delivery.yml",
+    "ext06-delivery.yml",
+    "ext07-delivery.yml",
+    "ext08-delivery.yml",
+    "ext11-delivery.yml",
+    "ext12-delivery.yml",
+    "ext13-delivery.yml",
+    "ext14-delivery.yml",
+    "ext15-delivery.yml",
+    "f03-finance-lead-delivery.yml",
+    "f03-ticket-employee-delivery.yml",
+    "fech-01-rag-widget-delivery.yml",
+    "l02-l03-delivery.yml",
+    "l04-delivery.yml",
+    "l05-delivery.yml",
+    "l06-delivery.yml",
+    "l07-delivery.yml",
+    "l08-delivery.yml",
+    "pendencies-delivery.yml",
+    "plt-jornadas-delivery.yml",
+    "ux-adm-delivery.yml",
+    "ux-analytics-delivery.yml",
+    "ux-asset-delivery.yml",
+    "ux-bidding-delivery.yml",
+    "ux-client-admin-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml",
+    "ux-contract-delivery.yml",
+    "ux-crm-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-finance-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-hr-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-ops-delivery.yml",
+    "ux-portal-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-generated-files.mjs",
+   "workflows": [
+    "ext14-delivery.yml",
+    "fech-01-rag-widget-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-portal-delivery.yml",
+    "ux-pro-07d2-delivery.yml",
+    "ux-pro-07e1-delivery.yml",
+    "ux-pro-07e2-alvo-delivery.yml",
+    "ux-pro-07e2-delivery.yml",
+    "ux-pro-07f1-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-homologacao-local.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-l02-delivery-postgres.mjs",
+   "workflows": [
+    "l02-l03-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l02-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l03-delivery-postgres.mjs",
+   "workflows": [
+    "l02-l03-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l03-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l04-delivery-postgres.mjs",
+   "workflows": [
+    "l04-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l04-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l05-delivery-postgres.mjs",
+   "workflows": [
+    "l05-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l05-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l06-delivery-postgres.mjs",
+   "workflows": [
+    "l06-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l06-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l07-delivery-postgres.mjs",
+   "workflows": [
+    "l07-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l07-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-l08-delivery-postgres.mjs",
+   "workflows": [
+    "l08-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:l08-delivery:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-local-demo-persistent.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:demo-local:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-migrations-postgres.mjs",
+   "workflows": [
+    "ext02-delivery.yml",
+    "ext03-delivery.yml",
+    "ext04-delivery.yml",
+    "ext05-delivery.yml",
+    "ext06-delivery.yml",
+    "ext07-delivery.yml",
+    "l04-delivery.yml",
+    "l05-delivery.yml",
+    "l06-delivery.yml",
+    "l07-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:migrations:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ops-pendencies-postgres.mjs",
+   "workflows": [
+    "pendencies-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:pendencies:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-pg-supervisor-postgres.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:pg-supervisor:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-pglite-schema.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:pglite-schema"
+   ]
+  },
+  {
+   "runner": "scripts/qa-plt01-access-review-coverage-postgres.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:plt01-access-review-coverage:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-plt06-observability-postgres.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:plt06-observability:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-plt09-privacy-postgres.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:plt09-privacy:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-plt12-incidents-postgres.mjs",
+   "workflows": [
+    "plt-jornadas-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:plt12-incidents:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-restored-document-http.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-staff-auth-postgres.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "test:staff-auth:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-storage-contracts.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-synthetic-file-bundle.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-tenant-postgres.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "test:client-access:pg",
+    "test:tenant:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-time-clock-local-http.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-adm-postgres.mjs",
+   "workflows": [
+    "ux-adm-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-adm:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-analytics-postgres.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-analytics:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-asset-postgres.mjs",
+   "workflows": [
+    "ux-asset-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-asset:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-bidding-postgres.mjs",
+   "workflows": [
+    "ux-bidding-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-bidding:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-client-admin-postgres.mjs",
+   "workflows": [
+    "ux-client-admin-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-client-admin:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-compliance-postgres.mjs",
+   "workflows": [
+    "ux-compliance-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-compliance:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-continuity-client-postgres.mjs",
+   "workflows": [
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-continuity-client:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-continuity-postgres.mjs",
+   "workflows": [
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-continuity:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-contract-postgres.mjs",
+   "workflows": [
+    "ux-contract-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-contract:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-crm-postgres.mjs",
+   "workflows": [
+    "ux-crm-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-crm:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-emergency-postgres.mjs",
+   "workflows": [
+    "ux-emergency-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-emergency:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-expansion-postgres.mjs",
+   "workflows": [
+    "ux-expansion-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-expansion:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-finance-postgres.mjs",
+   "workflows": [
+    "ux-finance-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-finance:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-fleet-postgres.mjs",
+   "workflows": [
+    "ux-fleet-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-fleet:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-hr-postgres.mjs",
+   "workflows": [
+    "ux-hr-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-hr:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-intel-postgres.mjs",
+   "workflows": [
+    "ux-intel-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-intel:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-knowledge-postgres.mjs",
+   "workflows": [
+    "ux-knowledge-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-knowledge:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-ops-postgres.mjs",
+   "workflows": [
+    "ux-ops-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-ops:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-portal-postgres.mjs",
+   "workflows": [
+    "ux-portal-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-portal:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-pro-07d2-postgres.mjs",
+   "workflows": [
+    "ux-pro-07d2-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-pro-07e1-postgres.mjs",
+   "workflows": [
+    "ux-pro-07e1-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-pro-07e2-alvo-postgres.mjs",
+   "workflows": [
+    "ux-pro-07e2-alvo-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-pro-07e2-postgres.mjs",
+   "workflows": [
+    "ux-pro-07e2-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-pro-07f1-postgres.mjs",
+   "workflows": [
+    "ux-pro-07f1-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-pro-e6-postgres.mjs",
+   "workflows": [
+    "ux-pro-e6-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/qa-ux-public-routes-postgres.mjs",
+   "workflows": [
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-public-routes:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-quality-postgres.mjs",
+   "workflows": [
+    "ux-quality-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-quality:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-satisfaction-postgres.mjs",
+   "workflows": [
+    "ux-satisfaction-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-satisfaction:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-supplier-postgres.mjs",
+   "workflows": [
+    "ux-supplier-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-supplier:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-ux-third-party-postgres.mjs",
+   "workflows": [
+    "ux-third-party-delivery.yml"
+   ],
+   "npm_scripts": [
+    "test:ux-third-party:pg"
+   ]
+  },
+  {
+   "runner": "scripts/qa-wave0-static.mjs",
+   "workflows": [
+    "ci.yml",
+    "ext04-delivery.yml",
+    "ext05-delivery.yml",
+    "ext06-delivery.yml",
+    "ext07-delivery.yml",
+    "l04-delivery.yml",
+    "l05-delivery.yml",
+    "l06-delivery.yml",
+    "l07-delivery.yml",
+    "plat01-dispatch.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/requisitos-222-inventory.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/requisitos-sec-evidence-run.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/requisitos-sec-reaudit.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "npm_scripts": [
+    "reaudit:sec"
+   ]
+  },
+  {
+   "runner": "scripts/reset-demo-credentials.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-evidence-capture.mjs",
+   "workflows": [
+    "ux-analytics-delivery.yml",
+    "ux-compliance-delivery.yml",
+    "ux-expansion-delivery.yml",
+    "ux-fleet-delivery.yml",
+    "ux-intel-delivery.yml",
+    "ux-knowledge-delivery.yml",
+    "ux-quality-delivery.yml",
+    "ux-satisfaction-delivery.yml",
+    "ux-supplier-delivery.yml",
+    "ux-third-party-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-evidence-postgres.mjs",
+   "workflows": [
+    "ux-continuity-client-delivery.yml",
+    "ux-continuity-delivery.yml"
+   ],
+   "npm_scripts": [
+    "ux:evidence"
+   ]
+  },
+  {
+   "runner": "scripts/ux-evidence-text-contrast.mjs",
+   "workflows": [
+    "ux-layout-previews-a11y-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-00-inventory.mjs",
+   "workflows": [
+    "ux-asset-delivery.yml",
+    "ux-emergency-delivery.yml",
+    "ux-layout-previews-a11y-delivery.yml",
+    "ux-public-routes-delivery.yml",
+    "ux-public-routes-group2-delivery.yml",
+    "ux-public-routes-group3-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-00-keyboard-evidence.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-03-ti-inventory.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-04-pendencias-browser-evidence.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "qa:ux-pro-04-pendencias-browser"
+   ]
+  },
+  {
+   "runner": "scripts/ux-pro-04-relatorios-browser-evidence.mjs",
+   "workflows": [],
+   "npm_scripts": [
+    "qa:ux-pro-04-reports-browser"
+   ]
+  },
+  {
+   "runner": "scripts/ux-pro-08d-measurements.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-09e-7-verify-evidence.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-10b-browser-evidence.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux-pro-10b-contrast-inventory.mjs",
+   "workflows": [
+    "ux-layout-previews-a11y-delivery.yml"
+   ],
+   "npm_scripts": []
+  },
+  {
+   "runner": "scripts/ux00-inventory.mjs",
+   "workflows": [],
+   "npm_scripts": []
+  }
+ ]
+}
