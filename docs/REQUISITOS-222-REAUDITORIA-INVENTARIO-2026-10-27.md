@@ -28,6 +28,19 @@ Um **índice reproduzível**, não um veredito:
 executam `test:unit`. Isso evita inflar a matriz de rotas com um gate que não
 prova rota alguma. Workflows são **60** na reconciliação de 04/11 (o `plt-jornadas-delivery.yml` foi criado em 02/11; a fatia 05D adicionou `ext08-delivery.yml` para executar o gate de conhecimento antes órfão; a 05E adicionou `ext11-delivery.yml` para analytics; a 05F adicionou os três gates EXT-12/13/14; a 05G adicionou `ext15-delivery.yml`; a 05H adicionou `pendencies-delivery.yml`; a 05I adicionou `l02-l03-delivery.yml`; a 05M adicionou `f03-ticket-employee-delivery.yml`; a 05N adicionou `f03-finance-lead-delivery.yml`).
 
+### Recontagem 06/11/2026 (fatia 15 — RAG com corpus real)
+
+`AI-06` (busca/RAG filtrada por permissão antes de recuperar, índices isolados)
+e `AI-09` (curadoria: versão, publicação, avaliação e rollback) passam de
+`somente_documento` para `mencionado_em_gate`: `tests/ai-rag-scope-real-db.test.mjs`
+cita os dois IDs nos nomes dos casos e roda sobre a cadeia real de migrações,
+com provedor **stub**. O que isso muda é **onde procurar a prova** — não o
+estado do requisito: os dois seguem `a_revalidar`, o aceite humano continua
+**0/222** e a reauditoria integral **0/222**. Modelo real, curadoria feita por
+pessoa, avaliação de qualidade e operação em produção continuam não
+comprovados. O núcleo sem gate cai de 12 para 10 IDs (restam `EXT-16`,
+`EXT-17`, `AI-01`…`AI-05`, `AI-07`, `AI-08`, `AI-10`).
+
 ### Método
 
 Uma única passada por **1.752 arquivos** após a fatia 15 (antes, 1.751, fatia 08; 1.750, fatia 17; 1.748, fatia 06B) de `tests/`, `.github/workflows/`,
@@ -43,8 +56,8 @@ Cada ID recebe uma `classe_evidencia_atual` **conservadora**:
 | Classe | Significado | IDs |
 |---|---|---|
 | `gate_nomeado` | o ID aparece no **nome** de um teste/workflow | **27** |
-| `mencionado_em_gate` | o ID é citado no **conteúdo** de um teste/workflow | **124** |
-| `somente_documento` | só há citação em documentos | **71** |
+| `mencionado_em_gate` | o ID é citado no **conteúdo** de um teste/workflow | **126** |
+| `somente_documento` | só há citação em documentos | **69** |
 | `somente_codigo` / `sem_evidencia_legivel` | — | **0** |
 
 > **Recontagem E23 (30/10/2026):** a tabela acima já não é a fotografia de 27/10
@@ -145,14 +158,14 @@ Cada ID recebe uma `classe_evidencia_atual` **conservadora**:
 | `a_revalidar` (estado confirmado, 04/10) | **45** — a diferença de 1 é explícita, não corrigida |
 | `pronto_local` declarado | **164** |
 | `em_execucao` / `entregue` declarados | **6 / 6** |
-| **`a_revalidar` sem nenhuma menção em gate** | **12** |
+| **`a_revalidar` sem nenhuma menção em gate** | **10** |
 | Com aceite humano registrado | **0** |
 | Com reauditoria integral executada | **0** |
 
-### O núcleo duro (15 IDs)
+### O núcleo duro (13 IDs)
 
 `PLT-02`, `PLT-07`, `PLT-12`,
-`EXT-16`, `EXT-17`, `AI-01`…`AI-10`.
+`EXT-16`, `EXT-17`, `AI-01`…`AI-05`, `AI-07`, `AI-08`, `AI-10`.
 
 São exatamente as famílias que a auditoria já apontava como bloqueadas:
 segurança/escopo de documentos, plataforma, EXT-16/17 (biometria e central,

@@ -589,7 +589,13 @@ export function createAiRagApi({ pool, auditLog, sameOrigin, requireSession, req
       try{
         await client.query('BEGIN');
         const api=createAiRagApi({pool:client,sameOrigin,requireSession:async()=>session,requireRole,transactional:true,auditLog:async({action,actor,target,meta})=>{
+          // A trilha transacional continua na MESMA transação (não pode ficar
+          // fora dela), mas o auditor injetado pelo chamador não pode ser
+          // descartado: antes ele era substituído por esta gravação, de modo
+          // que qualquer auditor externo (contador, coletor, dupla escrita)
+          // simplesmente não via as mutações de curadoria.
           await client.query('INSERT INTO audit_log(action,actor,target,meta) VALUES($1,$2,$3,$4)',[action,actor,target,meta?JSON.stringify(meta):null]);
+          if(typeof auditLog==='function')await auditLog({action,actor,target,meta});
         }});
         await api[name](req,{writeHead:(code,h)=>{status=code;headers=h;},end:text=>{output=text;}});
         if(status>=400)await client.query('ROLLBACK');else await client.query('COMMIT');

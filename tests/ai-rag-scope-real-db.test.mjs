@@ -1,9 +1,10 @@
-import test from 'node:test';
+import test, { describe } from 'node:test';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { readdir, readFile } from 'node:fs/promises';
 
 import { createAiRagRealApi } from '../src/server/ai-rag-real-api.mjs';
+import { createAiRagApi } from '../src/server/ai-rag-api.mjs';
 
 // Fatia 15 — RAG com corpus real por escopo.
 //
@@ -19,8 +20,9 @@ import { createAiRagRealApi } from '../src/server/ai-rag-real-api.mjs';
 // identificado como tal: nada aqui prova Ollama, qualidade ou latência.
 
 // ---------------------------------------------------------------------------
-// Banco real: migrações 001..173 (a 173 é a que amarra o corpus do cliente à
-// conta). Montado uma vez e clonado por teste.
+// Banco real: migrações 001..175. A 173 amarra o corpus do cliente à conta e a
+// 175 acrescenta `supersedes_document_id`, usado pela curadoria (AI-09) para
+// versionar uma nova redação. Montado uma vez e clonado por teste.
 // ---------------------------------------------------------------------------
 let schemaBase;
 async function schemaCompartilhado() {
@@ -31,7 +33,7 @@ async function schemaCompartilhado() {
   const dir = new URL('../db/migrations/', import.meta.url);
   const arquivos = (await readdir(dir)).filter((f) => f.endsWith('.sql')).sort();
   for (const arquivo of arquivos) {
-    if (Number(arquivo.slice(0, 3)) > 173) break;
+    if (Number(arquivo.slice(0, 3)) > 175) break;
     await pg.exec(await readFile(new URL(arquivo, dir), 'utf8'));
   }
   schemaBase = await pg.dumpDataDir('none');
@@ -120,6 +122,22 @@ function resposta() {
 
 const CORPO = (rag_key, query) => Buffer.from(JSON.stringify({ rag_key, query }));
 
+/** Chama um handler de curadoria com corpo JSON e captura a resposta. */
+async function chamar(handler, method, corpo) {
+  const req = {
+    method,
+    headers: { host: 'sistema.local', origin: 'http://sistema.local' },
+    async *[Symbol.asyncIterator]() { yield Buffer.from(JSON.stringify(corpo)); },
+  };
+  const res = {
+    status: 0, headers: {}, corpo: null,
+    writeHead(status, headers) { this.status = status; this.headers = headers; },
+    end(raw) { this.corpo = raw === undefined ? undefined : JSON.parse(String(raw)); },
+  };
+  await handler(req, res);
+  return res;
+}
+
 async function perguntar(api, { rag_key, query, origin = true }) {
   const req = {
     method: 'POST',
@@ -178,7 +196,7 @@ async function comProvedor(comportamento, corpo) {
 // Isolamento de fontes por perfil
 // ---------------------------------------------------------------------------
 
-test('15/A: cada escopo recupera somente o próprio corpus publicado', async (t) => {
+test('AI-06 / 15/A: cada escopo recupera somente o próprio corpus publicado', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   await semear(pg, { ragKey: 'publico', aprovador, titulo: 'Abertura de chamado', conteudo: 'Para abrir um chamado use o portal do cliente e informe o contrato.', keywords: ['chamado'] });
@@ -201,7 +219,7 @@ test('15/A: cada escopo recupera somente o próprio corpus publicado', async (t)
   });
 });
 
-test('15/B: staff sem o papel do escopo recebe 403 antes de tocar o banco', async (t) => {
+test('AI-06 / 15/B: staff sem o papel do escopo recebe 403 antes de tocar o banco', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   await semear(pg, { ragKey: 'marcelo', aprovador, titulo: 'Rotina da diretoria', conteudo: 'A rotina da diretoria é revisada na primeira semana do mês.', keywords: ['diretoria'] });
@@ -214,7 +232,7 @@ test('15/B: staff sem o papel do escopo recebe 403 antes de tocar o banco', asyn
   });
 });
 
-test('15/B: cliente sem vínculo não recupera corpus de cliente; com vínculo recupera o da própria conta', async (t) => {
+test('AI-06 / 15/B: cliente sem vínculo não recupera corpus de cliente; com vínculo recupera o da própria conta', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   const contaA = randomUUID();
@@ -245,7 +263,7 @@ test('15/B: cliente sem vínculo não recupera corpus de cliente; com vínculo r
   });
 });
 
-test('15/B: vínculo revogado ou conta suspensa fecham o corpus do cliente', async (t) => {
+test('AI-06 / 15/B: vínculo revogado ou conta suspensa fecham o corpus do cliente', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   const conta = randomUUID();
@@ -274,7 +292,7 @@ test('15/B: vínculo revogado ou conta suspensa fecham o corpus do cliente', asy
 // Flag E estado: a recuperação exige os dois
 // ---------------------------------------------------------------------------
 
-test('15/B: documento com flag ligada mas estado não publicado não é recuperado', async (t) => {
+test('AI-06 / 15/B: documento com flag ligada mas estado não publicado não é recuperado', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Rascunho de férias', conteudo: 'Rascunho interno sobre férias que ainda não foi publicado.', keywords: ['ferias'], status: 'rascunho' });
@@ -288,7 +306,7 @@ test('15/B: documento com flag ligada mas estado não publicado não é recupera
   });
 });
 
-test('15/B: índice não ativo fecha o corpus inteiro, mesmo com documento publicado', async (t) => {
+test('AI-06 / 15/B: índice não ativo fecha o corpus inteiro, mesmo com documento publicado', async (t) => {
   const pg = await openDb(t);
   const aprovador = await identidade(pg);
   await semear(pg, { ragKey: 'publico', aprovador, titulo: 'Serviço de portaria', conteudo: 'O serviço de portaria atende em regime integral conforme contrato.', keywords: ['portaria'], indexAtivo: false });
@@ -464,4 +482,239 @@ test('15/B: a réplica do sameOrigin acompanha o server.mjs (guarda de deriva)',
   assert.match(fonte, /if \(\["GET", "HEAD", "OPTIONS"\]\.includes\(req\.method \|\| "GET"\)\) return true;/);
   assert.match(fonte, /const expectedHost = String\(forwardedHost \|\| req\.headers\.host \|\| ""\)\.split\(","\)\[0\]\.trim\(\)\.toLowerCase\(\);/);
   assert.match(fonte, /return new URL\(origin\)\.host\.toLowerCase\(\) === expectedHost;/);
+});
+
+// ---------------------------------------------------------------------------
+// AI-09 — curadoria: versão, publicação e rollback no banco real
+// ---------------------------------------------------------------------------
+
+const contaDeTeste = async (pg) => {
+  const id = randomUUID();
+  await pg.query("INSERT INTO client_accounts(id,status,display_name,created_by) VALUES ($1,'active','Conta de curadoria','ti')", [id]);
+  return id;
+};
+
+async function comDiff(runner) {
+  const { PGlite } = await import('@electric-sql/pglite');
+  const schema = await schemaCompartilhado();
+  const pg = new PGlite({ loadDataDir: schema });
+  const client = {
+    query: (sql, params) => pg.query(sql, params),
+    release() {},
+  };
+  const pool = { ...poolOf(pg), connect: async () => client };
+  try { return await runner(pg, pool); } finally { await pg.close(); }
+}
+
+describe('AI-09 / 16: curadoria do corpus', () => {
+  test('criação nasce rascunho, sem aprovação e sem publicação', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Base RH existente', conteudo: 'Conteúdo aprovado existente da base de RH.', keywords: ['base'] });
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const res = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Novo procedimento de férias',
+      content: 'Procedimento novo de férias aguardando avaliação da curadoria de RH.',
+      source: 'manual', source_type: 'procedimento', keywords: ['ferias'],
+    });
+    assert.equal(res.status, 201, JSON.stringify(res.corpo));
+    assert.equal(res.corpo.is_approved, false, 'documento novo não pode nascer aprovado');
+    assert.equal(res.corpo.is_published, false, 'documento novo não pode nascer publicado');
+    const { rows } = await pg.query("SELECT status,is_approved,is_published,version FROM ai_rag_documents WHERE id=$1", [res.corpo.id]);
+    assert.deepEqual(rows[0], { status: 'rascunho', is_approved: false, is_published: false, version: 1 });
+
+    // Enquanto rascunho, o corpus do RH não o recupera.
+    await comProvedor('ok', async (stub) => {
+      const consulta = await perguntar(apiCom(pg, { staff: { identityId: aprovador, role: 'rh' } }), { rag_key: 'rh', query: 'Qual o novo procedimento de férias?' });
+      const titulos = consulta.corpo.sources.map((s) => s.title);
+      assert.equal(titulos.includes('Novo procedimento de férias'), false, 'rascunho não entra na recuperação');
+      assert.ok(stub.chamadas.length <= 1);
+    });
+  }));
+
+  test('publicar exige aprovação: flag de publicação sozinha não entrega o documento', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Base RH existente', conteudo: 'Conteúdo aprovado existente da base de RH.', keywords: ['base'] });
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const criado = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Procedimento pendente de revisão',
+      content: 'Conteúdo ainda não revisado por pessoa, mantido em rascunho de propósito.',
+      source: 'manual', source_type: 'procedimento',
+    });
+    const publicarSemAprovar = await chamar(api.handleDocuments, 'PATCH', { id: criado.corpo.id, is_published: true });
+    assert.equal(publicarSemAprovar.status, 200);
+    assert.equal(publicarSemAprovar.corpo.is_published, true);
+    assert.equal(publicarSemAprovar.corpo.is_approved, false, 'publicar não pode aprovar por atalho');
+
+    // O SQL de recuperação exige flag E estado; a rota PATCH não muda `status`.
+    assert.equal(publicarSemAprovar.corpo.status, 'rascunho');
+    await comProvedor('ok', async () => {
+      const consulta = await perguntar(apiCom(pg, { staff: { identityId: aprovador, role: 'rh' } }), { rag_key: 'rh', query: 'Qual o procedimento pendente de revisão?' });
+      assert.equal(consulta.corpo.sources.map((s) => s.title).includes('Procedimento pendente de revisão'), false,
+        'publicado com estado rascunho não é recuperado');
+    });
+  }));
+
+  test('aprovar e publicar deixa o documento recuperável e incrementa a versão', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Base RH existente', conteudo: 'Conteúdo aprovado existente da base de RH.', keywords: ['base'] });
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const criado = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Procedimento aprovado de ponto',
+      content: 'Conteúdo revisado e aprovado pela curadoria sobre registro de ponto.',
+      source: 'manual', source_type: 'procedimento', keywords: ['ponto'],
+    });
+    const publicado = await chamar(api.handleDocuments, 'PATCH', { id: criado.corpo.id, status: 'publicado', is_approved: true, is_published: true });
+    assert.equal(publicado.status, 200);
+    assert.equal(publicado.corpo.version, 2, 'cada alteração de curadoria incrementa a versão');
+
+    await comProvedor('ok', async () => {
+      const consulta = await perguntar(apiCom(pg, { staff: { identityId: aprovador, role: 'rh' } }), { rag_key: 'rh', query: 'Como funciona o registro de ponto?' });
+      assert.ok(consulta.corpo.sources.map((s) => s.title).includes('Procedimento aprovado de ponto'),
+        'aprovado E publicado precisa ser recuperável');
+    });
+  }));
+
+  test('rollback: despublicar volta a fechar o documento e preserva a versão anterior', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Base RH existente', conteudo: 'Conteúdo aprovado existente da base de RH.', keywords: ['base'] });
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const criado = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Comunicado que será revertido',
+      content: 'Comunicado publicado e depois revertido pela curadoria durante o teste.',
+      source: 'manual', source_type: 'comunicado', keywords: ['comunicado'],
+    });
+    await chamar(api.handleDocuments, 'PATCH', { id: criado.corpo.id, status: 'publicado', is_approved: true, is_published: true });
+    const despublicado = await chamar(api.handleDocuments, 'PATCH', { id: criado.corpo.id, status: 'arquivado', is_published: false });
+    assert.equal(despublicado.status, 200);
+    assert.equal(despublicado.corpo.status, 'arquivado');
+    assert.ok(despublicado.corpo.version > 2, 'rollback é uma nova versão, não um apagamento do histórico');
+
+    const { rows } = await pg.query('SELECT version, is_published, status FROM ai_rag_documents WHERE id=$1', [criado.corpo.id]);
+    assert.equal(rows[0].is_published, false);
+    assert.equal(rows[0].status, 'arquivado');
+
+    await comProvedor('ok', async () => {
+      const consulta = await perguntar(apiCom(pg, { staff: { identityId: aprovador, role: 'rh' } }), { rag_key: 'rh', query: 'Qual o comunicado revertido?' });
+      assert.equal(consulta.corpo.sources.map((s) => s.title).includes('Comunicado que será revertido'), false,
+        'documento revertido não pode continuar sendo servido');
+    });
+  }));
+
+  test('nova versão de documento substitui a anterior e nasce sem aprovação', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const original = await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Procedimento original', conteudo: 'Versão original publicada do procedimento de RH.', keywords: ['procedimento'] });
+    await pg.query("UPDATE ai_rag_documents SET is_approved=true,is_published=true,status='publicado' WHERE id=$1", [original]);
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const nova = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Procedimento revisado',
+      content: 'Versão revisada do procedimento, enviada para nova avaliação de curadoria.',
+      source: 'manual', source_type: 'procedimento', supersedes_document_id: original,
+    });
+    assert.equal(nova.status, 201, JSON.stringify(nova.corpo));
+    // A resposta do POST devolve a linha do INSERT; a versão da nova redação é
+    // gravada por um UPDATE logo depois (quando há `supersedes_document_id`).
+    const { rows: novaNoBanco } = await pg.query('SELECT version,supersedes_document_id FROM ai_rag_documents WHERE id=$1', [nova.corpo.id]);
+    assert.equal(novaNoBanco[0].version, 2, 'versão da nova redação acompanha a anterior');
+    assert.equal(novaNoBanco[0].supersedes_document_id, original);
+    assert.equal(nova.corpo.is_approved, false);
+    assert.equal(nova.corpo.is_published, false);
+
+    const { rows } = await pg.query('SELECT id,version,is_published FROM ai_rag_documents WHERE id=ANY($1::uuid[]) ORDER BY version', [[original, nova.corpo.id]]);
+    assert.equal(rows[0].is_published, true, 'a versão anterior continua publicada até a nova ser aprovada');
+  }));
+
+  test('substituição entre escopos diferentes é recusada', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const doRh = await semear(pg, { ragKey: 'rh', aprovador, titulo: 'Documento do RH', conteudo: 'Documento pertencente ao escopo de RH apenas.', keywords: ['rh'] });
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const res = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'marcelo', title: 'Tentativa em escopo errado',
+      content: 'Conteúdo tentando substituir documento de outro escopo de curadoria.',
+      source: 'manual', source_type: 'manual', supersedes_document_id: doRh,
+    });
+    assert.equal(res.status, 400);
+    assert.equal(res.corpo.error, 'previous_document_scope_mismatch');
+  }));
+
+  test('corpus de cliente exige conta identificada na criação', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const conta = await contaDeTeste(pg);
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const semConta = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'cliente', title: 'Base sem conta definida',
+      content: 'Conteúdo de cliente que precisa estar amarrado a uma conta identificada.',
+      source: 'manual', source_type: 'manual',
+    });
+    assert.equal(semConta.status, 400);
+    assert.equal(semConta.corpo.error, 'client_account_required');
+
+    const comConta = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'cliente', title: 'Base da conta identificada',
+      content: 'Conteúdo de cliente amarrado à conta identificada no pedido de curadoria.',
+      source: 'manual', source_type: 'manual', client_account_id: conta,
+    });
+    assert.equal(comConta.status, 201, JSON.stringify(comConta.corpo));
+    assert.equal(comConta.corpo.client_account_id, conta);
+  }));
+
+  test('conteúdo de outra área pertinente é recusado na criação', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const conta = await contaDeTeste(pg);
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const salarioNoCliente = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'cliente', title: 'Base indevida de cliente',
+      content: 'Documento com salário detalhado de empregado que não pertence à área do cliente.',
+      source: 'manual', source_type: 'manual', client_account_id: conta,
+    });
+    assert.equal(salarioNoCliente.status, 400);
+    assert.equal(salarioNoCliente.corpo.error, 'cliente_rag_cannot_contain_salary');
+  }));
+
+  test('role sem o escopo não cria documento em escopo alheio', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const api = createAiRagApi({ pool, auditLog: async () => {}, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'rh' }), requireRole: () => true });
+
+    const res = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'marcelo', title: 'Tentativa fora do escopo de RH',
+      content: 'Conteúdo que um papel RH não pode criar no escopo da diretoria.',
+      source: 'manual', source_type: 'manual',
+    });
+    assert.equal(res.status, 403);
+    assert.equal(res.corpo.error, 'scope_forbidden');
+  }));
+
+  test('mutações de curadoria são auditadas no banco', () => comDiff(async (pg, pool) => {
+    const aprovador = await identidade(pg);
+    const registros = [];
+    const api = createAiRagApi({ pool, auditLog: async (evento) => { registros.push(evento); }, sameOrigin: () => true,
+      requireSession: async () => ({ identityId: aprovador, role: 'admin' }), requireRole: () => true });
+
+    const criado = await chamar(api.handleDocuments, 'POST', {
+      rag_key: 'rh', title: 'Documento auditável de teste',
+      content: 'Conteúdo criado para conferir a trilha de auditoria da curadoria.',
+      source: 'manual', source_type: 'manual',
+    });
+    await chamar(api.handleDocuments, 'PATCH', { id: criado.corpo.id, status: 'aprovado', is_approved: true });
+
+    assert.deepEqual(registros.map((r) => r.action), ['ai_rag_doc_create', 'ai_rag_doc_update']);
+    assert.equal(registros[0].actor, aprovador, 'o ator auditado é a identidade, não o papel');
+    assert.equal(registros[1].target, criado.corpo.id);
+  }));
 });

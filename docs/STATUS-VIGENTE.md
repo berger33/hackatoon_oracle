@@ -10,6 +10,16 @@ Coberto: isolamento por perfil (RH nunca recebe corpus `marcelo`; o contexto env
 
 **Limites:** o índice por escopo é único (migração `095` semeia um por chave, `rag_key UNIQUE`), então "índice inativo" é exercitado sobre esse único índice; não há segundo índice concorrente. PGlite serializa consultas — concorrência real, réplica e deadline de banco não são exercitados. Qualidade da resposta, modelo real, embedding e curadoria humana continuam **não** comprovados. Produção **NO-GO**.
 
+### Atualização — fatia 16 (recorte AI-06/AI-09): um defeito real corrigido
+
+Estendendo o teste da fatia 15 para a curadoria, apareceu um **defeito de produção**, não de teste: sob `transactional`, o `guardedMutation` de `src/server/ai-rag-api.mjs` reconstruía a API com um `auditLog` próprio e **descartava o auditor injetado pelo chamador**. A linha em `audit_log` era gravada na transação (por isso a trilha do banco parecia completa), mas nenhum auditor externo — coletor de métricas, dupla escrita, observabilidade — via as mutações de curadoria. Correção mínima e preservadora: a gravação transacional continua acontecendo **na mesma transação**, e o auditor injetado passa a ser chamado em seguida, quando existir. Nenhum comportamento de negócio, permissão ou resposta HTTP muda.
+
+Cobertura nova em `tests/ai-rag-scope-real-db.test.mjs` (10 casos AI-09, total 24 no arquivo): documento nasce **rascunho** sem aprovação/publicação e o corpus não o recupera; `is_published=true` sem `status` publicado **não** entrega (a recuperação exige flag E estado); aprovar+publicar torna recuperável e incrementa versão; rollback para `arquivado` fecha o documento e vira nova versão (não apaga histórico); nova redação via `supersedes_document_id` nasce sem aprovação e preserva a anterior publicada; substituição entre escopos é recusada; corpus `cliente` exige conta identificada; conteúdo de área alheia é recusado; papel sem o escopo não cria em escopo alheio; mutações auditadas com ator = identidade.
+
+**Inventário 222:** `AI-06` e `AI-09` saem do núcleo sem gate (12 → 10 IDs: `EXT-16`, `EXT-17`, `AI-01`…`AI-05`, `AI-07`, `AI-08`, `AI-10` continuam sem qualquer menção). Contagens 27/126/69. **Isso não é promoção de aceite**: os dois seguem `a_revalidar`, aceite humano **0/222**, reauditoria integral **0/222**.
+
+**Limites:** provedor é stub — modelo real, qualidade, latência e timeout de 60 s não comprovados; a curadoria é exercitada pela API, não por pessoa real nem pela tela; `transactional` foi validado no caminho de um único cliente PGlite.
+
 ### Atualização — fatia 10: impedimento registrado (sem navegador neste ambiente)
 
 A fatia 10 exige evidência de navegador por página. Neste sandbox não há Chromium/Chrome instalado e o download do Playwright falha por bloqueio de rede (`npx playwright install chromium` → `Download failure, code=1`). Sem navegador, qualquer "prova" seria textual — o que o plano proíbe. A fatia foi **adiada por impedimento técnico do ambiente**, não por ausência de trabalho; os gates existentes (`ux-portal-workspace.integration`, `ux-pro-06-*`, `e9`) continuam intocados e continuam pulando sem `RUN_DATABASE_INTEGRATION`/Chromium, como antes.

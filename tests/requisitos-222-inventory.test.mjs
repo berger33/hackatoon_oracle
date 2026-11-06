@@ -69,12 +69,19 @@ test('reauditoria 222: 46 a_revalidar, contagem atual de IDs sem menção em gat
   // gate PostgreSQL e o contrato puro de privacidade, e PLT-09 saiu do núcleo
   // (14 → 13 → 12 com PLT-12). Isso reduz a contagem sem gate, mas não reaudita
   // nem fecha os requisitos.
-  assert.equal(resumo.aRevalidarSemGate, 12);
+  // 12 → 10 em 06/11 (fatia 15): `tests/ai-rag-scope-real-db.test.mjs` cita
+  // AI-06 e AI-09 nos nomes dos casos, então os dois saem do núcleo sem gate.
+  // É evidência textual localizada — o requisito continua `a_revalidar` e
+  // continua sem aceite humano; modelo real, curadoria por pessoa e operação
+  // em produção seguem não comprovados.
+  assert.equal(resumo.aRevalidarSemGate, 10);
   // IDs com mapa/prova textual nomeada ou mencionada; nenhum recebe aceite por isso.
-  for (const id of ['SEC-03', 'CLI-02', 'CLI-03', 'CLI-05', 'CLI-06', 'CLI-07', 'CLI-08', 'PLT-01', 'PLT-02', 'PLT-03', 'PLT-06', 'PLT-07', 'PLT-09', 'PLT-10', 'PLT-12', 'PLT-15']) {
+  for (const id of ['SEC-03', 'CLI-02', 'CLI-03', 'CLI-05', 'CLI-06', 'CLI-07', 'CLI-08', 'PLT-01', 'PLT-02', 'PLT-03', 'PLT-06', 'PLT-07', 'PLT-09', 'PLT-10', 'PLT-12', 'PLT-15', 'AI-06', 'AI-09']) {
     assert.ok(!resumo.idsARevalidarSemGate.includes(id), `${id} tem evidência técnica focal`);
   }
-  for (const id of ['EXT-16', 'EXT-17', 'AI-01', 'AI-10']) {
+  // O restante da família AI e os dois EXT continuam sem NENHUMA menção em
+  // teste/workflow: é o núcleo duro que a reauditoria ainda precisa atacar.
+  for (const id of ['EXT-16', 'EXT-17', 'AI-01', 'AI-02', 'AI-03', 'AI-04', 'AI-05', 'AI-07', 'AI-08', 'AI-10']) {
     assert.ok(resumo.idsARevalidarSemGate.includes(id), `${id} precisa seguir no núcleo sem gate`);
   }
   const byId = new Map(data.requisitos.map(row => [row.id, row]));
@@ -133,9 +140,13 @@ test('reauditoria 222: nenhum ID inventa aceite humano ou reauditoria integral',
   // gate PostgreSQL dedicado e contrato puro, saindo de somente_documento para
   // gate_nomeado e do núcleo sem gate (13 → 12). Mesma natureza: onde procurar
   // a prova — não aceite humano, não parecer jurídico, não política publicada.
+  // 27/124/71 → 27/126/69 em 06/11 (fatia 15): AI-06 e AI-09 passam de
+  // `somente_documento` para `mencionado_em_gate` porque os casos do teste de
+  // RAG os citam pelo ID. "Mencionado" continua NÃO sendo provado, e o aceite
+  // humano continua 0/222.
   assert.equal(data.resumo.porClasseEvidencia.gate_nomeado, 27);
-  assert.equal(data.resumo.porClasseEvidencia.mencionado_em_gate, 124);
-  assert.equal(data.resumo.porClasseEvidencia.somente_documento, 71);
+  assert.equal(data.resumo.porClasseEvidencia.mencionado_em_gate, 126);
+  assert.equal(data.resumo.porClasseEvidencia.somente_documento, 69);
   assert.ok(data.requisitos.filter(row => row.prefixo === 'SEC')
     .every(row => row.classe_evidencia_atual === 'mencionado_em_gate'),
   'os 15 IDs SEC devem apontar para o mapa técnico de âncoras, sem inferir aceite');

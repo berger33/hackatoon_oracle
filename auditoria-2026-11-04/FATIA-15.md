@@ -60,3 +60,15 @@ Falhas do **próprio teste** encontradas no caminho, todas corrigidas: `ai_rag_c
 - O provedor é stub: **não** prova Ollama, modelo, qualidade, latência, timeout real de 60 s nem comportamento do Qwen3.
 - Embedding, curadoria, aprovação por pessoa e auditoria da curadoria não entram neste recorte.
 - **Fatia 10 registrada como impedimento de ambiente**: sem Chromium e com download do Playwright bloqueado (`Download failure, code=1`), evidência de navegador não é produzível aqui; os gates existentes seguem pulando como antes.
+
+## Extensão — fatia 16 (AI-09, curadoria) e defeito corrigido
+
+O mesmo arquivo cresceu para a curadoria do corpus (10 casos, total **24**). Ao exercitá-la com banco real apareceu um **defeito de produção**:
+
+- **Sintoma:** os casos de auditoria não viam evento nenhum, embora a linha em `audit_log` existisse.
+- **Causa:** em `src/server/ai-rag-api.mjs`, `guardedMutation` reconstrói a API com `transactional: true` e injeta o próprio `auditLog` (grava na transação). O `auditLog` recebido pelo chamador era **descartado** nessa reconstrução.
+- **Correção:** mantém a gravação transacional (a trilha precisa ficar na mesma transação) e chama o auditor injetado em seguida, quando existir. Sem mudança de regra, permissão ou resposta.
+
+Coberto: criação nasce rascunho; publicar sem estado publicado não entrega; aprovar+publicar entrega e incrementa versão; rollback para arquivado fecha o documento e versiona; nova redação via `supersedes_document_id` nasce sem aprovação preservando a anterior; substituição entre escopos recusada; conta obrigatória no corpus `cliente`; conteúdo de área alheia recusado; papel sem escopo não cria; mutação auditada com ator = identidade.
+
+Inventário 222: `AI-06` e `AI-09` passam a `mencionado_em_gate` (27/126/69), núcleo sem gate 12 → 10. Evidência textual localizada — aceite humano segue **0/222** e reauditoria integral **0/222**.
