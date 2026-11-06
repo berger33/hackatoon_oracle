@@ -10,6 +10,16 @@ Coberto: isolamento por perfil (RH nunca recebe corpus `marcelo`; o contexto env
 
 **Limites:** o índice por escopo é único (migração `095` semeia um por chave, `rag_key UNIQUE`), então "índice inativo" é exercitado sobre esse único índice; não há segundo índice concorrente. PGlite serializa consultas — concorrência real, réplica e deadline de banco não são exercitados. Qualidade da resposta, modelo real, embedding e curadoria humana continuam **não** comprovados. Produção **NO-GO**.
 
+### Atualização — fatia 19: distribuição e rotas — verificado, sem alteração
+
+Verificação somente leitura das duas metades da fatia.
+
+**Paridade borda ↔ despacho (E15):** borda **1517** regras (1396 exatas, 121 prefixos), despacho **1735** (1704 handlers, 31 pré-autorizações, 223 regexes, **128** módulos) — **0 borda-sem-despacho**, **0 inalcançáveis**, **7 sombreadas** todas com decisão publicada, **0 avisos**; `tests/e15-route-catalog.test.mjs` **19/19**.
+
+**Aviso de distribuição:** cada afirmação de `downloads/LEIA-ME.md` bate com o código — **183** migrações, **101** rotas (`src/app/**/page.tsx`), `next` 16.4.2, `nodemailer` 10.2.1. O aviso é exigido por teste (`PLT-DEF-024`, `E21`), então não envelhece em silêncio; as três consequências (não instalar, não distribuir por link externo, não é backup operacional) seguem intactas.
+
+**Nada foi alterado:** remoção de ZIP, mudança de política de release e refatoração do monólito ficam ao proprietário. **Limites:** paridade é estática (texto × catálogo), não prova resposta em runtime nem contrato de corpo; o ZIP não foi aberto nem reexecutado. Produção **NO-GO**.
+
 ### Atualização — fatia 18: ensaio de recuperação — impedimento técnico **medido**
 
 O plano aceita "restore sintético comprovado **ou** impedimento técnico registrado". Medido neste ambiente: `pg_dump`/`pg_restore` ausentes do `PATH`, `docker` ausente, e o pacote `@embedded-postgres/linux-x64` traz **PG 17.9** real mas só `initdb`/`pg_ctl`/`postgres` — **sem** os clientes de dump/restore. Executado o runner: `node scripts/qa-backup-restore-postgres.mjs` → **exit 2**, com `QA_RESTORE_CLIENT_MISSING_OR_INCOMPATIBLE: requires pg_dump and pg_restore version 17 for PostgreSQL 17.9; no database created.`, `QA_PG_TEMP_CLEANED: true` e `QA_RESTORE_TEMP_CLEANED: true`.
