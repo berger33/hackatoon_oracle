@@ -1,39 +1,45 @@
 #!/usr/bin/env bash
 # Rode com: bash subir_ef_v1.2_no_time.sh
 # Ambiente: Git Bash (Windows), WSL, Linux ou macOS. NAO e script para cmd.exe.
-# Cria branch docs/* no repo do time, publica EF/Requisitos v1.2 e ABRE o PR.
+# REPO ENVOLVIDO: somente No-Country-simulation/g10-brasil-equipe-15_mediflow.
+# O hackertoon_oracle NAO e clonado nem usado aqui.
 set -euo pipefail
 
-WORK="$HOME/mediflow_work"
 TIME_REPO="No-Country-simulation/g10-brasil-equipe-15_mediflow"
 BRANCH="docs/ef-requisitos-v1.2"
+DOWNLOADS="$HOME/mediflow_v1.2"
 
 echo "==> 0/9 checando gh e identidade git"
 gh auth status >/dev/null || { echo "Rode: gh auth login"; exit 1; }
 git config user.name  >/dev/null || { echo "Rode: git config --global user.name  \"SEU NOME\""; exit 1; }
 git config user.email >/dev/null || { echo "Rode: git config --global user.email \"SEU EMAIL\""; exit 1; }
 
-mkdir -p "$WORK"
-cd "$WORK"
-
-echo "==> 1/9 obtendo as fontes v1.2 do seu repo"
-if [ -d hackatoon_oracle/.git ]; then
-  (cd hackatoon_oracle && git checkout "$BRANCH" 2>/dev/null || true)
-  (cd hackatoon_oracle && git checkout arena/cc3a89ce-hackatoon-oracle)
-else
-  git clone https://github.com/berger33/hackatoon_oracle.git
-  (cd hackatoon_oracle && git checkout arena/cc3a89ce-hackatoon-oracle)
-fi
-SRC="$WORK/hackatoon_oracle/docs/v1.2"
-for f in MediFlow_Especificacao_Funcional_v1.2.pdf \
-         MediFlow_Especificacao_Funcional_v1.2.md \
-         MediFlow_Analise_de_Requisitos_v1.2.pdf \
-         MediFlow_Analise_de_Requisitos_v1.2.md \
-         REGISTRO_DE_ALTERACOES_v1.2.md; do
-  [ -f "$SRC/$f" ] || { echo "ERRO: falta $SRC/$f"; exit 1; }
+echo "==> 1/9 baixando os 5 arquivos v1.2 do Drive para $DOWNLOADS"
+mkdir -p "$DOWNLOADS"
+cd "$DOWNLOADS"
+# id, nome, tamanho minimo esperado
+BAIXAR=(
+  "1_VELN_O52rCLKfTUybKhP3lLBHIaXAZZ|MediFlow_Especificacao_Funcional_v1.2.pdf|70000"
+  "1mwt2cJHRaMDK1y2HvHfQfIc_1n5o0ePG|MediFlow_Especificacao_Funcional_v1.2.md|50000"
+  "1zTuCuCytiaihxlZya7zJCCTqAFq5lmg6|MediFlow_Analise_de_Requisitos_v1.2.pdf|50000"
+  "1D8gnMt5J9YmOvH-cWtyiPObsmk5y2g2W|MediFlow_Analise_de_Requisitos_v1.2.md|28000"
+  "1PHGEELl6KRNXh2ewARpYysZ1iuKQrKtQ|REGISTRO_DE_ALTERACOES_v1.2.pdf|10000"
+)
+for item in "${BAIXAR[@]}"; do
+  IFS='|' read -r id nome minimo <<< "$item"
+  if [ ! -s "$nome" ]; then curl -fL -sS -o "$nome" "https://drive.google.com/uc?export=download&id=$id"; fi
+  bytes=$(wc -c < "$nome")
+  if [ "$bytes" -lt "$minimo" ]; then
+    echo "ERRO: $nome veio com $bytes bytes (esperado >= $minimo)."
+    echo "Abra https://drive.google.com/drive/folders/1mkhJJDVcw2A7PLZUjIW_JpE1ksUNxX4h"
+    echo "e baixe os arquivos pelo navegador para $DOWNLOADS, depois rode o script de novo."
+    exit 1
+  fi
+  echo "    ok: $nome ($bytes bytes)"
 done
 
-echo "==> 2/9 repo do time + develop atualizada"
+echo "==> 2/9 clonando SOMENTE o repo do time + develop atualizada"
+cd "$HOME"
 if [ -d g10-brasil-equipe-15_mediflow/.git ]; then
   cd g10-brasil-equipe-15_mediflow
   git checkout develop && git pull origin develop
@@ -47,11 +53,13 @@ echo "==> 3/9 criando a branch $BRANCH"
 git checkout -B "$BRANCH"
 
 echo "==> 4/9 copiando os 5 arquivos para docs/"
-cp "$SRC/MediFlow_Especificacao_Funcional_v1.2.pdf" docs/
-cp "$SRC/MediFlow_Especificacao_Funcional_v1.2.md"  docs/
-cp "$SRC/MediFlow_Analise_de_Requisitos_v1.2.pdf"   docs/
-cp "$SRC/MediFlow_Analise_de_Requisitos_v1.2.md"    docs/
-cp "$SRC/REGISTRO_DE_ALTERACOES_v1.2.md"            docs/
+for f in MediFlow_Especificacao_Funcional_v1.2.pdf \
+         MediFlow_Especificacao_Funcional_v1.2.md \
+         MediFlow_Analise_de_Requisitos_v1.2.pdf \
+         MediFlow_Analise_de_Requisitos_v1.2.md \
+         REGISTRO_DE_ALTERACOES_v1.2.pdf; do
+  cp "$DOWNLOADS/$f" docs/
+done
 
 echo "==> 5/9 criando docs/ESPECIFICACOES.md"
 cat > docs/ESPECIFICACOES.md <<'EOF'
@@ -61,7 +69,7 @@ cat > docs/ESPECIFICACOES.md <<'EOF'
 | --- | --- | --- | --- |
 | Especificacao Funcional (EF/EPT) | **v1.2** | 05/11/2026 | `MediFlow_Especificacao_Funcional_v1.2.pdf` / `.md` |
 | Analise de Requisitos | **v1.2** | 05/11/2026 | `MediFlow_Analise_de_Requisitos_v1.2.pdf` / `.md` |
-| Registro de alteracoes | v1.2 | 05/11/2026 | `REGISTRO_DE_ALTERACOES_v1.2.md` |
+| Registro de alteracoes | v1.2 | 05/11/2026 | `REGISTRO_DE_ALTERACOES_v1.2.pdf` |
 | Brief original (fonte de precedencia 1) | `Projeto_oracle.pdf` | - | Google Drive da equipe |
 | Contrato de Dados da Triagem | v1.0 | - | `docs/testes/CONTRATO_DE_DADOS.md` |
 
@@ -72,11 +80,11 @@ ser usadas como referencia normativa.
 A v1.2 realinha EF e Analise ao `Projeto_oracle.pdf` conforme a secao 2 da EF, sem
 reduzir nenhum requisito obrigatorio do Brief e sem reverter decisoes da v1.1
 (RN-08/ADR-001 de urgencia isolada, Anexo de 21/10/2026 e Contrato de Dados v1.0).
-Decisoes D-01, D-02 e D-03 estao em `REGISTRO_DE_ALTERACOES_v1.2.md`.
+Decisoes D-01, D-02 e D-03 estao em `REGISTRO_DE_ALTERACOES_v1.2.pdf`.
 EOF
 
-echo "==> 6/9 criando corpo do PR (fora do repo, para nao entrar no commit)"
-cat > "$WORK/corpo_pr.md" <<'EOF'
+echo "==> 6/9 criando corpo do PR FORA do repo (nao entra no commit)"
+cat > "$DOWNLOADS/corpo_pr.md" <<'EOF'
 ## MediFlow - Descricao do Pull Request
 
 ### Tipo de alteracao
@@ -111,7 +119,7 @@ git add docs/MediFlow_Especificacao_Funcional_v1.2.pdf \
         docs/MediFlow_Especificacao_Funcional_v1.2.md \
         docs/MediFlow_Analise_de_Requisitos_v1.2.pdf \
         docs/MediFlow_Analise_de_Requisitos_v1.2.md \
-        docs/REGISTRO_DE_ALTERACOES_v1.2.md \
+        docs/REGISTRO_DE_ALTERACOES_v1.2.pdf \
         docs/ESPECIFICACOES.md
 git diff --cached --stat
 
@@ -131,7 +139,7 @@ if [ "$EXISTENTE" = "0" ]; then
     --base develop \
     --head "$BRANCH" \
     --title "docs(especificacao): publica EF e Analise de Requisitos v1.2" \
-    --body-file "$WORK/corpo_pr.md" \
+    --body-file "$DOWNLOADS/corpo_pr.md" \
     --reviewer crisgdo
 else
   echo "PR aberta para essa branch ja existe; nada a criar."
