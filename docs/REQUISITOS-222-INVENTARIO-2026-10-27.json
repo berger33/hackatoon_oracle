@@ -55,7 +55,7 @@
     ],
     "aceiteHumanoRegistrado": 0,
     "reauditoriasIntegraisExecutadas": 0,
-    "arquivosVarridos": 1752,
+    "arquivosVarridos": 1753,
     "limitacoes": [
       "\"mencionado em gate\" NÃO é prova de jornada nem de aceite",
       "a fotografia de 04/10 é histórica e não foi revalidada por papel",
@@ -3918,6 +3918,7 @@
       "classe_evidencia_atual": "mencionado_em_gate",
       "arquivos_gate_nomeados": [],
       "arquivos_gate": [
+        "tests/cli-staff-client-document-cycle.test.mjs",
         "tests/client-space.integration.test.mjs",
         "tests/ux-portal-workspace.integration.test.mjs",
         "tests/ux-pro-03-ti-cli-v2-ui.test.mjs",
@@ -3938,7 +3939,7 @@
         "src/app/admin/ti/CliAdvancedClient.tsx",
         "src/server/cli-advanced-api.mjs"
       ],
-      "ocorrencias_gate": 22,
+      "ocorrencias_gate": 23,
       "ocorrencias_documento": 22,
       "ocorrencias_codigo": 4,
       "aceite_humano": "nao_registrado",
@@ -4022,6 +4023,7 @@
       "classe_evidencia_atual": "mencionado_em_gate",
       "arquivos_gate_nomeados": [],
       "arquivos_gate": [
+        "tests/cli-staff-client-document-cycle.test.mjs",
         "tests/client-space.integration.test.mjs",
         "tests/ux-portal-workspace.integration.test.mjs"
       ],
@@ -4040,7 +4042,7 @@
         "src/app/admin/ti/CliAdvancedClient.tsx",
         "src/server/cli-advanced-api.mjs"
       ],
-      "ocorrencias_gate": 6,
+      "ocorrencias_gate": 7,
       "ocorrencias_documento": 8,
       "ocorrencias_codigo": 3,
       "aceite_humano": "nao_registrado",

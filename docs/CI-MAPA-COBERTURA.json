@@ -9,11 +9,11 @@
  "totais": {
   "workflows": 60,
   "scripts_package": 112,
-  "testes_no_disco": 255,
+  "testes_no_disco": 256,
   "runners_em_scripts": 116,
-  "testes_cobertos_por_workflow": 253,
-  "testes_cobertos_via_test_unit": 187,
-  "testes_cobertos_pelo_test_unit": 187,
+  "testes_cobertos_por_workflow": 254,
+  "testes_cobertos_via_test_unit": 188,
+  "testes_cobertos_pelo_test_unit": 188,
   "testes_sem_workflow_nem_test_unit": 2,
   "runners_sem_workflow_nem_script": 14,
   "runners_importados_como_helper": 14,
@@ -105,7 +105,7 @@
     "test:ux-pro-09e-pu4:browser",
     "typecheck"
    ],
-   "testes": 199,
+   "testes": 200,
    "runners": 8
   },
   {
@@ -1333,6 +1333,16 @@
   },
   {
    "teste": "tests/ci-coverage-map.test.mjs",
+   "workflows": [
+    "ci.yml"
+   ],
+   "workflows_via_test_unit": [
+    "ci.yml"
+   ],
+   "no_test_unit": true
+  },
+  {
+   "teste": "tests/cli-staff-client-document-cycle.test.mjs",
    "workflows": [
     "ci.yml"
    ],
